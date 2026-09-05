@@ -329,9 +329,10 @@ GitHub OAuth sign-in, but its client pair is optional when Google is the only si
    - Members: **Read-only**
    - For existing GitHub Apps, republish the permission change and request/approve installation
      updates before testing org membership sign-in.
-7. If GitHub sign-in uses `allowed_emails` or `allowed_email_domains`, set **Account permissions**:
-   - Email addresses: **Read-only** _(without it the app cannot read verified emails and those
-     allowlists deny every GitHub sign-in)_
+7. If GitHub sign-in is enabled, set **Account permissions**:
+   - Email addresses: **Read-only** _(required for every GitHub sign-in because Open-Inspect
+     resolves a verified primary email before applying username, organization, or email admission
+     rules)_
    - For existing GitHub Apps, republish the permission change and request/approve installation
      updates, otherwise the added permission does not apply to current installs.
 8. Click **"Create GitHub App"**
