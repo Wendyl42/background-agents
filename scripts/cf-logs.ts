@@ -137,6 +137,8 @@ const levelFilter = getFlag("level");
 const scriptName = getFlag("script");
 const mins = parseFloat(getFlag("mins") || "30"); // Default 30 minutes
 const limit = parseInt(getFlag("limit") || "1000", 10);
+const fromTime = getFlag("from");
+const untilTime = getFlag("until");
 const jsonOutput = hasFlag("json");
 const showHelp = hasFlag("help") || hasFlag("h");
 
@@ -162,6 +164,8 @@ if (showHelp || (!sessionId && !requestId && !traceId && !searchText && !scriptN
   console.error("Options:");
   console.error("  --level <level>     Filter by log level (debug, info, warn, error)");
   console.error("  --mins <N>         Look back N minutes (default: 30, max 10080 / 7 days)");
+  console.error("  --from <time>      Exact start time (ISO 8601 or epoch milliseconds)");
+  console.error("  --until <time>     Exact end time (ISO 8601 or epoch milliseconds)");
   console.error("  --limit <N>         Max events to return (default: 1000)");
   console.error("  --json              Output raw JSON (pipe to pbcopy for LLM debugging)");
   console.error("  --help              Show this help message");
@@ -175,8 +179,30 @@ if (showHelp || (!sessionId && !requestId && !traceId && !searchText && !scriptN
   console.error(`  bun ${prog} --session abc123 --level error`);
   console.error(`  bun ${prog} --request-id 9b9b9937bc6dc65e --json | pbcopy`);
   console.error(`  bun ${prog} --search "sandbox.create" --mins 30`);
+  console.error(`  bun ${prog} --all --from 2026-08-21T08:00:00Z --until 2026-08-21T10:00:00Z`);
   console.error(`  bun ${prog} --session abc123 --script open-inspect-control-plane`);
   process.exit(showHelp ? 0 : 1);
+}
+
+function parseTime(value: string, flag: string): Date {
+  const epochMs = /^\d+$/.test(value) ? Number(value) : Date.parse(value);
+  const date = new Date(epochMs);
+  if (!Number.isFinite(epochMs) || Number.isNaN(date.getTime())) {
+    throw new Error(`Invalid --${flag} time: ${value}`);
+  }
+  return date;
+}
+
+function resolveTimeframe(): { from: Date; to: Date } {
+  const to = untilTime ? parseTime(untilTime, "until") : new Date();
+  const from = fromTime ? parseTime(fromTime, "from") : new Date(to.getTime() - mins * 60 * 1000);
+  if (from.getTime() >= to.getTime()) {
+    throw new Error("--from must be earlier than --until");
+  }
+  if (to.getTime() - from.getTime() > 10_080 * 60 * 1000) {
+    throw new Error("Cloudflare log queries are limited to a 7-day window");
+  }
+  return { from, to };
 }
 
 if (!ACCOUNT_ID || !API_TOKEN) {
@@ -359,8 +385,7 @@ function buildFilters(): TelemetryFilter[] {
 }
 
 async function fetchLogs(): Promise<LogEvent[]> {
-  const now = new Date();
-  const from = new Date(now.getTime() - mins * 60 * 1000);
+  const { from, to } = resolveTimeframe();
 
   const query: TelemetryQuery = {
     view: "events",
@@ -371,7 +396,7 @@ async function fetchLogs(): Promise<LogEvent[]> {
     },
     timeframe: {
       from: from.getTime(),
-      to: now.getTime(),
+      to: to.getTime(),
     },
   };
 
@@ -421,7 +446,13 @@ async function main(): Promise<void> {
     .filter(Boolean)
     .join(", ");
 
-  console.error(color(`Fetching logs: ${filterDesc} (last ${mins}m, limit ${limit})...`, C.dim));
+  const timeframeDescription =
+    fromTime || untilTime
+      ? `${resolveTimeframe().from.toISOString()}..${resolveTimeframe().to.toISOString()}`
+      : `last ${mins}m`;
+  console.error(
+    color(`Fetching logs: ${filterDesc} (${timeframeDescription}, limit ${limit})...`, C.dim)
+  );
 
   try {
     const logs = await fetchLogs();

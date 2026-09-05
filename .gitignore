@@ -42,6 +42,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Local trace exports (may contain repository content or command output)
+/traces/openinspect/
+
 # Test
 coverage/
 .nyc_output/
