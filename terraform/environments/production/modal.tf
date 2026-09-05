@@ -39,9 +39,16 @@ module "modal_app" {
   secrets = [
     {
       name = "llm-api-keys"
-      values = {
-        ANTHROPIC_API_KEY = var.anthropic_api_key
-      }
+      # Keep the Modal secret available for dynamic sandboxes even in
+      # provider-neutral deployments. Anthropic is included only when the
+      # operator explicitly configured it; DeepSeek and other provider keys
+      # can arrive through Open-Inspect global/repository secrets at runtime.
+      values = merge(
+        { OPEN_INSPECT_LLM_SECRETS_CONFIGURED = "true" },
+        trimspace(var.anthropic_api_key) != "" ? {
+          ANTHROPIC_API_KEY = var.anthropic_api_key
+        } : {}
+      )
     },
     {
       name = "github-app"

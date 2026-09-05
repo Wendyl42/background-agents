@@ -609,11 +609,13 @@ rotation is persisted back to the global, repository, or environment scope that 
 [Using Grok with a SuperGrok Subscription](./GROK_MODELS.md).
 
 > **Daytona and Vercel users**: LLM API keys (e.g., `ANTHROPIC_API_KEY` for Claude models) must be
-> added as global secrets. Modal injects these automatically via its own secrets mechanism.
+> added as global secrets. Modal can inject an optional Terraform-configured Anthropic key; other
+> provider keys continue to use Open-Inspect global or repository secrets.
 >
-> **Opt-in model providers**: DeepSeek models require `DEEPSEEK_API_KEY`, and Z.AI Coding Plan
-> models require `ZHIPU_API_KEY`, as a global secret with any sandbox provider. SuperGrok models
-> require managed xAI OAuth credentials and must be enabled under **Settings > Models**.
+> **Model provider keys**: Default DeepSeek models require `DEEPSEEK_API_KEY`, and opt-in Z.AI
+> Coding Plan models require `ZHIPU_API_KEY`, as a global or repository secret with any sandbox
+> provider. SuperGrok models require managed xAI OAuth credentials and must be enabled under
+> **Settings > Models**.
 
 See [Secrets Management](./SECRETS.md) for setup instructions.
 

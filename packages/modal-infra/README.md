@@ -74,8 +74,12 @@ snapshot, terminate, and delete provider operations.
 3. Create secrets via Modal CLI:
 
 ```bash
-# LLM API keys
-modal secret create llm-api-keys ANTHROPIC_API_KEY="sk-ant-..."
+# LLM API keys. DeepSeek-only deployments may use a non-secret marker here;
+# DEEPSEEK_API_KEY is supplied through Open-Inspect global/repository secrets.
+modal secret create llm-api-keys OPEN_INSPECT_LLM_SECRETS_CONFIGURED="true"
+
+# Add this only when using Claude:
+# modal secret create llm-api-keys ANTHROPIC_API_KEY="sk-ant-..." --force
 
 # GitHub App credentials (for repo access)
 modal secret create github-app \
@@ -168,7 +172,8 @@ Set via Modal secrets:
 
 | Variable | Secret | Description |
 |----------|--------|-------------|
-| `ANTHROPIC_API_KEY` | `llm-api-keys` | Anthropic API key for Claude |
+| `ANTHROPIC_API_KEY` | `llm-api-keys` | Optional Anthropic API key for Claude |
+| `DEEPSEEK_API_KEY` | Open-Inspect global/repository secret | DeepSeek API key injected per session |
 | `GITHUB_APP_ID` | `github-app` | GitHub App ID for repo access |
 | `GITHUB_APP_PRIVATE_KEY` | `github-app` | GitHub App private key (PKCS#8) |
 | `GITHUB_APP_INSTALLATION_ID` | `github-app` | GitHub App installation ID |

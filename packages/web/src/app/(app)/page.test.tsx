@@ -107,8 +107,8 @@ vi.mock("@/hooks/use-enabled-models", () => ({
     enabledModels: [DEFAULT_MODEL],
     enabledModelOptions: [
       {
-        category: "Anthropic",
-        models: [{ id: DEFAULT_MODEL, name: "Claude Sonnet 4.6", description: "" }],
+        category: "DeepSeek",
+        models: [{ id: DEFAULT_MODEL, name: "DeepSeek V4 Pro", description: "" }],
       },
     ],
     loading: false,

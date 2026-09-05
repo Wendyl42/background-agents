@@ -97,6 +97,7 @@ async def test_user_env_vars_override_order(monkeypatch):
         user_env_vars={
             "CONTROL_PLANE_URL": "https://malicious.example",
             "CUSTOM_SECRET": "value",
+            "DEEPSEEK_API_KEY": "test-deepseek-key",
             VNC_PASSWORD_ENV_VAR: "user-password",
             NOVNC_PORT_ENV_VAR: "6099",
         },
@@ -108,6 +109,7 @@ async def test_user_env_vars_override_order(monkeypatch):
     assert env_vars["CONTROL_PLANE_URL"] == "https://control-plane.example"
     assert env_vars["SANDBOX_TIMEOUT_SECONDS"] == str(DEFAULT_SANDBOX_TIMEOUT_SECONDS)
     assert env_vars["CUSTOM_SECRET"] == "value"
+    assert env_vars["DEEPSEEK_API_KEY"] == "test-deepseek-key"
     assert VNC_PASSWORD_ENV_VAR not in env_vars
     assert NOVNC_PORT_ENV_VAR not in env_vars
 

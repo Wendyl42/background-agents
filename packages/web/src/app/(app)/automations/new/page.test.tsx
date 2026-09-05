@@ -41,8 +41,8 @@ vi.mock("@/hooks/use-enabled-models", () => ({
     enabledModels: enabledModelsValue,
     enabledModelOptions: [
       {
-        category: "Anthropic",
-        models: [{ id: DEFAULT_MODEL, name: "Claude Sonnet 4.6", description: "" }],
+        category: "DeepSeek",
+        models: [{ id: DEFAULT_MODEL, name: "DeepSeek V4 Pro", description: "" }],
       },
     ],
     loading: false,
@@ -99,7 +99,7 @@ describe("NewAutomationPage template pre-fill", () => {
 
     expect(screen.getByDisplayValue("Scan codebase for vulnerabilities")).toBeInTheDocument();
     // Falls back to the enabled default model rather than the unenabled suggestion.
-    expect(screen.getByText("claude sonnet 4.6")).toBeInTheDocument();
+    expect(screen.getByText("deepseek v4 pro")).toBeInTheDocument();
     expect(screen.queryByText("claude opus 4.8")).not.toBeInTheDocument();
   });
 });

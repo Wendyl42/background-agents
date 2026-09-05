@@ -178,10 +178,14 @@ module "control_plane_worker" {
     local.use_daytona_backend ? [
       { name = "DAYTONA_API_KEY", value = var.daytona_api_key },
     ] : [],
-    var.opencomputer_api_key != "" && trimspace(var.opencomputer_api_url) != "" ? [
-      { name = "OPENCOMPUTER_API_KEY", value = var.opencomputer_api_key },
-      { name = "ANTHROPIC_API_KEY", value = var.anthropic_api_key },
-    ] : [],
+    var.opencomputer_api_key != "" && trimspace(var.opencomputer_api_url) != "" ? concat(
+      [
+        { name = "OPENCOMPUTER_API_KEY", value = var.opencomputer_api_key },
+      ],
+      trimspace(var.anthropic_api_key) != "" ? [
+        { name = "ANTHROPIC_API_KEY", value = var.anthropic_api_key },
+      ] : []
+    ) : [],
     var.vercel_sandbox_token != "" && trimspace(var.vercel_sandbox_project_id) != "" ? [
       { name = "VERCEL_TOKEN", value = var.vercel_sandbox_token },
     ] : [],

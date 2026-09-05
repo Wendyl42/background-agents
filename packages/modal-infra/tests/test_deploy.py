@@ -104,3 +104,12 @@ def test_modal_deployment_hash_includes_deployment_entrypoints() -> None:
 
     assert "packages/modal-infra/deploy.py" in modal_tf
     assert "terraform/modules/modal-app/scripts/deploy.sh" in modal_tf
+
+
+def test_modal_llm_secret_does_not_require_anthropic() -> None:
+    repo_root = Path(__file__).parents[3]
+    modal_tf = (repo_root / "terraform/environments/production/modal.tf").read_text()
+    app_source = (repo_root / "packages/modal-infra/src/app.py").read_text()
+
+    assert 'OPEN_INSPECT_LLM_SECRETS_CONFIGURED = "true"' in modal_tf
+    assert 'required_keys=["ANTHROPIC_API_KEY"]' not in app_source

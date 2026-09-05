@@ -38,11 +38,12 @@ function_image = (
     .add_local_dir(str(_SANDBOX_RUNTIME_DIR), remote_path="/root/sandbox_runtime")
 )
 
-# Secrets for LLM API keys - defined in Modal dashboard or CLI
-# These are injected into sandboxes but never stored in snapshots
+# Optional operator-managed LLM API keys. Provider keys can also be supplied
+# through Open-Inspect global/repository secrets at session startup, so this
+# Modal secret must exist but does not require an Anthropic key.
+# Values are injected into sandboxes but never stored in snapshots.
 llm_secrets = modal.Secret.from_name(
     "llm-api-keys",
-    required_keys=["ANTHROPIC_API_KEY"],
 )
 
 # Secrets for GitHub App - used for git operations (clone, push)

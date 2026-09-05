@@ -24,8 +24,8 @@ opencomputer_template = ""
 ```
 
 The OpenComputer provider also needs the normal Open-Inspect values such as Cloudflare, GitHub App,
-Anthropic, and web app configuration. See [GETTING_STARTED.md](./GETTING_STARTED.md) for the full
-deployment flow.
+a key for the selected model provider, and web app configuration. See
+[GETTING_STARTED.md](./GETTING_STARTED.md) for the full deployment flow.
 
 ## Template Build
 
@@ -106,7 +106,7 @@ Terraform passes these provider-level values to the control plane:
 - `OPENCOMPUTER_API_URL`
 - `OPENCOMPUTER_API_KEY`
 - `OPENCOMPUTER_TEMPLATE`
-- `ANTHROPIC_API_KEY`
+- `ANTHROPIC_API_KEY` (optional; only for Claude)
 
 The runtime also receives repository credentials from Open-Inspect for Git operations. If you use
 additional model providers or custom agent tools, add those keys through Open-Inspect's secrets
@@ -162,6 +162,7 @@ debugging OpenComputer.
 
 ### LLM/API Key Problems
 
-The control plane passes `ANTHROPIC_API_KEY` for the default Claude models. If OpenCode reports a
-model or provider error, confirm that the required provider key is available through Terraform or
-Open-Inspect secrets and that the selected model is available for that account.
+DeepSeek is the default provider and reads `DEEPSEEK_API_KEY` from Open-Inspect global or repository
+secrets. If OpenCode reports a model or provider error, confirm that the selected provider's key is
+available through Terraform or Open-Inspect secrets and that the selected model is available for
+that account.

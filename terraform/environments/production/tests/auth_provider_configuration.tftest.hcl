@@ -192,7 +192,15 @@ run "combined_with_github_only_admission" {
   expect_failures = [terraform_data.sign_in_provider_gate]
 }
 
-run "anthropic_api_key_blank" {
+run "anthropic_api_key_optional_without_anthropic_classifiers" {
+  command = plan
+
+  variables {
+    anthropic_api_key = ""
+  }
+}
+
+run "anthropic_api_key_required_for_slack_classifier" {
   command = plan
 
   variables {
@@ -200,6 +208,20 @@ run "anthropic_api_key_blank" {
     slack_bot_token      = "test-slack-token"
     slack_signing_secret = "test-slack-signing-secret"
     anthropic_api_key    = ""
+  }
+
+  expect_failures = [var.anthropic_api_key]
+}
+
+run "anthropic_api_key_required_for_linear_classifier" {
+  command = plan
+
+  variables {
+    enable_linear_bot     = true
+    linear_client_id      = "test-linear-client-id"
+    linear_client_secret  = "test-linear-client-secret"
+    linear_webhook_secret = "test-linear-webhook-secret"
+    anthropic_api_key     = ""
   }
 
   expect_failures = [var.anthropic_api_key]

@@ -66,11 +66,11 @@ repository, re-import it or update the environment secret directly.
 Use global secrets for keys that every session needs regardless of which repository it runs against.
 The most common example:
 
-| Key                 | Description                                                                                                                                           |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY` | Required for Claude models when using the **Daytona** or **Vercel** sandbox provider (Modal injects this automatically via its own secrets mechanism) |
-| `DEEPSEEK_API_KEY`  | Required for DeepSeek models with any sandbox provider                                                                                                |
-| `ZHIPU_API_KEY`     | Required for Z.AI Coding Plan GLM models with any sandbox provider                                                                                    |
+| Key                 | Description                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY` | Required only for Claude models; Modal injects it when configured through Terraform, while other providers use this global/repository secret |
+| `DEEPSEEK_API_KEY`  | Required for DeepSeek models with any sandbox provider                                                                                       |
+| `ZHIPU_API_KEY`     | Required for Z.AI Coding Plan GLM models with any sandbox provider                                                                           |
 
 > **Daytona and Vercel sandbox users**: If you plan to use Claude models, you must add
 > `ANTHROPIC_API_KEY` as a global secret after deploying. Without it, Claude sessions will fail with

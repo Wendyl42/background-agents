@@ -349,12 +349,13 @@ describe("model utilities", () => {
       MODEL_OPTIONS.find((group) => group.category === "DeepSeek")?.models.map((m) => m.id)
     ).toEqual(DEEPSEEK_MODELS);
 
-    expect(DEFAULT_ENABLED_MODELS).toEqual([...ANTHROPIC_MODELS, ...OPENAI_MODELS]);
+    expect(DEFAULT_MODEL).toBe("deepseek/deepseek-v4-pro");
+    expect(DEFAULT_ENABLED_MODELS).toEqual([...OPENAI_MODELS, ...DEEPSEEK_MODELS]);
     for (const optInModel of [
+      ...ANTHROPIC_MODELS,
       ...XAI_MODELS,
       ...ZEN_MODELS,
       ...ZAI_CODING_PLAN_MODELS,
-      ...DEEPSEEK_MODELS,
     ]) {
       expect(DEFAULT_ENABLED_MODELS).not.toContain(optInModel);
     }

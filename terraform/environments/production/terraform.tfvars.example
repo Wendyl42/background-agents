@@ -218,9 +218,16 @@ linear_webhook_secret = ""   # Webhook Signing Secret from the application confi
 # API Keys
 # =============================================================================
 
-# Anthropic API key for Claude
+# Optional Anthropic API key for Claude.
+# Leave empty for a DeepSeek-only web/GitHub deployment. It is required when
+# enable_slack_bot or enable_linear_bot is true because those integrations use
+# Anthropic for repository classification.
 # From: https://console.anthropic.com/
 anthropic_api_key = ""
+
+# DeepSeek sessions use DEEPSEEK_API_KEY from Open-Inspect global or repository
+# secrets. After deployment, add it under Settings > Secrets before starting a
+# DeepSeek session; it is intentionally not stored in Terraform state.
 
 # =============================================================================
 # Security Secrets

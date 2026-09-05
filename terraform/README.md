@@ -244,7 +244,7 @@ GH_APP_PRIVATE_KEY
 GH_APP_INSTALLATION_ID
 
 # Slack
-ENABLE_SLACK_BOT # Optional; defaults to true
+ENABLE_SLACK_BOT # Optional; defaults to false
 SLACK_BOT_TOKEN
 SLACK_SIGNING_SECRET
 
@@ -260,7 +260,8 @@ LINEAR_CLIENT_SECRET
 LINEAR_WEBHOOK_SECRET
 
 # API Keys
-ANTHROPIC_API_KEY
+ANTHROPIC_API_KEY # Optional; required for Claude or Slack/Linear classifiers
+DEEPSEEK_API_KEY  # Add as an Open-Inspect global/repository secret for DeepSeek sessions
 
 # Security Secrets
 TOKEN_ENCRYPTION_KEY

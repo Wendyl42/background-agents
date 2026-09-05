@@ -38,9 +38,9 @@ E2B_SANDBOX_TIMEOUT_SECONDS # optional
 E2B_AUTO_PAUSE              # optional
 ```
 
-The E2B provider also needs the normal Open-Inspect values such as Cloudflare, GitHub App,
-Anthropic, and web app configuration. See [GETTING_STARTED.md](./GETTING_STARTED.md) for the full
-deployment flow.
+The E2B provider also needs the normal Open-Inspect values such as Cloudflare, GitHub App, a key for
+the selected model provider, and web app configuration. See
+[GETTING_STARTED.md](./GETTING_STARTED.md) for the full deployment flow.
 
 > On the **Hobby** tier (~1h runtime cap), lower `e2b_sandbox_timeout_seconds` to `3300`.
 
@@ -128,11 +128,11 @@ Terraform passes these provider-level values to the control plane:
   authenticate the template build
 - `E2B_TEMPLATE_ID`
 - `E2B_API_URL` (optional)
-- `ANTHROPIC_API_KEY`
 
-The runtime also receives repository credentials from Open-Inspect for Git operations. If you use
-additional model providers or custom agent tools, add those keys through Open-Inspect's secrets
-settings. See [SECRETS.md](./SECRETS.md).
+The runtime also receives repository credentials from Open-Inspect for Git operations. Add the
+selected model provider key through Open-Inspect's secrets settings: `DEEPSEEK_API_KEY` for the
+default DeepSeek models, or `ANTHROPIC_API_KEY` if you opt into Claude. See
+[SECRETS.md](./SECRETS.md).
 
 ## Verify
 
@@ -179,9 +179,10 @@ debugging E2B.
 
 ### LLM/API Key Problems
 
-The control plane passes `ANTHROPIC_API_KEY` for the default Claude models. If OpenCode reports a
-model or provider error, confirm the required provider key is available through Terraform or
-Open-Inspect secrets and that the selected model is available for that account.
+DeepSeek is the default provider and reads `DEEPSEEK_API_KEY` from Open-Inspect global or repository
+secrets. If OpenCode reports a model or provider error, confirm the selected provider's key is
+available through Terraform or Open-Inspect secrets and that the selected model is available for
+that account.
 
 ## References
 

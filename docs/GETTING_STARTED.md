@@ -46,7 +46,8 @@ Create accounts on these services before continuing:
 | [OpenComputer](https://app.opencomputer.dev) _(optional)_ | Sandbox infrastructure when `sandbox_provider = "opencomputer"` |
 | [E2B](https://e2b.dev) _(optional)_                       | Sandbox infrastructure when `sandbox_provider = "e2b"`          |
 | [GitHub](https://github.com/settings/developers)          | OAuth + repository access                                       |
-| [Anthropic](https://console.anthropic.com)                | Claude API                                                      |
+| [Anthropic](https://console.anthropic.com) _(optional)_   | Claude API, and Slack/Linear repository classification          |
+| [DeepSeek](https://platform.deepseek.com) _(optional)_    | DeepSeek API when using DeepSeek models                         |
 | [Slack](https://api.slack.com/apps) _(optional)_          | Slack bot integration                                           |
 | GitHub App Webhooks _(optional)_                          | GitHub bot (PR reviews)                                         |
 
@@ -260,7 +261,19 @@ For the full runtime, lifecycle, and configuration model, see
 > plan to use Claude models, add `ANTHROPIC_API_KEY` as a **global secret** in Settings > Secrets
 > after deploying. See [Secrets Management](SECRETS.md) for details.
 
-### Anthropic
+### Model Provider
+
+DeepSeek is the default model provider. For a DeepSeek-only deployment, you do not need an Anthropic
+account or API key:
+
+1. Create a DeepSeek API key.
+2. Leave `anthropic_api_key = ""` in `terraform.tfvars`.
+3. Keep `enable_slack_bot = false` and `enable_linear_bot = false` because those integrations use
+   Anthropic for repository classification.
+4. After deployment, add `DEEPSEEK_API_KEY` under **Settings > Secrets** at global or repository
+   scope before creating the first session.
+
+If you want to use Claude, or enable the Slack or Linear bot:
 
 1. Go to [Anthropic Console](https://console.anthropic.com)
 2. Create an API key
@@ -560,8 +573,9 @@ linear_client_id       = ""          # From Step 4b (required if enabled)
 linear_client_secret   = ""          # From Step 4b (required if enabled)
 linear_webhook_secret  = ""          # From Step 4b (required if enabled)
 
-# API Keys
-anthropic_api_key = "sk-ant-..."
+# Optional Anthropic API key. Leave empty for a DeepSeek-only deployment with
+# Slack and Linear disabled.
+anthropic_api_key = ""
 
 # Security Secrets (from Step 5)
 token_encryption_key          = "your-generated-value"
@@ -958,14 +972,14 @@ Go to your fork's Settings → Secrets and variables → Actions, and add:
 | `GH_APP_ID`                      | Required GitHub App repository-access ID                                                    |
 | `GH_APP_PRIVATE_KEY`             | Required GitHub App repository-access private key (PKCS#8 format)                           |
 | `GH_APP_INSTALLATION_ID`         | Required GitHub App repository-access installation ID                                       |
-| `ENABLE_SLACK_BOT`               | `true` to deploy Slack bot, `false` to skip (default: `true`)                               |
+| `ENABLE_SLACK_BOT`               | `true` to deploy Slack bot, `false` to skip (default: `false`)                              |
 | `SLACK_BOT_TOKEN`                | Slack bot token (required if enabled)                                                       |
 | `SLACK_SIGNING_SECRET`           | Slack signing secret (required if enabled)                                                  |
 | `ENABLE_LINEAR_BOT`              | `true` to deploy Linear bot, `false` to skip (default: `false`)                             |
 | `LINEAR_CLIENT_ID`               | Linear OAuth application client ID (required if Linear enabled)                             |
 | `LINEAR_CLIENT_SECRET`           | Linear OAuth application client secret (required if Linear enabled)                         |
 | `LINEAR_WEBHOOK_SECRET`          | Linear webhook signing secret (required if Linear enabled)                                  |
-| `ANTHROPIC_API_KEY`              | Anthropic API key                                                                           |
+| `ANTHROPIC_API_KEY`              | Optional Anthropic API key; required for Claude or Slack/Linear classifiers                 |
 | `DEEPSEEK_API_KEY`               | DeepSeek API key (optional, required only for DeepSeek models)                              |
 | `TOKEN_ENCRYPTION_KEY`           | Generated encryption key (OAuth tokens)                                                     |
 | `REPO_SECRETS_ENCRYPTION_KEY`    | Generated encryption key (repo secrets)                                                     |
@@ -994,8 +1008,8 @@ Instead of adding secrets one by one, create a `.secrets` file (don't commit thi
 ```
 CLOUDFLARE_API_TOKEN=your-token
 CLOUDFLARE_ACCOUNT_ID=your-account-id
-ANTHROPIC_API_KEY=sk-ant-...
 DEEPSEEK_API_KEY=sk-...
+# ANTHROPIC_API_KEY=sk-ant-... # Only for Claude or Slack/Linear
 # ... add all secrets
 ```
 

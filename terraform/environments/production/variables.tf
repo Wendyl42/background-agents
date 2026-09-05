@@ -213,7 +213,7 @@ variable "github_bot_username" {
 variable "enable_slack_bot" {
   description = "Enable the Slack bot worker. Set to false to skip deployment."
   type        = bool
-  default     = true
+  default     = false
 
   validation {
     condition     = var.enable_slack_bot == false || (length(var.slack_bot_token) > 0 && length(var.slack_signing_secret) > 0)
@@ -292,14 +292,18 @@ variable "linear_api_key" {
 # =============================================================================
 
 variable "anthropic_api_key" {
-  description = "Anthropic API key for Claude"
+  description = "Optional Anthropic API key for Claude. Required when the Slack or Linear bot is enabled because their repository classifiers call Anthropic."
   type        = string
   sensitive   = true
   nullable    = false
+  default     = ""
 
   validation {
-    condition     = trimspace(var.anthropic_api_key) != ""
-    error_message = "anthropic_api_key must be non-blank."
+    condition = (
+      trimspace(var.anthropic_api_key) != "" ||
+      (!var.enable_slack_bot && !var.enable_linear_bot)
+    )
+    error_message = "anthropic_api_key must be non-blank when enable_slack_bot or enable_linear_bot is true because those integrations use Anthropic for repository classification."
   }
 }
 

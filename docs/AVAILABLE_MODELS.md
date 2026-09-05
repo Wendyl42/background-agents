@@ -1,12 +1,15 @@
 # Available Models
 
 Open-Inspect exposes these models in the model picker and integration preferences. The default
-enabled set includes Anthropic and OpenAI models. xAI / SuperGrok, OpenCode Zen, Z.AI Coding Plan,
-and DeepSeek models are available but must be enabled in **Settings > Models**. SuperGrok requires
-managed xAI OAuth credentials; Z.AI Coding Plan requires `ZHIPU_API_KEY`; DeepSeek requires
-`DEEPSEEK_API_KEY`.
+enabled set includes DeepSeek and OpenAI models, with DeepSeek V4 Pro as the default model.
+Anthropic, xAI / SuperGrok, OpenCode Zen, and Z.AI Coding Plan models are available but must be
+enabled in **Settings > Models**. SuperGrok requires managed xAI OAuth credentials; Z.AI Coding Plan
+requires `ZHIPU_API_KEY`; DeepSeek requires `DEEPSEEK_API_KEY`.
 
 ## Anthropic
+
+Anthropic models are opt-in and require `ANTHROPIC_API_KEY`. The same key is also required by the
+Slack and Linear repository classifiers when those integrations are enabled.
 
 | Model ID                      | Display name      | Description                        | Reasoning efforts             | Default effort |
 | ----------------------------- | ----------------- | ---------------------------------- | ----------------------------- | -------------- |
@@ -70,7 +73,8 @@ Z.AI Coding Plan models require `ZHIPU_API_KEY` as a global or repository secret
 
 ## DeepSeek
 
-DeepSeek models require `DEEPSEEK_API_KEY` as a global or repository secret.
+DeepSeek models are enabled by default and require `DEEPSEEK_API_KEY` as a global or repository
+secret. DeepSeek V4 Pro is the default model for new sessions.
 
 | Model ID                     | Display name      | Description  | Reasoning efforts | Default effort |
 | ---------------------------- | ----------------- | ------------ | ----------------- | -------------- |

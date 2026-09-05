@@ -42,7 +42,7 @@ interface ModelCatalogEntry {
 export const MODEL_CATALOG = [
   {
     category: "Anthropic",
-    enabledByDefault: true,
+    enabledByDefault: false,
     models: [
       {
         id: "anthropic/claude-haiku-4-5",
@@ -60,7 +60,6 @@ export const MODEL_CATALOG = [
         id: "anthropic/claude-sonnet-4-6",
         name: "Claude Sonnet 4.6",
         description: "Balanced, fast coding",
-        default: true,
         reasoning: { efforts: ["low", "medium", "high", "max"], default: "high" },
       },
       {
@@ -231,10 +230,15 @@ export const MODEL_CATALOG = [
   },
   {
     category: "DeepSeek",
-    enabledByDefault: false,
+    enabledByDefault: true,
     models: [
       { id: "deepseek/deepseek-v4-flash", name: "DeepSeek V4 Flash", description: "Fast model" },
-      { id: "deepseek/deepseek-v4-pro", name: "DeepSeek V4 Pro", description: "Most capable" },
+      {
+        id: "deepseek/deepseek-v4-pro",
+        name: "DeepSeek V4 Pro",
+        description: "Most capable",
+        default: true,
+      },
     ],
   },
 ] as const satisfies readonly ModelCatalogGroup[];
