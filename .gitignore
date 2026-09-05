@@ -45,6 +45,9 @@ yarn-error.log*
 # Local trace exports (may contain repository content or command output)
 /traces/openinspect/
 
+# Derived trace analysis (rebuildable from immutable trace bundles)
+/analysis/openinspect/
+
 # Test
 coverage/
 .nyc_output/

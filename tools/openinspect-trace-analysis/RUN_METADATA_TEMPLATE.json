@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "openinspect-run-metadata-f0-v0",
+  "lifecycleState": "draft",
+  "campaign": {
+    "campaignId": "REPLACE_CAMPAIGN_ID",
+    "protocolVersion": "block-f0-v0",
+    "repeatGroupId": "REPLACE_REPEAT_GROUP_OR_NULL",
+    "trialIndex": 0,
+    "plannedStrata": ["REPLACE_TASK_STRATUM", "REPLACE_REPO_STRATUM", "REPLACE_FANOUT_STRATUM"]
+  },
+  "run": {
+    "runId": "REPLACE_RUN_ID",
+    "taskId": "REPLACE_TASK_ID",
+    "rootSessionId": null,
+    "startedAt": null,
+    "completedAt": null
+  },
+  "repository": {
+    "provider": "github",
+    "owner": "REPLACE_OWNER",
+    "name": "REPLACE_REPOSITORY",
+    "commitSha": "0000000000000000000000000000000000000000",
+    "primaryLanguage": "REPLACE_LANGUAGE",
+    "architecture": "unknown",
+    "domain": "REPLACE_DOMAIN",
+    "sizeBucket": "unknown",
+    "isFork": false,
+    "isPrivate": false
+  },
+  "prompt": {
+    "text": "REPLACE_WITH_COMPLETE_SECRET_FREE_PARENT_PROMPT",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "captureStatus": "complete",
+    "containsSecrets": false
+  },
+  "task": {
+    "type": "other",
+    "subtype": null,
+    "source": "manual",
+    "reference": null,
+    "description": "REPLACE_TASK_DESCRIPTION",
+    "groundTruthAvailability": "unknown"
+  },
+  "models": {
+    "parent": {
+      "role": "parent",
+      "provider": "REPLACE_PROVIDER",
+      "modelId": "REPLACE_MODEL_ID",
+      "reasoningEffort": "unknown",
+      "rawReasoningSetting": null,
+      "temperature": null,
+      "maxOutputTokens": null
+    },
+    "children": [
+      {
+        "role": "all_children",
+        "provider": "REPLACE_PROVIDER",
+        "modelId": "REPLACE_MODEL_ID",
+        "reasoningEffort": "unknown",
+        "rawReasoningSetting": null,
+        "temperature": null,
+        "maxOutputTokens": null
+      }
+    ],
+    "assignmentPolicy": "same_for_all"
+  },
+  "orchestration": {
+    "configuredLimits": {
+      "maxChildren": null,
+      "maxDepth": null,
+      "maxConcurrentChildren": null,
+      "timeoutValue": null,
+      "timeoutUnit": "unknown"
+    },
+    "fanout": {
+      "origin": "unknown",
+      "evidence": "REPLACE_AFTER_PROMPT_ADJUDICATION",
+      "adjudicator": null,
+      "prescribedChildCount": null,
+      "prescribedStrategies": []
+    },
+    "actualTopology": {
+      "childCount": null,
+      "maxDepth": null,
+      "siblingGroupCount": null,
+      "widthByDepth": []
+    }
+  },
+  "sandbox": {
+    "provider": "modal",
+    "isolationUnit": "unknown",
+    "thermalStartState": "unknown",
+    "environmentMaterialization": "unknown",
+    "imageId": null,
+    "snapshotId": null,
+    "region": null,
+    "cacheStateNotes": "REPLACE_WITH_OBSERVED_OR_CONFIGURED_STATE"
+  },
+  "outcome": {
+    "status": "unknown",
+    "validationMethods": ["none"],
+    "groundTruthSource": null,
+    "validationCommands": [],
+    "validationSummary": "PENDING",
+    "limitations": "PENDING",
+    "evaluator": null,
+    "blinded": null
+  },
+  "traceExport": {
+    "status": "pending",
+    "bundlePath": null,
+    "bundleFingerprint": null,
+    "rootSessionId": null,
+    "bundleSchemaVersion": null,
+    "manifestPath": null,
+    "hashesVerified": null,
+    "exportedAt": null,
+    "exporterGitCommit": null,
+    "rawValidationOutputPath": null,
+    "rawValidationSummarySha256": null
+  },
+  "analysis": {
+    "status": "pending",
+    "profileId": "block-d0-v1",
+    "analysisSchemaVersion": "openinspect-trace-analysis-block-d0-v1",
+    "operationRulesetVersion": "openinspect-operation-rules-block-c-v2",
+    "semanticRulesetVersion": "openinspect-package-command-rules-block-c-v2",
+    "duplicationSchemaVersion": "openinspect-observed-duplication-block-d0-v1",
+    "outputPath": null,
+    "summarySha256": null,
+    "invocationParsedCoverage": null,
+    "shellSegmentSemanticReach": null,
+    "fallbackInvocationRate": null,
+    "d01MetricsAvailable": null
+  },
+  "missingness": {
+    "sourcePath": null,
+    "sourceSha256": null,
+    "items": []
+  },
+  "qualityGate": {
+    "overallDisposition": "pending",
+    "claimEligibility": {
+      "topology": {
+        "disposition": "pending",
+        "reasonCodes": [],
+        "notes": ""
+      },
+      "messageConcurrency": {
+        "disposition": "pending",
+        "reasonCodes": [],
+        "notes": ""
+      },
+      "strictDuplication": {
+        "disposition": "pending",
+        "reasonCodes": [],
+        "notes": ""
+      },
+      "outcomeAssociation": {
+        "disposition": "pending",
+        "reasonCodes": [],
+        "notes": ""
+      }
+    },
+    "reasonCodes": [],
+    "notes": "",
+    "adjudicator": null,
+    "adjudicatedAt": null
+  },
+  "secretReview": {
+    "performed": false,
+    "method": "REPLACE_SECRET_SCAN_AND_MANUAL_REVIEW_METHOD",
+    "reviewer": null,
+    "detectedAndRemovedCount": 0,
+    "storedSecretCount": 0
+  },
+  "notes": ""
+}

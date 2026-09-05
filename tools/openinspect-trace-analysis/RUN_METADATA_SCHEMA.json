@@ -1,0 +1,477 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openinspect.local/schemas/run-metadata-f0-v0.json",
+  "title": "OpenInspect Block F0 Run Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "lifecycleState",
+    "campaign",
+    "run",
+    "repository",
+    "prompt",
+    "task",
+    "models",
+    "orchestration",
+    "sandbox",
+    "outcome",
+    "traceExport",
+    "analysis",
+    "missingness",
+    "qualityGate",
+    "secretReview"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "openinspect-run-metadata-f0-v0" },
+    "lifecycleState": {
+      "enum": ["draft", "exported", "analyzed", "adjudicated", "failed"]
+    },
+    "campaign": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["campaignId", "protocolVersion", "repeatGroupId", "trialIndex", "plannedStrata"],
+      "properties": {
+        "campaignId": { "type": "string", "minLength": 1 },
+        "protocolVersion": { "const": "block-f0-v0" },
+        "repeatGroupId": { "type": ["string", "null"] },
+        "trialIndex": { "type": "integer", "minimum": 0 },
+        "plannedStrata": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runId", "taskId", "rootSessionId", "startedAt", "completedAt"],
+      "properties": {
+        "runId": { "type": "string", "minLength": 1 },
+        "taskId": { "type": "string", "minLength": 1 },
+        "rootSessionId": { "type": ["string", "null"] },
+        "startedAt": { "type": ["string", "null"], "format": "date-time" },
+        "completedAt": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "owner",
+        "name",
+        "commitSha",
+        "primaryLanguage",
+        "architecture",
+        "domain",
+        "sizeBucket",
+        "isFork",
+        "isPrivate"
+      ],
+      "properties": {
+        "provider": { "enum": ["github", "gitlab", "other"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "commitSha": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "primaryLanguage": { "type": "string", "minLength": 1 },
+        "architecture": {
+          "enum": ["single_package", "monorepo", "multi_service", "other", "unknown"]
+        },
+        "domain": { "type": "string", "minLength": 1 },
+        "sizeBucket": { "enum": ["small", "medium", "large", "very_large", "unknown"] },
+        "isFork": { "type": "boolean" },
+        "isPrivate": { "type": "boolean" }
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "sha256", "captureStatus", "containsSecrets"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "captureStatus": { "enum": ["complete", "redacted"] },
+        "containsSecrets": { "const": false }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "subtype",
+        "source",
+        "reference",
+        "description",
+        "groundTruthAvailability"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "bug_fix",
+            "feature",
+            "refactor",
+            "test_generation",
+            "dependency_security_audit",
+            "performance_optimization",
+            "code_review",
+            "documentation",
+            "other"
+          ]
+        },
+        "subtype": { "type": ["string", "null"] },
+        "source": { "enum": ["issue", "benchmark", "manual", "generated", "other"] },
+        "reference": { "type": ["string", "null"] },
+        "description": { "type": "string", "minLength": 1 },
+        "groundTruthAvailability": { "enum": ["available", "partial", "unavailable", "unknown"] }
+      }
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parent", "children", "assignmentPolicy"],
+      "properties": {
+        "parent": { "$ref": "#/definitions/modelConfig" },
+        "children": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/modelConfig" }
+        },
+        "assignmentPolicy": { "enum": ["same_for_all", "fixed_by_role", "dynamic", "unknown"] }
+      }
+    },
+    "orchestration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configuredLimits", "fanout", "actualTopology"],
+      "properties": {
+        "configuredLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "maxChildren",
+            "maxDepth",
+            "maxConcurrentChildren",
+            "timeoutValue",
+            "timeoutUnit"
+          ],
+          "properties": {
+            "maxChildren": { "type": ["integer", "null"], "minimum": 0 },
+            "maxDepth": { "type": ["integer", "null"], "minimum": 0 },
+            "maxConcurrentChildren": { "type": ["integer", "null"], "minimum": 0 },
+            "timeoutValue": { "type": ["number", "null"], "minimum": 0 },
+            "timeoutUnit": { "enum": ["seconds", "milliseconds", "unknown"] }
+          }
+        },
+        "fanout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "origin",
+            "evidence",
+            "adjudicator",
+            "prescribedChildCount",
+            "prescribedStrategies"
+          ],
+          "properties": {
+            "origin": {
+              "enum": ["prompt_prescribed", "agent_emergent", "hybrid", "none", "unknown"]
+            },
+            "evidence": { "type": "string" },
+            "adjudicator": { "type": ["string", "null"] },
+            "prescribedChildCount": { "type": ["integer", "null"], "minimum": 0 },
+            "prescribedStrategies": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "actualTopology": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["childCount", "maxDepth", "siblingGroupCount", "widthByDepth"],
+          "properties": {
+            "childCount": { "type": ["integer", "null"], "minimum": 0 },
+            "maxDepth": { "type": ["integer", "null"], "minimum": 0 },
+            "siblingGroupCount": { "type": ["integer", "null"], "minimum": 0 },
+            "widthByDepth": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["depth", "sessionCount"],
+                "properties": {
+                  "depth": { "type": "integer", "minimum": 0 },
+                  "sessionCount": { "type": "integer", "minimum": 0 }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "isolationUnit",
+        "thermalStartState",
+        "environmentMaterialization",
+        "imageId",
+        "snapshotId",
+        "region",
+        "cacheStateNotes"
+      ],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "isolationUnit": { "enum": ["per_session", "per_child", "shared", "mixed", "unknown"] },
+        "thermalStartState": { "enum": ["cold", "warm", "mixed", "unknown"] },
+        "environmentMaterialization": {
+          "enum": [
+            "base_image",
+            "prebuilt_image",
+            "snapshot_restore",
+            "reused_live",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "imageId": { "type": ["string", "null"] },
+        "snapshotId": { "type": ["string", "null"] },
+        "region": { "type": ["string", "null"] },
+        "cacheStateNotes": { "type": "string" }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "validationMethods",
+        "groundTruthSource",
+        "validationCommands",
+        "validationSummary",
+        "limitations",
+        "evaluator",
+        "blinded"
+      ],
+      "properties": {
+        "status": { "enum": ["success", "partial", "failure", "unknown"] },
+        "validationMethods": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "automated_tests",
+              "static_analysis",
+              "benchmark",
+              "issue_acceptance",
+              "human_review",
+              "expected_output",
+              "none",
+              "other"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "groundTruthSource": { "type": ["string", "null"] },
+        "validationCommands": { "type": "array", "items": { "type": "string" } },
+        "validationSummary": { "type": "string" },
+        "limitations": { "type": "string" },
+        "evaluator": { "type": ["string", "null"] },
+        "blinded": { "type": ["boolean", "null"] }
+      }
+    },
+    "traceExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "bundlePath",
+        "bundleFingerprint",
+        "rootSessionId",
+        "bundleSchemaVersion",
+        "manifestPath",
+        "hashesVerified",
+        "exportedAt",
+        "exporterGitCommit",
+        "rawValidationOutputPath",
+        "rawValidationSummarySha256"
+      ],
+      "properties": {
+        "status": { "enum": ["pending", "success", "failure"] },
+        "bundlePath": { "type": ["string", "null"] },
+        "bundleFingerprint": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "rootSessionId": { "type": ["string", "null"] },
+        "bundleSchemaVersion": { "type": ["string", "null"] },
+        "manifestPath": { "type": ["string", "null"] },
+        "hashesVerified": { "type": ["boolean", "null"] },
+        "exportedAt": { "type": ["string", "null"], "format": "date-time" },
+        "exporterGitCommit": { "type": ["string", "null"] },
+        "rawValidationOutputPath": { "type": ["string", "null"] },
+        "rawValidationSummarySha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "profileId",
+        "analysisSchemaVersion",
+        "operationRulesetVersion",
+        "semanticRulesetVersion",
+        "duplicationSchemaVersion",
+        "outputPath",
+        "summarySha256",
+        "invocationParsedCoverage",
+        "shellSegmentSemanticReach",
+        "fallbackInvocationRate",
+        "d01MetricsAvailable"
+      ],
+      "properties": {
+        "status": { "enum": ["pending", "success", "failure"] },
+        "profileId": { "const": "block-d0-v1" },
+        "analysisSchemaVersion": { "const": "openinspect-trace-analysis-block-d0-v1" },
+        "operationRulesetVersion": { "const": "openinspect-operation-rules-block-c-v2" },
+        "semanticRulesetVersion": { "const": "openinspect-package-command-rules-block-c-v2" },
+        "duplicationSchemaVersion": { "const": "openinspect-observed-duplication-block-d0-v1" },
+        "outputPath": { "type": ["string", "null"] },
+        "summarySha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "invocationParsedCoverage": {
+          "anyOf": [{ "$ref": "#/definitions/metric" }, { "type": "null" }]
+        },
+        "shellSegmentSemanticReach": {
+          "anyOf": [{ "$ref": "#/definitions/metric" }, { "type": "null" }]
+        },
+        "fallbackInvocationRate": {
+          "anyOf": [{ "$ref": "#/definitions/metric" }, { "type": "null" }]
+        },
+        "d01MetricsAvailable": { "type": ["boolean", "null"] }
+      }
+    },
+    "missingness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourcePath", "sourceSha256", "items"],
+      "properties": {
+        "sourcePath": { "type": ["string", "null"] },
+        "sourceSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "status", "claimImpact", "notes"],
+            "properties": {
+              "code": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["present", "partial", "missing", "not_applicable", "unknown"] },
+              "claimImpact": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "qualityGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overallDisposition",
+        "claimEligibility",
+        "reasonCodes",
+        "notes",
+        "adjudicator",
+        "adjudicatedAt"
+      ],
+      "properties": {
+        "overallDisposition": { "enum": ["pending", "primary", "sensitivity_only", "excluded"] },
+        "claimEligibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["topology", "messageConcurrency", "strictDuplication", "outcomeAssociation"],
+          "properties": {
+            "topology": { "$ref": "#/definitions/claimGate" },
+            "messageConcurrency": { "$ref": "#/definitions/claimGate" },
+            "strictDuplication": { "$ref": "#/definitions/claimGate" },
+            "outcomeAssociation": { "$ref": "#/definitions/claimGate" }
+          }
+        },
+        "reasonCodes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "notes": { "type": "string" },
+        "adjudicator": { "type": ["string", "null"] },
+        "adjudicatedAt": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "secretReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "performed",
+        "method",
+        "reviewer",
+        "detectedAndRemovedCount",
+        "storedSecretCount"
+      ],
+      "properties": {
+        "performed": { "type": "boolean" },
+        "method": { "type": "string" },
+        "reviewer": { "type": ["string", "null"] },
+        "detectedAndRemovedCount": { "type": "integer", "minimum": 0 },
+        "storedSecretCount": { "const": 0 }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "definitions": {
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator", "value"],
+      "properties": {
+        "numerator": { "type": "number", "minimum": 0 },
+        "denominator": { "type": "number", "minimum": 0 },
+        "value": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "modelConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "provider",
+        "modelId",
+        "reasoningEffort",
+        "rawReasoningSetting",
+        "temperature",
+        "maxOutputTokens"
+      ],
+      "properties": {
+        "role": { "type": "string", "minLength": 1 },
+        "provider": { "type": "string", "minLength": 1 },
+        "modelId": { "type": "string", "minLength": 1 },
+        "reasoningEffort": { "enum": ["none", "low", "medium", "high", "xhigh", "unknown"] },
+        "rawReasoningSetting": { "type": ["string", "null"] },
+        "temperature": { "type": ["number", "null"] },
+        "maxOutputTokens": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "claimGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition", "reasonCodes", "notes"],
+      "properties": {
+        "disposition": {
+          "enum": ["pending", "primary", "sensitivity_only", "excluded", "not_applicable"]
+        },
+        "reasonCodes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}
