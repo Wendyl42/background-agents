@@ -24,6 +24,17 @@ def _bridge() -> AgentBridge:
     )
 
 
+def test_ready_preserves_runtime_origin_attempt_and_boot_id(monkeypatch):
+    monkeypatch.setenv(
+        "SESSION_CONFIG", json.dumps({"startup_attempt_id": "create-1", "sandbox_backend": "local"})
+    )
+    monkeypatch.setenv("OI_RUNTIME_BOOT_ID", "boot-1")
+    ready = _bridge()._build_ready_event()
+    assert ready["runtimeStartupAttemptId"] == "create-1"
+    assert ready["runtimeBootId"] == "boot-1"
+    assert "startupAttemptId" not in ready  # Current attempt is stamped by the control plane.
+
+
 def _manifest(tmp_path: Path) -> Path:
     manifest = tmp_path / "repositories.json"
     manifest.write_text(

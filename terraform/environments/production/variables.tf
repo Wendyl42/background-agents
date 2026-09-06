@@ -534,6 +534,17 @@ variable "sandbox_inactivity_timeout_ms" {
   default     = 600000
 }
 
+variable "sandbox_legacy_provider" {
+  description = "Verified historical backend for unlabelled sandbox/snapshot handles. Empty leaves legacy ownership unknown; never derive this from sandbox_provider."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = contains(["", "modal", "daytona", "vercel", "opencomputer", "e2b"], var.sandbox_legacy_provider)
+    error_message = "sandbox_legacy_provider must be empty or a supported historical backend."
+  }
+}
+
 variable "web_platform" {
   description = "Platform for the web app deployment: 'vercel' or 'cloudflare' (OpenNext)"
   type        = string

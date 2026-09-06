@@ -38,7 +38,7 @@ class RepositoryHooks:
         default_timeout_seconds: int,
     ) -> bool:
         script_path = repo.path / relative_script_path
-        start_time = time.time()
+        start_time = time.perf_counter()
         if not script_path.exists():
             self.log.debug(
                 f"{hook_name}.skip",
@@ -82,7 +82,7 @@ class RepositoryHooks:
                 fields: dict[str, object] = {
                     "timeout_seconds": timeout_seconds,
                     "script": str(script_path),
-                    "duration_ms": int((time.time() - start_time) * 1000),
+                    "duration_ms": int((time.perf_counter() - start_time) * 1000),
                     "boot_mode": boot_mode.value,
                 }
                 if boot_mode is not BootMode.BUILD:
@@ -95,7 +95,7 @@ class RepositoryHooks:
             fields = {
                 "exit_code": process.returncode,
                 "script": str(script_path),
-                "duration_ms": int((time.time() - start_time) * 1000),
+                "duration_ms": int((time.perf_counter() - start_time) * 1000),
                 "boot_mode": boot_mode.value,
             }
             if process.returncode == 0:
@@ -110,7 +110,7 @@ class RepositoryHooks:
                 f"{hook_name}.error",
                 exc=error,
                 script=str(script_path),
-                duration_ms=int((time.time() - start_time) * 1000),
+                duration_ms=int((time.perf_counter() - start_time) * 1000),
                 boot_mode=boot_mode.value,
             )
             return False

@@ -100,6 +100,18 @@ const testConfig = {
 // ==================== Tests ====================
 
 describe("ModalSandboxProvider", () => {
+  it("preserves explicit image failure reasons but does not infer them from text", async () => {
+    for (const reason of ["image_unavailable", "unknown"] as const) {
+      const client = createMockModalClient({
+        createSandbox: vi.fn(async () => {
+          throw new ModalApiError("image expired", 200, reason);
+        }),
+      });
+      await expect(
+        new ModalSandboxProvider(client).createSandbox(testConfig)
+      ).rejects.toMatchObject({ reason, errorType: "permanent" });
+    }
+  });
   describe("capabilities", () => {
     it("reports correct capabilities", () => {
       const client = createMockModalClient();

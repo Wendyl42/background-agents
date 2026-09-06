@@ -6,6 +6,7 @@ import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { applyMigrations, initSchema, MIGRATIONS, SCHEMA_SQL } from "./schema";
 import type { SqlResult, SqlStorage } from "./sql-storage";
+import { SandboxRepository } from "./sandbox-repository";
 
 /**
  * Create a mock SqlStorage that tracks calls and supports per-query data.
@@ -66,6 +67,85 @@ function expectClientRequestIdIndex(db: DatabaseSync): void {
     expect.objectContaining({ name: "client_request_id" }),
   ]);
 }
+
+describe("sandbox ownership migration", () => {
+  it("preserves legacy handles, leaves ownership unknown, and adopts only explicitly", () => {
+    const db = new DatabaseSync(":memory:");
+    try {
+      const sql = createDatabaseSql(db);
+      db.exec(
+        `CREATE TABLE sandbox (id TEXT PRIMARY KEY, modal_sandbox_id TEXT, modal_object_id TEXT, snapshot_image_id TEXT)`
+      );
+      db.exec(`INSERT INTO sandbox VALUES ('s', 'logical-old', 'opaque-old', 'snapshot-old')`);
+      const migration = MIGRATIONS.find(({ id }) => id === 43)!;
+      expect(typeof migration.run).toBe("function");
+      if (typeof migration.run !== "function") throw new Error("Expected migration function");
+      migration.run(sql);
+      migration.run(sql);
+      expect(db.prepare("SELECT * FROM sandbox").get()).toMatchObject({
+        modal_object_id: "opaque-old",
+        snapshot_image_id: "snapshot-old",
+        sandbox_backend: null,
+        snapshot_backend: null,
+        startup_attempt_id: null,
+      });
+      const repository = new SandboxRepository(sql);
+      repository.adoptLegacySandboxBackend("modal");
+      repository.adoptLegacySandboxBackend("another-backend");
+      expect(db.prepare("SELECT * FROM sandbox").get()).toMatchObject({
+        sandbox_backend: "modal",
+        snapshot_backend: "modal",
+      });
+      db.exec(`UPDATE sandbox SET sandbox_backend = 'local', snapshot_backend = NULL`);
+      repository.adoptLegacySandboxBackend("modal");
+      expect(db.prepare("SELECT * FROM sandbox").get()).toMatchObject({
+        sandbox_backend: "local",
+        snapshot_backend: "modal",
+      });
+    } finally {
+      db.close();
+    }
+  });
+
+  it("initializes fresh state without needing legacy adoption", () => {
+    const db = new DatabaseSync(":memory:");
+    try {
+      const sql = createDatabaseSql(db);
+      initSchema(sql);
+      const repository = new SandboxRepository(sql);
+      repository.createSandbox({
+        id: "s",
+        status: "pending",
+        gitSyncStatus: "pending",
+        createdAt: 1,
+      });
+      repository.adoptLegacySandboxBackend("old");
+      expect(repository.getSandbox()?.sandbox_backend).toBeNull();
+      repository.updateSandboxForSpawn({
+        status: "spawning",
+        createdAt: 2,
+        authTokenHash: "hash",
+        modalSandboxId: "logical-new",
+        sandboxBackend: "local",
+        startupAttemptId: "attempt-1",
+      });
+      repository.updateSandboxSnapshotImageId("s", "image-1", "local");
+      repository.updateSandboxForResume({
+        status: "connecting",
+        createdAt: 3,
+        startupAttemptId: "attempt-2",
+      });
+      expect(repository.getSandbox()).toMatchObject({
+        sandbox_backend: "local",
+        snapshot_backend: "local",
+        startup_attempt_id: "attempt-2",
+        modal_sandbox_id: "logical-new",
+      });
+    } finally {
+      db.close();
+    }
+  });
+});
 
 describe("applyMigrations", () => {
   let mock: ReturnType<typeof createMockSql>;

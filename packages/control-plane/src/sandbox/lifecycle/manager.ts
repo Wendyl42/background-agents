@@ -40,7 +40,7 @@ import {
   type HeartbeatConfig,
   type ConnectingTimeoutConfig,
 } from "./decisions";
-import { createLogger, type Logger } from "../../logger";
+import { createLogger, type Logger, type CorrelationContext } from "../../logger";
 import { hashToken } from "../../auth/crypto";
 import { mintJwt } from "../../auth/jwt";
 import { repoImageBuildScope, type ImageBuildScope } from "../../image-builds/model";
@@ -51,6 +51,8 @@ import {
   type SelectedImageBuild,
 } from "./image-selection";
 import type { AlarmScheduler } from "../../platform-ports";
+import type { SpawnSandboxData, ResumeSandboxData } from "../../session/sandbox-repository";
+import { sandboxOwnershipError } from "../ownership";
 
 export type { ImageBuildLookup } from "./image-selection";
 export type { AlarmScheduler } from "../../platform-ports";
@@ -97,19 +99,13 @@ export interface SandboxStorage {
   /** Update sandbox status */
   updateSandboxStatus(status: SandboxStatus): void;
   /** Update sandbox for spawn (status, auth token, sandbox ID, created_at) */
-  updateSandboxForSpawn(data: {
-    status: SandboxStatus;
-    createdAt: number;
-    authTokenHash: string;
-    modalSandboxId: string;
-    preserveProviderObjectId?: boolean;
-  }): void;
+  updateSandboxForSpawn(data: SpawnSandboxData): void;
   /** Update sandbox state for in-place resume without rotating auth/token identity */
-  updateSandboxForResume(data: { status: SandboxStatus; createdAt: number }): void;
+  updateSandboxForResume(data: ResumeSandboxData): void;
   /** Update sandbox Modal object ID (for snapshot API) */
   updateSandboxModalObjectId(modalObjectId: string | null): void;
   /** Update sandbox snapshot image ID */
-  updateSandboxSnapshotImageId(sandboxId: string, imageId: string): void;
+  updateSandboxSnapshotImageId(sandboxId: string, imageId: string, backend: string): void;
   /** Update last activity timestamp */
   updateSandboxLastActivity(timestamp: number): void;
   /** Increment circuit breaker failure count */
@@ -299,7 +295,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
   private isSpawningSandbox = false;
   private providerStartupPending = false;
 
-  /** Session-scoped logger. Falls back to module-level logger if no sessionId configured. */
+  /** Backend-scoped logger, with session context when configured. */
   private readonly log: Logger;
 
   constructor(
@@ -313,7 +309,54 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
     private readonly callbacks: LifecycleCallbacks = {},
     private readonly imageBuildLookup?: ImageBuildLookup
   ) {
-    this.log = config.sessionId ? log.child({ session_id: config.sessionId }) : log;
+    this.log = log.child({ sandbox_backend: provider.name, session_id: config.sessionId });
+  }
+
+  private checkOwnership(includeSnapshot: boolean): boolean {
+    const error = sandboxOwnershipError(
+      this.storage.getSandbox(),
+      this.provider.name,
+      includeSnapshot
+    );
+    if (!error) return true;
+    this.storage.setLastSpawnError(error, Date.now());
+    this.log.error("Sandbox backend ownership check failed", {
+      event: "sandbox.ownership_rejected",
+      error_reason: "backend_mismatch",
+      error,
+    });
+    this.broadcaster.broadcast({ type: "sandbox_error", error });
+    return false;
+  }
+
+  private startupCorrelation(
+    sessionId: string,
+    sandboxId: string,
+    attemptId: string
+  ): CorrelationContext {
+    return {
+      trace_id: sessionId,
+      request_id: attemptId,
+      session_id: sessionId,
+      sandbox_id: sandboxId,
+    };
+  }
+
+  /** Lifecycle phases use the control-plane clock; runtime phases use their own clock. */
+  private recordStartupPhase(
+    phase: string,
+    attemptId: string,
+    fields: Record<string, unknown> = {}
+  ): void {
+    const sandbox = this.storage.getSandbox();
+    this.log.info("Sandbox startup phase", {
+      event: "sandbox.startup_phase",
+      phase,
+      clock_source: "control_plane",
+      startup_attempt_id: attemptId,
+      sandbox_id: sandbox?.modal_sandbox_id,
+      ...fields,
+    });
   }
 
   /**
@@ -325,6 +368,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
    * - Fresh spawn if all conditions pass
    */
   async spawnSandbox(): Promise<void> {
+    if (!this.checkOwnership(true)) return;
     const sandboxState = this.storage.getSandboxWithCircuitBreaker();
     const now = Date.now();
 
@@ -414,6 +458,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
     this.isSpawningSandbox = true;
     this.providerStartupPending = true;
     const spawnStartedAt = Date.now();
+    let startupAttemptId = crypto.randomUUID();
     let session: SessionRow | null = null;
 
     try {
@@ -439,6 +484,8 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
           createdAt: now,
           authTokenHash,
           modalSandboxId: expectedSandboxId,
+          sandboxBackend: this.provider.name,
+          startupAttemptId,
           preserveProviderObjectId: true,
         })
       );
@@ -484,6 +531,9 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       const timeoutSeconds = this.resolveSandboxTimeoutSeconds(sandboxSettings);
       const createConfig: CreateSandboxConfig = {
         sessionId,
+        sandboxBackend: this.provider.name,
+        startupAttemptId,
+        correlation: this.startupCorrelation(sessionId, expectedSandboxId, startupAttemptId),
         sandboxId: expectedSandboxId,
         repoOwner: session.repo_owner,
         repoName: session.repo_name,
@@ -505,18 +555,31 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       };
 
       let result: CreateSandboxResult;
+      this.recordStartupPhase("provider_create_started", startupAttemptId, {
+        materialization: prebuiltImageId ? "prebuilt_image" : "base_image",
+        image_id: prebuiltImageId,
+        requested_resources: sandboxSettings,
+      });
       try {
         result = await this.provider.createSandbox(createConfig);
       } catch (error) {
-        if (!selectedImage) throw error;
-        // A provider restore failure is "no image" (design §7.3): fail the
-        // row so the cron rebuilds it and boot this session from base rather
-        // than failing the spawn. Unrelated create failures (quota, network)
-        // can false-positive here — the cost is one rebuild, and the base
-        // retry surfaces them through the normal failure path anyway.
+        this.recordStartupPhase("provider_create_failed", startupAttemptId, {
+          error_reason: error instanceof SandboxProviderError ? error.reason : "unknown",
+          error_type: error instanceof SandboxProviderError ? error.errorType : "unknown",
+        });
+        // Transport, quota, and ambiguous post-create errors are NOT evidence
+        // of a bad image. Retrying those here amplifies cold-start storms.
+        if (
+          !selectedImage ||
+          !(error instanceof SandboxProviderError) ||
+          error.reason !== "image_unavailable"
+        )
+          throw error;
         this.log.warn("Prebuilt-image spawn failed, retrying from base image", {
           event: "image_build.restore_failed",
           image_build_id: selectedImage.imageBuildId,
+          startup_attempt_id: startupAttemptId,
+          error_reason: error.reason,
           error: error instanceof Error ? error.message : String(error),
         });
         await this.markImageBuildRestoreFailed(selectedImage, error);
@@ -528,6 +591,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
         sandboxAuthToken = this.idGenerator.generateId();
         const retryAuthTokenHash = await hashToken(sandboxAuthToken);
         const retryNow = Math.max(Date.now(), now + 1);
+        startupAttemptId = crypto.randomUUID();
         expectedSandboxId = buildSandboxIdForSession(session, retryNow);
         await this.enterProviderStartup("spawning", retryNow, () =>
           this.storage.updateSandboxForSpawn({
@@ -535,16 +599,28 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
             createdAt: retryNow,
             authTokenHash: retryAuthTokenHash,
             modalSandboxId: expectedSandboxId,
+            sandboxBackend: this.provider.name,
+            startupAttemptId,
           })
         );
+        this.recordStartupPhase("provider_create_started", startupAttemptId, {
+          materialization: "base_image",
+          fallback_reason: "image_unavailable",
+        });
         result = await this.provider.createSandbox({
           ...createConfig,
           sandboxId: expectedSandboxId,
           sandboxAuthToken,
+          startupAttemptId,
+          correlation: this.startupCorrelation(sessionId, expectedSandboxId, startupAttemptId),
           prebuiltImageId: null,
           prebuiltImageSha: null,
         });
       }
+
+      this.recordStartupPhase("provider_create_completed", startupAttemptId, {
+        provider_object_id: result.providerObjectId,
+      });
 
       if (result.providerObjectId) {
         this.storeAndBroadcastProviderObjectId(result.providerObjectId);
@@ -568,6 +644,8 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       this.log.info("Sandbox spawn completed", {
         event: "sandbox.spawn",
         outcome: "success",
+        startup_attempt_id: startupAttemptId,
+        duration_scope: "spawn_workflow_to_provider_completion",
         duration_ms: Date.now() - spawnStartedAt,
         expected_sandbox_id: expectedSandboxId,
         sandbox_id: result.sandboxId,
@@ -577,10 +655,15 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to spawn sandbox";
+      this.recordStartupPhase("startup_failed", startupAttemptId, {
+        error_reason: error instanceof SandboxProviderError ? error.reason : "unknown",
+      });
       this.storage.setLastSpawnError(errorMessage, Date.now());
       this.log.error("Sandbox spawn completed", {
         event: "sandbox.spawn",
         outcome: "error",
+        startup_attempt_id: startupAttemptId,
+        error_reason: error instanceof SandboxProviderError ? error.reason : "unknown",
         duration_ms: Date.now() - spawnStartedAt,
         error: error instanceof Error ? error : String(error),
         repo_owner: session?.repo_owner,
@@ -738,6 +821,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
     this.isSpawningSandbox = true;
     this.providerStartupPending = true;
     const restoreStartedAt = Date.now();
+    const startupAttemptId = crypto.randomUUID();
     let session: SessionRow | null = null;
 
     try {
@@ -761,6 +845,8 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
           createdAt: now,
           authTokenHash: sandboxAuthTokenHash,
           modalSandboxId: expectedSandboxId,
+          sandboxBackend: this.provider.name,
+          startupAttemptId,
           preserveProviderObjectId: true,
         })
       );
@@ -777,8 +863,19 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       const mcpServers = await this.loadMcpServers(repositories);
       const sandboxSettings = this.parseSandboxSettings(session);
       const timeoutSeconds = this.resolveSandboxTimeoutSeconds(sandboxSettings);
+      this.recordStartupPhase("provider_restore_started", startupAttemptId, {
+        materialization: "snapshot_restore",
+        image_id: snapshotImageId,
+      });
       const result = await this.provider.restoreFromSnapshot({
         snapshotImageId,
+        sandboxBackend: this.provider.name,
+        startupAttemptId,
+        correlation: this.startupCorrelation(
+          session.session_name || session.id,
+          expectedSandboxId,
+          startupAttemptId
+        ),
         sessionId: session.session_name || session.id,
         sandboxId: expectedSandboxId,
         sandboxAuthToken,
@@ -797,6 +894,14 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
         sandboxSettings,
         ...multiRepoSpawnFields(repositories),
       });
+
+      this.recordStartupPhase(
+        result.success ? "provider_restore_completed" : "provider_restore_failed",
+        startupAttemptId,
+        {
+          provider_object_id: result.providerObjectId,
+        }
+      );
 
       if (result.success) {
         if (result.providerObjectId) {
@@ -857,10 +962,12 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to restore sandbox";
+      this.recordStartupPhase("startup_failed", startupAttemptId);
       this.storage.setLastSpawnError(errorMessage, Date.now());
       this.log.error("Sandbox restore completed", {
         event: "sandbox.restore",
         outcome: "error",
+        startup_attempt_id: startupAttemptId,
         duration_ms: Date.now() - restoreStartedAt,
         error: error instanceof Error ? error : String(error),
         snapshot_image_id: snapshotImageId,
@@ -889,6 +996,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
 
     this.isSpawningSandbox = true;
     this.providerStartupPending = true;
+    const startupAttemptId = crypto.randomUUID();
 
     try {
       const session = this.storage.getSession();
@@ -904,14 +1012,26 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
         this.storage.updateSandboxForResume({
           status: "connecting",
           createdAt: now,
+          startupAttemptId,
         })
       );
 
       const sandboxSettings = this.parseSandboxSettings(session);
       const timeoutSeconds = this.resolveSandboxTimeoutSeconds(sandboxSettings);
 
+      this.recordStartupPhase("provider_resume_started", startupAttemptId, {
+        materialization: "reused_live",
+        provider_object_id: providerObjectId,
+      });
       const result = await this.provider.resumeSandbox({
         providerObjectId,
+        sandboxBackend: this.provider.name,
+        startupAttemptId,
+        correlation: this.startupCorrelation(
+          session.session_name || session.id,
+          sandbox.modal_sandbox_id,
+          startupAttemptId
+        ),
         sessionId: session.session_name || session.id,
         sandboxId: sandbox.modal_sandbox_id,
         timeoutSeconds,
@@ -919,6 +1039,14 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
         vncEnabled: session.vnc_enabled === 1,
         sandboxSettings,
       });
+
+      this.recordStartupPhase(
+        result.success ? "provider_resume_completed" : "provider_resume_failed",
+        startupAttemptId,
+        {
+          provider_object_id: result.providerObjectId ?? providerObjectId,
+        }
+      );
 
       if (!result.success) {
         if (result.shouldSpawnFresh) {
@@ -951,6 +1079,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       this.storage.resetCircuitBreaker();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to resume sandbox";
+      this.recordStartupPhase("startup_failed", startupAttemptId);
       this.storage.setLastSpawnError(errorMessage, Date.now());
       this.storage.updateSandboxStatus("failed");
       this.broadcaster.broadcast({
@@ -970,6 +1099,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
    * Trigger a filesystem snapshot of the sandbox.
    */
   async triggerSnapshot(reason: string): Promise<void> {
+    if (!this.checkOwnership(false)) return;
     if (!this.provider.takeSnapshot) {
       this.log.debug("Provider does not support snapshots");
       return;
@@ -1012,7 +1142,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       });
 
       if (result.success && result.imageId) {
-        this.storage.updateSandboxSnapshotImageId(sandbox.id, result.imageId);
+        this.storage.updateSandboxSnapshotImageId(sandbox.id, result.imageId, this.provider.name);
         this.log.info("Snapshot saved", {
           event: "sandbox.snapshot_saved",
           image_id: result.imageId,
@@ -1061,6 +1191,14 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
    * Stop a sandbox that is about to be replaced before its provider handle is cleared.
    */
   private async stopPriorProviderSandbox(): Promise<void> {
+    if (!this.checkOwnership(false)) {
+      throw new SandboxProviderError(
+        "Cannot replace sandbox with unverified backend ownership",
+        "permanent",
+        undefined,
+        "backend_mismatch"
+      );
+    }
     const providerObjectId = this.storage.getSandbox()?.modal_object_id;
     if (!providerObjectId) {
       return;
@@ -1131,6 +1269,14 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
     signal?: AbortSignal,
     providerObjectId?: string
   ): Promise<void> {
+    if (!this.checkOwnership(false)) {
+      throw new SandboxProviderError(
+        "Cannot stop sandbox with unverified backend ownership",
+        "permanent",
+        undefined,
+        "backend_mismatch"
+      );
+    }
     if (!this.provider.stopSandbox) {
       return;
     }
@@ -1158,6 +1304,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
    * Handle alarm for inactivity and heartbeat monitoring.
    */
   async handleAlarm(): Promise<void> {
+    if (!this.checkOwnership(false)) return;
     const sandbox = this.storage.getSandbox();
     if (!sandbox) {
       this.log.debug("Alarm fired: no sandbox found");
@@ -1352,6 +1499,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
   }
 
   async terminateUnresponsiveSandbox(trigger: UnresponsiveSandboxTrigger): Promise<void> {
+    if (!this.checkOwnership(false)) return;
     const sandbox = this.storage.getSandbox();
     if (!sandbox || isDeadSandboxStatus(sandbox.status)) {
       await this.callbacks.onSandboxTerminated?.();
@@ -1551,6 +1699,9 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
     persist: () => void
   ): Promise<void> {
     persist();
+    const attemptId = this.storage.getSandbox()?.startup_attempt_id;
+    if (attemptId)
+      this.recordStartupPhase("attempt_started", attemptId, { startup_status: status });
     this.broadcaster.broadcast({ type: "sandbox_status", status });
     // The bridge replaces this with its inactivity alarm when it connects.
     await this.alarmScheduler.scheduleAlarm(createdAt + this.config.connectingTimeout.timeoutMs);
@@ -1575,6 +1726,14 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
    * Called by SessionDO when sandbox WebSocket connects successfully.
    */
   onSandboxConnected(): void {
+    const sandbox = this.storage.getSandbox();
+    if (sandbox?.startup_attempt_id) {
+      this.recordStartupPhase("bridge_connected", sandbox.startup_attempt_id, {
+        duration_ms: Math.max(0, Date.now() - sandbox.created_at),
+        duration_scope: "startup_attempt_to_bridge_connection",
+        provider_object_id: sandbox.modal_object_id,
+      });
+    }
     this.isSpawningSandbox = false;
     this.storage.setLastSpawnError(null, null);
   }

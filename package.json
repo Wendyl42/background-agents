@@ -17,6 +17,7 @@
     "test:coverage": "npm run test:coverage --workspaces --if-present",
     "test:integration": "npm run test:integration --workspaces --if-present",
     "test:trace-analysis": "node --test tools/openinspect-trace-analysis/test/*.test.mjs",
+    "test:trace-export": "node --test scripts/sandbox-trace.test.mjs",
     "trace:analyze": "node tools/openinspect-trace-analysis/cli.mjs analyze",
     "trace:batch": "node tools/openinspect-trace-analysis/batch-cli.mjs",
     "typecheck": "npm run build -w @open-inspect/shared && npm run typecheck --workspaces --if-present",

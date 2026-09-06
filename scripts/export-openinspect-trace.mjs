@@ -28,6 +28,7 @@ import {
 } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { attachSandboxObservations, resolveTraceSandboxBackend } from "./lib/sandbox-trace.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(SCRIPT_DIR, "..");
@@ -47,6 +48,9 @@ Options:
   --transport <mode>         auto (default), curl, or python
   --skip-cloudflare-logs     Do not query Cloudflare historical logs
   --skip-modal-logs          Do not query Modal historical logs
+  --sandbox-backend <name>   Historical run backend (checked against ready events)
+  --runtime-log <jsonl>      Attach runtime logs; repeat for multiple files
+  --host-observations <jsonl> Attach host measurements/mappings; repeat as needed
   --help                     Show this message
 `);
   process.exit(message ? 1 : 0);
@@ -61,6 +65,9 @@ function parseArgs(argv) {
     transport: "auto",
     cloudflareLogs: true,
     modalLogs: true,
+    sandboxBackend: null,
+    runtimeLogs: [],
+    hostObservations: [],
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -79,6 +86,9 @@ function parseArgs(argv) {
     else if (arg === "--transport") args.transport = next();
     else if (arg === "--skip-cloudflare-logs") args.cloudflareLogs = false;
     else if (arg === "--skip-modal-logs") args.modalLogs = false;
+    else if (arg === "--sandbox-backend") args.sandboxBackend = next();
+    else if (arg === "--runtime-log") args.runtimeLogs.push(resolve(next()));
+    else if (arg === "--host-observations") args.hostObservations.push(resolve(next()));
     else if (arg === "--help" || arg === "-h") usage();
     else usage(`Unknown argument: ${arg}`);
   }
@@ -146,6 +156,7 @@ function readTerraformDeployment(terraformDir) {
     controlPlaneUrl: controlPlaneUrl.replace(/\/$/, ""),
     controlPlaneWorkerName: outputs.control_plane_worker_name?.value ?? null,
     modalAppName: outputs.modal_app_name?.value ?? "open-inspect",
+    sandboxBackend: outputs.sandbox_provider?.value ?? null,
     d1DatabaseId: outputs.d1_database_id?.value ?? null,
     d1DatabaseName,
   };
@@ -887,6 +898,16 @@ async function main() {
     ];
 
     console.error("Capturing infrastructure logs...");
+    const sandboxBackend = resolveTraceSandboxBackend({
+      requested: args.sandboxBackend,
+      events: allEvents,
+      configured: deployment.sandboxBackend,
+    });
+    const sandboxObservations = attachSandboxObservations({
+      outputDir: partialDir,
+      runtimeLogs: args.runtimeLogs,
+      hostObservations: args.hostObservations,
+    });
     const cloudflare = args.cloudflareLogs
       ? captureCloudflareLogs({
           outputDir: partialDir,
@@ -897,16 +918,19 @@ async function main() {
           experimentEndAt,
         })
       : { status: "skipped" };
-    const modal = args.modalLogs
-      ? captureModalLogs({
-          outputDir: partialDir,
-          terraformDir: args.terraformDir,
-          appName: deployment.modalAppName,
-          earliestCreatedAt,
-          experimentEndAt,
-          sandboxIds,
-        })
-      : { status: "skipped" };
+    const modal =
+      sandboxBackend.backend !== "modal"
+        ? { status: "not_applicable" }
+        : args.modalLogs
+          ? captureModalLogs({
+              outputDir: partialDir,
+              terraformDir: args.terraformDir,
+              appName: deployment.modalAppName,
+              earliestCreatedAt,
+              experimentEndAt,
+              sandboxIds,
+            })
+          : { status: "skipped" };
 
     const parentMismatches = treeSessions
       .filter((session) => session.id !== rootSessionId)
@@ -953,7 +977,12 @@ async function main() {
         "not captured because sandboxes were closed; snapshot restore may recover final message state but would wake sandboxes",
       liveSseArrivalOrder: "not recoverable after the run",
       infrastructureResourceTimeSeries:
-        "not part of Open-Inspect events; Modal logs identify calls/containers but do not guarantee CPU or memory time series",
+        sandboxObservations.hostObservations === "attached"
+          ? "host observations attached; coverage, clocks, and resource attribution require validation"
+          : "unavailable; sandbox logs do not imply CPU/memory time-series coverage",
+      sandboxBackend,
+      runtimeLogs: sandboxObservations.runtimeLogs,
+      hostObservations: sandboxObservations.hostObservations,
       cloudflareLogs: cloudflare.status,
       modalLogs: modal.status,
     };
@@ -983,6 +1012,7 @@ async function main() {
         d1DatabaseId: deployment.d1DatabaseId,
         d1DatabaseName: deployment.d1DatabaseName,
         modalAppName: deployment.modalAppName,
+        sandboxBackend: deployment.sandboxBackend,
       },
       interval: {
         earliestSessionCreatedAt: earliestCreatedAt,
@@ -994,7 +1024,11 @@ async function main() {
         events: allEvents.length,
         messages: allMessages.length,
       },
-      infrastructureLogs: { cloudflare, modal },
+      infrastructureLogs: {
+        cloudflare,
+        modal, // Legacy alias retained for existing trace consumers.
+        sandbox: { ...sandboxBackend, ...sandboxObservations, providerLogs: modal },
+      },
       limitationsFile: "missingness.json",
       completenessFile: "completeness.json",
       securityScanFile: "security-scan.json",

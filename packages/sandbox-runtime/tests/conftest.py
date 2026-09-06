@@ -1,5 +1,6 @@
 """Shared test fixtures and utilities for sandbox-runtime tests."""
 
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import httpx
@@ -34,6 +35,32 @@ def isolate_runtime_file_paths(tmp_path, monkeypatch):
     monkeypatch.setattr("sandbox_runtime.supervisor.BOOT_WARNINGS_FILE_PATH", boot_warnings_path)
     monkeypatch.setattr("sandbox_runtime.bridge.BOOT_WARNINGS_FILE_PATH", boot_warnings_path)
     monkeypatch.setattr("sandbox_runtime.tunnel_environment.TUNNEL_ENV_FILE_PATH", tunnel_env_path)
+    monkeypatch.setattr("sandbox_runtime.repository_sync.GH_WRAPPER_INSTALL_PATH", tmp_path / "gh")
+    monkeypatch.setattr(
+        "sandbox_runtime.repository_sync.CREDENTIAL_HELPER_INSTALL_PATH",
+        tmp_path / "oi-git-credentials",
+    )
+    monkeypatch.setattr(
+        "sandbox_runtime.browser_desktop.VNC_PASSWORD_FILE_PATH", str(tmp_path / "vnc-password")
+    )
+
+    # Local test hosts may already have a live X11 server and global Git config.
+    # Redirect paths, not behavior: creation/cleanup and credentials code still runs.
+    def isolated_path(value):
+        path = Path(value)
+        if path.parent == Path("/tmp/.X11-unix"):
+            return tmp_path / path.name
+        if (
+            path.parent == Path("/tmp")
+            and path.name.startswith(".X")
+            and path.name.endswith("-lock")
+        ):
+            return tmp_path / path.name
+        return path
+
+    monkeypatch.setattr("sandbox_runtime.browser_desktop.Path", isolated_path)
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "gitconfig"))
+    monkeypatch.delenv("OI_RUNTIME_BOOT_ID", raising=False)
 
 
 def wire_opencode_transport(bridge: "AgentBridge", http_client: Any) -> Any:

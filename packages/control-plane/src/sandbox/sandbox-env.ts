@@ -7,6 +7,7 @@ import {
   type ImageBuildProviderTriggerConfig,
   type RestoreConfig,
   type SessionRepositoryInfo,
+  type SandboxStartupContext,
 } from "./provider";
 import { resolveServicePorts } from "./providers/port-resolution";
 
@@ -37,6 +38,8 @@ export interface SessionRepositoryConfigPayload {
 /** Canonical `SESSION_CONFIG` payload handed to the sandbox runtime. */
 export interface SessionConfigPayload {
   session_id: string;
+  sandbox_backend?: string;
+  startup_attempt_id?: string;
   repo_owner: string | null;
   repo_name: string | null;
   provider: string;
@@ -50,7 +53,7 @@ export interface SessionConfigPayload {
 }
 
 /** Provider-agnostic inputs needed to assemble a {@link SessionConfigPayload}. */
-export interface SessionConfigInput {
+export interface SessionConfigInput extends SandboxStartupContext {
   sessionId: string;
   repoOwner: string | null;
   repoName: string | null;
@@ -81,6 +84,8 @@ export function buildSessionConfig(input: SessionConfigInput): SessionConfigPayl
   if (input.branch !== undefined) {
     payload.branch = input.branch;
   }
+  if (input.sandboxBackend) payload.sandbox_backend = input.sandboxBackend;
+  if (input.startupAttemptId) payload.startup_attempt_id = input.startupAttemptId;
   if (input.repositories?.length) {
     payload.repositories = input.repositories.map(toRepositoryConfigPayload);
   }

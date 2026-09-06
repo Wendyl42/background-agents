@@ -28,6 +28,15 @@ function createPushSpec(repoOwner: string, repoName: string, targetBranch: strin
 function createProcessor() {
   const getProcessingMessage = vi.fn(() => null as { id: string } | null);
   const repository = {
+    getSandbox: vi.fn(
+      () =>
+        null as {
+          startup_attempt_id: string;
+          sandbox_backend: string;
+          modal_object_id: string;
+          created_at: number;
+        } | null
+    ),
     updateSandboxHeartbeat: vi.fn(),
     getProcessingMessage,
     addSessionCost: vi.fn(),
@@ -211,6 +220,34 @@ describe("SessionSandboxEventProcessor", () => {
     await h.processor.processSandboxEvent(event);
 
     expect(h.diffService.pinBaselines).toHaveBeenCalledWith(event);
+  });
+
+  it("joins a resumed process to the current startup attempt in persisted ready evidence", async () => {
+    const h = createProcessor();
+    h.repository.getSandbox.mockReturnValue({
+      startup_attempt_id: "resume-2",
+      sandbox_backend: "local",
+      modal_object_id: "container-1",
+      created_at: Date.now() - 20,
+    });
+    await h.processor.processSandboxEvent({
+      type: "ready",
+      sandboxId: "sb-1",
+      timestamp: 1000,
+      runtimeBootId: "boot-1",
+      runtimeStartupAttemptId: "create-1",
+    });
+    expect(h.diffService.pinBaselines).toHaveBeenCalledWith(
+      expect.objectContaining({
+        startupAttemptId: "resume-2",
+        runtimeStartupAttemptId: "create-1",
+        runtimeBootId: "boot-1",
+        sandboxBackend: "local",
+      })
+    );
+    expect(h.eventRepository.createEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.stringContaining('"startupAttemptId":"resume-2"') })
+    );
   });
 
   it("persists token event and broadcasts it", async () => {

@@ -245,7 +245,20 @@
         "imageId": { "type": ["string", "null"] },
         "snapshotId": { "type": ["string", "null"] },
         "region": { "type": ["string", "null"] },
-        "cacheStateNotes": { "type": "string" }
+        "cacheStateNotes": { "type": "string" },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "imageDigest": { "type": ["string", "null"] },
+            "runtimeRevision": { "type": ["string", "null"] },
+            "runtimeSourceSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+            "resolvedToolchainPath": { "type": ["string", "null"] },
+            "resourceConfigurationPath": { "type": ["string", "null"] },
+            "hostObservationsPath": { "type": ["string", "null"] },
+            "clockNotes": { "type": "string" }
+          }
+        }
       }
     },
     "outcome": {

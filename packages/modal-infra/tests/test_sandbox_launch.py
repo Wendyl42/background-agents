@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 
 import pytest
+from grpclib import GRPCError, Status
 
 from sandbox_runtime.constants import (
     CODE_SERVER_PORT_ENV_VAR,
@@ -14,6 +15,7 @@ from sandbox_runtime.constants import (
     VNC_PASSWORD_ENV_VAR,
 )
 from sandbox_runtime.types import SessionConfig
+from src.sandbox.errors import SandboxImageUnavailableError
 from src.sandbox.manager import SandboxConfig, SandboxManager
 
 
@@ -25,6 +27,59 @@ def _fake_create(captured: dict):
 
     create_aio.aio = create_aio
     return create_aio
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "failure,confirmed,expected_image_error",
+    [
+        (GRPCError(Status.NOT_FOUND, "missing dependency"), True, True),
+        (GRPCError(Status.NOT_FOUND, "missing secret"), False, False),
+        (GRPCError(Status.UNAVAILABLE, "overloaded"), True, False),
+        (RuntimeError("quota exceeded"), True, False),
+    ],
+)
+async def test_only_confirmed_missing_images_receive_artifact_failure_reason(
+    monkeypatch, failure, confirmed, expected_image_error
+):
+    create = AsyncMock(side_effect=failure)
+    monkeypatch.setattr("src.sandbox.manager.modal.Sandbox.create", SimpleNamespace(aio=create))
+    monkeypatch.setattr("src.sandbox.manager.modal.Image.from_id", lambda _: object())
+    confirm = AsyncMock(return_value=confirmed)
+    monkeypatch.setattr("src.sandbox.manager._confirm_missing_image", confirm)
+    config = SandboxConfig(
+        repo_owner="acme",
+        repo_name="repo",
+        repo_image_id="im-missing",
+        session_config=SessionConfig(session_id="s"),
+    )
+    with pytest.raises(
+        SandboxImageUnavailableError if expected_image_error else type(failure)
+    ) as caught:
+        await SandboxManager().create_sandbox(config)
+    assert create.await_count == 1
+    assert confirm.await_count == (
+        1 if isinstance(failure, GRPCError) and failure.status == Status.NOT_FOUND else 0
+    )
+    if not expected_image_error:
+        assert caught.value is failure
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "failure,missing",
+    [
+        (GRPCError(Status.NOT_FOUND, "image missing"), True),
+        (GRPCError(Status.UNAVAILABLE, "network"), False),
+        (TimeoutError(), False),
+        (None, False),
+    ],
+)
+async def test_image_confirmation_fails_closed(failure, missing):
+    from src.sandbox.manager import _confirm_missing_image
+
+    image = SimpleNamespace(build=SimpleNamespace(aio=AsyncMock(side_effect=failure)))
+    assert await _confirm_missing_image(image) is missing
 
 
 @pytest.mark.asyncio

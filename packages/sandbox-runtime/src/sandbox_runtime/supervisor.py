@@ -326,7 +326,7 @@ class SandboxSupervisor:
             ) from error
 
     async def run(self, repo_image_callback: RepoImageBuildCallback | None = None) -> bool:
-        startup_start = time.time()
+        startup_start = time.perf_counter()
         self.boot_mode = BootMode.from_env(os.environ)
         os.environ["OPENINSPECT_BOOT_MODE"] = self.boot_mode.value
         self.log.info(
@@ -334,6 +334,9 @@ class SandboxSupervisor:
             repo_owner=self.config.repo_owner,
             repo_name=self.config.repo_name,
         )
+        from .toolchain import runtime_identity
+
+        self.log.info("runtime.identity", **runtime_identity())
 
         if not self.config.has_repository:
             self.log.info("supervisor.no_repo_configured")
@@ -362,13 +365,13 @@ class SandboxSupervisor:
                 runtime_version = os.environ.get("SANDBOX_VERSION", "")
                 self.log.info(
                     "image_build.complete",
-                    duration_ms=int((time.time() - startup_start) * 1000),
+                    duration_ms=int((time.perf_counter() - startup_start) * 1000),
                     runtime_version=runtime_version,
                 )
                 if repo_image_callback:
                     reported = await self._run_until_shutdown(
                         lambda: repo_image_callback.report_success(
-                            build_duration_seconds=time.time() - startup_start,
+                            build_duration_seconds=time.perf_counter() - startup_start,
                             repository_shas=boot_result.repository_shas,
                             runtime_version=runtime_version,
                         )
@@ -417,7 +420,8 @@ class SandboxSupervisor:
                 setup_success=boot_result.setup_success,
                 start_success=boot_result.start_success,
                 opencode_ready=opencode_ready,
-                duration_ms=int((time.time() - startup_start) * 1000),
+                duration_ms=int((time.perf_counter() - startup_start) * 1000),
+                duration_scope="supervisor_start_to_bridge_process_started",
                 outcome="success",
             )
             await self.monitor_processes()

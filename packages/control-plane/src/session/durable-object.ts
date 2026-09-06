@@ -889,6 +889,10 @@ export class SessionDO extends DurableObject<Env> {
    */
   private createLifecycleManager(): SandboxLifecycleManager {
     const sandboxBackend = resolveSandboxBackendName(this.env.SANDBOX_PROVIDER);
+    const legacyBackend = this.env.SANDBOX_LEGACY_PROVIDER?.trim();
+    if (legacyBackend) {
+      this.sandboxRepository.adoptLegacySandboxBackend(resolveSandboxBackendName(legacyBackend));
+    }
 
     const provider = createSandboxProviderFromEnv(this.env, sandboxBackend);
 
@@ -909,8 +913,8 @@ export class SessionDO extends DurableObject<Env> {
       updateSandboxForSpawn: (data) => this.sandboxRepository.updateSandboxForSpawn(data),
       updateSandboxForResume: (data) => this.sandboxRepository.updateSandboxForResume(data),
       updateSandboxModalObjectId: (id) => this.sandboxRepository.updateSandboxModalObjectId(id),
-      updateSandboxSnapshotImageId: (sandboxId, imageId) =>
-        this.sandboxRepository.updateSandboxSnapshotImageId(sandboxId, imageId),
+      updateSandboxSnapshotImageId: (sandboxId, imageId, backend) =>
+        this.sandboxRepository.updateSandboxSnapshotImageId(sandboxId, imageId, backend),
       updateSandboxLastActivity: (timestamp) =>
         this.sandboxRepository.updateSandboxLastActivity(timestamp),
       incrementCircuitBreakerFailure: (timestamp) =>

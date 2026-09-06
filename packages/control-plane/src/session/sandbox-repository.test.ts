@@ -75,6 +75,8 @@ describe("SandboxRepository", () => {
         createdAt: 1000,
         authTokenHash: "token-hash-123",
         modalSandboxId: "modal-sb-1",
+        sandboxBackend: "modal",
+        startupAttemptId: "attempt-1",
       });
 
       expect(mock.calls.length).toBe(1);
@@ -86,7 +88,14 @@ describe("SandboxRepository", () => {
       expect(mock.calls[0].query).toContain("modal_object_id = NULL");
       expect(mock.calls[0].query).toContain("vnc_url = NULL");
       expect(mock.calls[0].query).toContain("vnc_password = NULL");
-      expect(mock.calls[0].params).toEqual(["spawning", 1000, "token-hash-123", "modal-sb-1"]);
+      expect(mock.calls[0].params).toEqual([
+        "spawning",
+        1000,
+        "token-hash-123",
+        "modal-sb-1",
+        "modal",
+        "attempt-1",
+      ]);
     });
 
     it("can preserve the provider object ID while fencing a replacement", () => {
@@ -95,6 +104,8 @@ describe("SandboxRepository", () => {
         createdAt: 123,
         authTokenHash: "hash",
         modalSandboxId: "sandbox-new",
+        sandboxBackend: "modal",
+        startupAttemptId: "attempt-2",
         preserveProviderObjectId: true,
       });
 
@@ -114,11 +125,11 @@ describe("SandboxRepository", () => {
 
   describe("updateSandboxSnapshotImageId", () => {
     it("updates snapshot image ID for specific sandbox", () => {
-      repository.updateSandboxSnapshotImageId("sb-1", "img-123");
+      repository.updateSandboxSnapshotImageId("sb-1", "img-123", "modal");
 
       expect(mock.calls.length).toBe(1);
       expect(mock.calls[0].query).toContain("UPDATE sandbox SET snapshot_image_id");
-      expect(mock.calls[0].params).toEqual(["img-123", "sb-1"]);
+      expect(mock.calls[0].params).toEqual(["img-123", "modal", "sb-1"]);
     });
   });
 

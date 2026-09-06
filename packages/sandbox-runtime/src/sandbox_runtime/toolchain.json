@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "python_series": "3.12",
+  "node_major": "22",
+  "opencode": "1.18.18",
+  "code_server": "4.109.5",
+  "agent_browser": "0.21.2",
+  "ttyd": "1.7.7",
+  "ttyd_sha256": "8a217c968aba172e0dbf3f34447218dc015bc4d5e59bf51db2f2cd12b7be4f55"
+}

@@ -322,7 +322,15 @@ async def api_create_sandbox(
         outcome = "error"
         http_status = 500
         log.error("api.error", exc=e, endpoint_name="api_create_sandbox")
-        return {"success": False, "error": str(e)}
+        from .sandbox.errors import SandboxImageUnavailableError
+
+        return {
+            "success": False,
+            "error": str(e),
+            "error_reason": "image_unavailable"
+            if isinstance(e, SandboxImageUnavailableError)
+            else "unknown",
+        }
     finally:
         duration_ms = int((time.time() - start_time) * 1000)
         log.info(

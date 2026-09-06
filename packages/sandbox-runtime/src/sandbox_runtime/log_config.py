@@ -16,6 +16,7 @@ Usage:
 
 import json
 import logging
+import os
 import sys
 from typing import Any
 
@@ -86,6 +87,25 @@ def configure_logging() -> None:
     logging.root.setLevel(logging.INFO)
 
 
+def runtime_log_context() -> dict[str, str]:
+    """Allowlisted correlation only; never copy tokens or arbitrary env vars."""
+    try:
+        session = json.loads(os.environ.get("SESSION_CONFIG", "{}"))
+    except ValueError:
+        session = {}
+    if not isinstance(session, dict):
+        session = {}
+    context = {
+        key: session[key]
+        for key in ("session_id", "sandbox_backend", "startup_attempt_id")
+        if isinstance(session.get(key), str) and session[key]
+    }
+    boot_id = os.environ.get("OI_RUNTIME_BOOT_ID")
+    if boot_id:
+        context.update(runtime_boot_id=boot_id, clock_source="sandbox_runtime", clock_id=boot_id)
+    return context
+
+
 class StructuredLogger:
     """Thin wrapper over logging.Logger providing a clean structured API.
 
@@ -107,7 +127,7 @@ class StructuredLogger:
     ):
         self._component = component
         self._service = service
-        self._context: dict[str, Any] = dict(context) if context else {}
+        self._context: dict[str, Any] = {**runtime_log_context(), **(context or {})}
         self._logger = logging.getLogger(component)
 
     def bind(self, **ctx: Any) -> None:

@@ -90,6 +90,12 @@ Required:
 
 These fields describe observed/configured conditions; they are not resource measurements.
 
+Optional `sandbox.provenance` records an immutable image digest, runtime revision/source SHA-256,
+bundle-relative paths to the resolved toolchain inventory, resource configuration, and host
+observations, and clock-alignment notes. Leave unavailable values null. Older metadata without this
+object remains valid. Do not treat an image ID as an OCI digest or requested CPU/memory settings as
+measured usage.
+
 ## Outcome and ground truth
 
 Record:

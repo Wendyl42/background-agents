@@ -7,6 +7,7 @@ import argparse
 import asyncio
 import os
 import signal
+import uuid
 
 from .agent_bridge_process import AgentBridgeProcess
 from .boot_warnings import BootWarningSink
@@ -31,6 +32,9 @@ configure_logging()
 def build_supervisor(shutdown_event: asyncio.Event) -> SandboxSupervisor:
     """Consume process secrets and compose the production runtime."""
     config = RuntimeConfig.from_env(os.environ)
+    # A live resume retains this process identity; each supervisor restart gets a new one.
+    # The bridge subprocess inherits it so runtime log streams can be joined.
+    os.environ["OI_RUNTIME_BOOT_ID"] = str(uuid.uuid4())
     vnc_password = os.environ.pop(VNC_PASSWORD_ENV_VAR, None) or None
     if vnc_password:
         os.environ["DISPLAY"] = VNC_DISPLAY

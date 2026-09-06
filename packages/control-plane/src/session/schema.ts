@@ -148,8 +148,11 @@ CREATE TABLE IF NOT EXISTS sandbox (
   id TEXT PRIMARY KEY,
   modal_sandbox_id TEXT,                            -- Our generated sandbox ID
   modal_object_id TEXT,                             -- Legacy provider object ID (Modal object ID or Daytona handle)
+  sandbox_backend TEXT,                            -- Verified owner; NULL is unknown legacy state
+  startup_attempt_id TEXT,                          -- Rotates for every create/restore/resume attempt
   snapshot_id TEXT,
   snapshot_image_id TEXT,                           -- Modal Image ID for filesystem snapshot restoration
+  snapshot_backend TEXT,                           -- Owner of the persisted snapshot, not the current instance
   auth_token TEXT,                                  -- Token for sandbox to authenticate back to control plane
   auth_token_hash TEXT,                             -- SHA-256 hash of sandbox auth token (preferred)
   status TEXT DEFAULT 'pending',                    -- 'pending', 'spawning', 'connecting', 'warming', 'syncing', 'ready', 'running', 'stale', 'snapshotting', 'stopped', 'failed'
@@ -558,6 +561,17 @@ export const MIGRATIONS: readonly SchemaMigration[] = [
         WHERE id IN (${duplicateProcessingMessages})`);
       sql.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_messages_one_processing
         ON messages(status) WHERE status = 'processing'`);
+    },
+  },
+  {
+    id: 43,
+    description: "Track sandbox and snapshot backend ownership and startup attempts",
+    run: (sql) => {
+      runMigration(sql, `ALTER TABLE sandbox ADD COLUMN sandbox_backend TEXT`);
+      runMigration(sql, `ALTER TABLE sandbox ADD COLUMN snapshot_backend TEXT`);
+      runMigration(sql, `ALTER TABLE sandbox ADD COLUMN startup_attempt_id TEXT`);
+      // Ownership cannot be inferred from the currently configured provider.
+      // Explicit, verified legacy adoption happens in SandboxRepository.
     },
   },
 ];

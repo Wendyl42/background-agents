@@ -30,6 +30,15 @@ const baseInput = {
 };
 
 describe("buildSessionConfig", () => {
+  it("keeps sandbox provenance distinct from the model provider", () => {
+    expect(
+      buildSessionConfig({ ...baseInput, sandboxBackend: "local", startupAttemptId: "attempt-1" })
+    ).toMatchObject({
+      provider: "anthropic",
+      sandbox_backend: "local",
+      startup_attempt_id: "attempt-1",
+    });
+  });
   it("maps provider inputs to the snake_case runtime contract", () => {
     const mcpServers = [{ id: "mcp-1", name: "Tool", type: "local" as const, enabled: true }];
 

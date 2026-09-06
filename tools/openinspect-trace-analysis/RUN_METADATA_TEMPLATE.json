@@ -87,14 +87,23 @@
     }
   },
   "sandbox": {
-    "provider": "modal",
+    "provider": "unknown",
     "isolationUnit": "unknown",
     "thermalStartState": "unknown",
     "environmentMaterialization": "unknown",
     "imageId": null,
     "snapshotId": null,
     "region": null,
-    "cacheStateNotes": "REPLACE_WITH_OBSERVED_OR_CONFIGURED_STATE"
+    "cacheStateNotes": "REPLACE_WITH_OBSERVED_OR_CONFIGURED_STATE",
+    "provenance": {
+      "imageDigest": null,
+      "runtimeRevision": null,
+      "runtimeSourceSha256": null,
+      "resolvedToolchainPath": null,
+      "resourceConfigurationPath": null,
+      "hostObservationsPath": null,
+      "clockNotes": "Clocks are not assumed synchronized. Preserve clock source and local durations."
+    }
   },
   "outcome": {
     "status": "unknown",
