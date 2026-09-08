@@ -232,12 +232,16 @@ export const MODEL_CATALOG = [
     category: "DeepSeek",
     enabledByDefault: true,
     models: [
-      { id: "deepseek/deepseek-v4-flash", name: "DeepSeek V4 Flash", description: "Fast model" },
+      {
+        id: "deepseek/deepseek-v4-flash",
+        name: "DeepSeek V4 Flash",
+        description: "Fast model",
+        default: true,
+      },
       {
         id: "deepseek/deepseek-v4-pro",
         name: "DeepSeek V4 Pro",
         description: "Most capable",
-        default: true,
       },
     ],
   },
