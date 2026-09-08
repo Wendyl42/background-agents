@@ -1,0 +1,8 @@
+**
+!packages
+!packages/sandbox-runtime
+!packages/sandbox-runtime/pyproject.toml
+!packages/sandbox-runtime/src
+!packages/sandbox-runtime/src/**
+**/__pycache__
+**/*.pyc

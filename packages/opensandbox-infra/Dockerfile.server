@@ -1,0 +1,7 @@
+# Bootstrap dependencies from the official release, then use the sibling source.
+ARG SERVER_BASE_IMAGE=sandbox-registry.cn-zhangjiakou.cr.aliyuncs.com/opensandbox/server@sha256:e299adba44858d974dbda1bac2e32edd5c8e5eaaef9967f312f7e98af7137aa7
+FROM ${SERVER_BASE_IMAGE}
+COPY opensandbox_server /app/opensandbox_server
+# Upstream host_ip controls advertised endpoints, not published ports. Keep all
+# research sandbox ports on loopback too; fail the build if upstream changes this.
+RUN python -c 'from pathlib import Path; p=Path("/app/opensandbox_server/services/docker/port_allocator.py"); s=p.read_text(); old="DOCKER_PUBLISH_HOST = \"0.0.0.0\""; assert s.count(old) == 1, "Recheck upstream port binding"; p.write_text(s.replace(old, "DOCKER_PUBLISH_HOST = \"127.0.0.1\""))'

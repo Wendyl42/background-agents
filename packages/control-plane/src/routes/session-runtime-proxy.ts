@@ -267,6 +267,14 @@ export const sessionRuntimeProxyRoutes: Route[] = [
     runtimeMethod: "POST",
   }),
   simpleProxyRoute({
+    // Reuse atomic cancellation for automation that must also discard queued work.
+    policy: GITHUB_USER_OR_SERVICE_ROUTE,
+    method: "POST",
+    routePath: "/sessions/:id/cancel",
+    internalPath: SessionInternalPaths.cancel,
+    runtimeMethod: "POST",
+  }),
+  simpleProxyRoute({
     policy: GITHUB_USER_OR_SERVICE_ROUTE,
     method: "GET",
     routePath: "/sessions/:id/events",

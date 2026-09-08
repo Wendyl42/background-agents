@@ -15,6 +15,8 @@ import {
   evaluateExecutionTimeout,
   isSandboxReconnectBlockedStatus,
   DEFAULT_CONNECTING_TIMEOUT_CONFIG,
+  DEFAULT_SPAWN_CONFIG,
+  resolveSandboxStartupTimeoutMs,
   DEFAULT_EXECUTION_TIMEOUT_MS,
   type CircuitBreakerState,
   type CircuitBreakerConfig,
@@ -27,6 +29,25 @@ import {
   type WarmState,
   type ExecutionTimeoutConfig,
 } from "./decisions";
+
+describe("sandbox startup timeout configuration", () => {
+  it("preserves the existing default for both watchdog and stale-spawn recovery", () => {
+    const timeoutMs = resolveSandboxStartupTimeoutMs(undefined);
+    expect(timeoutMs).toBe(DEFAULT_CONNECTING_TIMEOUT_CONFIG.timeoutMs);
+    expect(timeoutMs).toBe(DEFAULT_SPAWN_CONFIG.spawningTimeoutMs);
+  });
+
+  it.each(["", "0", "-1", "NaN", "Infinity", "1.5", "600000ms"])(
+    "rejects invalid deadline %j",
+    (value) => expect(() => resolveSandboxStartupTimeoutMs(value)).toThrow(/positive integer/)
+  );
+
+  it("allows long repository setup and still expires at the configured deadline", () => {
+    const config = { timeoutMs: resolveSandboxStartupTimeoutMs("600000") };
+    expect(evaluateConnectingTimeout("connecting", 1, config, 180_001).isTimedOut).toBe(false);
+    expect(evaluateConnectingTimeout("connecting", 1, config, 600_002).isTimedOut).toBe(true);
+  });
+});
 
 describe("isSandboxReconnectBlockedStatus", () => {
   it.each(["stopped", "stale"] as const)("blocks reconnects for %s sandboxes", (status) => {
@@ -216,6 +237,21 @@ describe("evaluateSpawnDecision", () => {
 
     expect(decision.action).toBe("skip");
   });
+
+  it.each(["spawning", "connecting"] as const)(
+    "does not repeat a %s spawn during an extended setup deadline",
+    (status) => {
+      const state: SandboxState = {
+        status,
+        createdAt: 1,
+        snapshotImageId: null,
+        hasActiveWebSocket: false,
+      };
+      const extended = { ...config, spawningTimeoutMs: 600_000 };
+      expect(evaluateSpawnDecision(state, extended, 180_001, false).action).toBe("skip");
+      expect(evaluateSpawnDecision(state, extended, 600_002, false).action).toBe("spawn");
+    }
+  );
 
   it('returns "spawn" when stuck in "spawning" past the spawning timeout (recovers interrupted spawn)', () => {
     const now = Date.now();

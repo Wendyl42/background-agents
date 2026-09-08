@@ -44,6 +44,24 @@ function getHandler(method: string, path: string) {
 }
 
 describe("session runtime proxy routes", () => {
+  it("forwards cancellation to the atomic session lifecycle handler", async () => {
+    const requests: Request[] = [];
+    const fetch = vi.fn(async (request: Request) => {
+      requests.push(request);
+      return Response.json({ status: "cancelled" });
+    });
+    const { handler, match } = getHandler("POST", "/sessions/session-1/cancel");
+    const response = await handler(
+      new Request("https://test.local/sessions/session-1/cancel", { method: "POST" }),
+      createEnv(fetch),
+      match,
+      createCtx()
+    );
+    expect(response.status).toBe(200);
+    const request = requests[0];
+    expect(new URL(request.url).pathname).toBe(SessionInternalPaths.cancel);
+    expect(request.method).toBe("POST");
+  });
   it.each([
     ["snapshot", "/sessions/session-1", SessionInternalPaths.snapshot],
     ["sandbox access", "/sessions/session-1/sandbox-access", SessionInternalPaths.sandboxAccess],

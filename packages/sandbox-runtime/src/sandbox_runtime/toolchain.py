@@ -65,9 +65,9 @@ def capture_toolchain() -> dict[str, Any]:
             )
             if result.returncode == 0:
                 # Store only a version, not arbitrary tool stdout/environment data.
-                match = re.search(r"\b\d+\.\d+\.\d+(?:[-+][\w.-]+)?", result.stdout)
+                match = re.search(r"\b(?:v)?(\d+\.\d+\.\d+(?:[-+][\w.-]+)?)", result.stdout)
                 if match:
-                    versions[name] = match.group()
+                    versions[name] = match.group(1)
         except (OSError, subprocess.TimeoutExpired):
             pass
     for package in _PYTHON_PACKAGES:

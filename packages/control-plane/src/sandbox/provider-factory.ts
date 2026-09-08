@@ -20,6 +20,7 @@ import { createVercelSandboxClient } from "./providers/vercel/client";
 import { createVercelProvider, type VercelSandboxProvider } from "./providers/vercel/provider";
 import { resolveScmProviderFromEnv } from "../source-control";
 import type { Env } from "../types";
+import { OpenSandboxProvider } from "./providers/opensandbox-provider";
 
 function createModalProviderFromEnv(env: Env): ModalSandboxProvider {
   if (!env.MODAL_API_SECRET || !env.MODAL_WORKSPACE) {
@@ -168,6 +169,19 @@ export function createSandboxProviderFromEnv(
   options: { requireOpenComputerTemplate?: boolean } = {}
 ): SandboxProvider {
   switch (backend) {
+    case "opensandbox": {
+      if (!env.OPENSANDBOX_API_URL || !env.OPENSANDBOX_API_KEY || !env.OPENSANDBOX_IMAGE) {
+        throw new Error(
+          "OPENSANDBOX_API_URL, OPENSANDBOX_API_KEY, and OPENSANDBOX_IMAGE are required when SANDBOX_PROVIDER=opensandbox"
+        );
+      }
+      return new OpenSandboxProvider({
+        apiUrl: env.OPENSANDBOX_API_URL,
+        apiKey: env.OPENSANDBOX_API_KEY,
+        image: env.OPENSANDBOX_IMAGE,
+        scmProvider: resolveScmProviderFromEnv(env.SCM_PROVIDER),
+      });
+    }
     case "daytona":
       return createDaytonaProviderFromEnv(env);
     case "vercel":

@@ -44,6 +44,7 @@ function usage(message) {
 Options:
   --control-plane-url <url>  Override the Terraform control-plane URL
   --terraform-dir <path>     Terraform production directory
+  --connection-file <path>   Private JSON with controlPlaneUrl and exportServiceSecret (instead of Terraform)
   --out <path>               Export directory (must not already exist)
   --transport <mode>         auto (default), curl, or python
   --skip-cloudflare-logs     Do not query Cloudflare historical logs
@@ -61,6 +62,7 @@ function parseArgs(argv) {
     session: null,
     controlPlaneUrl: null,
     terraformDir: DEFAULT_TERRAFORM_DIR,
+    connectionFile: null,
     out: null,
     transport: "auto",
     cloudflareLogs: true,
@@ -82,6 +84,7 @@ function parseArgs(argv) {
     if (arg === "--session") args.session = next();
     else if (arg === "--control-plane-url") args.controlPlaneUrl = next();
     else if (arg === "--terraform-dir") args.terraformDir = resolve(next());
+    else if (arg === "--connection-file") args.connectionFile = resolve(next());
     else if (arg === "--out") args.out = resolve(next());
     else if (arg === "--transport") args.transport = next();
     else if (arg === "--skip-cloudflare-logs") args.cloudflareLogs = false;
@@ -764,7 +767,17 @@ function timestampSlug() {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const { sessionId: rootSessionId, webUrl } = parseSessionInput(args.session);
-  const deployment = readTerraformDeployment(args.terraformDir);
+  const deployment = args.connectionFile
+    ? JSON.parse(readFileSync(args.connectionFile, "utf8"))
+    : readTerraformDeployment(args.terraformDir);
+  if (
+    typeof deployment.exportServiceSecret !== "string" ||
+    !deployment.exportServiceSecret ||
+    typeof deployment.controlPlaneUrl !== "string" ||
+    !/^https?:\/\//.test(deployment.controlPlaneUrl)
+  ) {
+    throw new Error("Connection requires controlPlaneUrl and exportServiceSecret");
+  }
   const controlPlaneUrl = (args.controlPlaneUrl ?? deployment.controlPlaneUrl).replace(/\/$/, "");
   // `service:web` signatures intentionally require a Better Auth browser
   // session on user routes. A claimless first-party bot service principal is

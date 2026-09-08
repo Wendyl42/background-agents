@@ -5,6 +5,16 @@ from pathlib import Path
 from sandbox_runtime import toolchain
 
 
+def test_capture_normalizes_node_version_prefix(monkeypatch):
+    monkeypatch.setattr(toolchain.shutil, "which", lambda name: name if name == "node" else None)
+    monkeypatch.setattr(
+        subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args, 0, stdout="v22.23.2\n"),
+    )
+    assert toolchain.capture_toolchain()["versions"]["node"] == "22.23.2"
+
+
 def test_source_digest_is_stable_and_detects_dirty_sources(tmp_path):
     (tmp_path / "module.py").write_text("a = 1")
     first = toolchain.runtime_source_digest(tmp_path)

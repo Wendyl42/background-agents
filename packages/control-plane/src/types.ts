@@ -74,7 +74,12 @@ export interface Env {
   ALLOWED_GITHUB_ORGS?: string;
   UNSAFE_ALLOW_ALL_USERS?: string;
   CF_ACCOUNT_ID?: string; // Cloudflare account ID
-  SANDBOX_PROVIDER?: string; // "modal" (default), "daytona", "vercel", "opencomputer", or "e2b"
+  SANDBOX_PROVIDER?: string; // "modal" (default), "daytona", "vercel", "opencomputer", "e2b", or "opensandbox"
+  OPENSANDBOX_API_URL?: string;
+  OPENSANDBOX_API_KEY?: string;
+  OPENSANDBOX_IMAGE?: string;
+  /** Initial sandbox boot/connect deadline; also controls stale-spawn recovery. */
+  SANDBOX_STARTUP_TIMEOUT_MS?: string;
   SANDBOX_LEGACY_PROVIDER?: string; // Explicit historical owner of unlabelled sandbox/snapshot handles
   MODAL_WORKSPACE?: string; // Modal workspace name
   MODAL_ENVIRONMENT?: string; // Modal environment name for dashboard URLs
