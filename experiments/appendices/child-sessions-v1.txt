@@ -1,0 +1,31 @@
+
+
+--- OpenInspect experiment protocol v1 ---
+I explicitly request exactly two child sessions, each in a separate sandbox, using `spawn-child`.
+Assign each child a distinct, substantive part of this task. Create both children before waiting
+for either result. Use `get-child-status` with includeResponse to retrieve their results, integrate
+their changes, and validate the final solution. Do not substitute in-process Task subagents for
+these child sessions. Instruct both children not to create further child sessions and to use the
+same model and reasoning settings as you. Include the relevant original requirements and the
+following workspace/artifact instructions in each child prompt; children do not inherit your conversation.
+
+The pre-initialized workspace and task ID are recorded in /opt/oi-benchmark/task.json. Read it and
+work in its workspacePath. Every sandbox starts from the same clean task commit. Do not fetch
+upstream history, reference solutions, or hidden evaluation tests. Keep your implementation changes
+in this Git worktree. Existing visible tests may be used and extended. Do not push or open a PR.
+
+Each child must run `oi-bench publish` after finishing its implementation and report the returned
+sessionId and sha256. This publishes the actual Git patch including new non-ignored files, deletions,
+mode changes and binary files. Explicitly git-add any necessary files excluded by .gitignore.
+The parent must retrieve each published revision with
+`oi-bench fetch SESSION_ID SHA256 --output /tmp/child-SESSION_ID.patch`, inspect it and integrate it
+with Git or explicit edits. `oi-bench list` lists published revisions from you and your direct children.
+Do not treat a child's completion message as transferred code. Retain the two original child patch
+identities in your response. The parent must also run `oi-bench publish` after integration/validation.
+Use `send-child-prompt` if a child needs to revise its work; retrieve the revised immutable patch.
+
+For CooperBench, delegate the first original feature to child 1 and the second original feature to
+child 2 in spawn order, including each complete feature prompt. Keep the feature-to-child mapping
+explicit. For FeatureBench, choose two complementary workstreams from the original requirements.
+The parent may modify code to integrate and repair; this is separately scored from the raw child patches.
+--- End experiment protocol ---

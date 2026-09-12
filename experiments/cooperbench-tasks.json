@@ -1,0 +1,928 @@
+{
+  "schema_version": 1,
+  "benchmark": "cooperbench",
+  "selection_status": "frozen-after-official-calibration",
+  "tasks": [
+    {
+      "id": "cooperbench-samuelcolvin-dirty-equals-43-2-3",
+      "benchmark": "cooperbench",
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task_id": 43,
+      "feature_ids": [2, 3],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "593bcccf738ab8b724d7cb860881d74344171f5f",
+      "image": "akhatua/cooperbench-samuelcolvin-dirty-equals:task43",
+      "image_digest": "sha256:6389e650d888f04e0e3f8c1891e96ad1d7b9c7b94c9c479cece4f87b298a64f2",
+      "selection_reason": "MAC address validator and email validator have independent acceptance criteria; coordinate public exports and shared validation conventions.",
+      "division_basis": "Assign feature 2 and feature 3 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "samuelcolvin_dirty_equals_task/task43/feature2/feature.md",
+          "prompt_sha256": "aa7bfdbf0590c17798461e5d4f87745e00648eba92b9c7dfba2342c87b5a66d4",
+          "prompt_bytes": 2328,
+          "gold_patch_path": "samuelcolvin_dirty_equals_task/task43/feature2/feature.patch",
+          "gold_patch_sha256": "c9dbdfe381dfaf4387e3694b5e77b5958dabf480ed5440489ef0691592b133a2",
+          "tests_patch_path": "samuelcolvin_dirty_equals_task/task43/feature2/tests.patch",
+          "tests_patch_sha256": "a9a50c38658d8075697c61cf88a2bec7ae158e77a88fe74b3c57cbb434e388eb"
+        },
+        {
+          "feature_id": 3,
+          "prompt_path": "samuelcolvin_dirty_equals_task/task43/feature3/feature.md",
+          "prompt_sha256": "75e3ca2ec8bd9d5b63d4a200c69cd49380b57c2c503f10e629ba8207832d4ae6",
+          "prompt_bytes": 2293,
+          "gold_patch_path": "samuelcolvin_dirty_equals_task/task43/feature3/feature.patch",
+          "gold_patch_sha256": "4720d15a14d74ad1e54019973be9ad0ff3b2560924dadd30d0e6c89c46bb10a7",
+          "tests_patch_path": "samuelcolvin_dirty_equals_task/task43/feature3/tests.patch",
+          "tests_patch_sha256": "c6098634297db5d329317dbb2670cf9ceddd725de004b365e9ee9adc66d265cc"
+        }
+      ],
+      "combined_patch_path": "samuelcolvin_dirty_equals_task/task43/combined.patch",
+      "combined_patch_sha256": "de49f670927afa84fb60531fd764ecbb2606ca45d837fd5368c38e21a97acf33",
+      "setup": {
+        "official_dockerfile": "samuelcolvin_dirty_equals_task/task43/Dockerfile",
+        "dockerfile_sha256": "6d3fb32e4e2322e254bea1ac51467e949369ea31149a41d61513d5d11ac01b12",
+        "runner_path": "samuelcolvin_dirty_equals_task/task43/runner.sh",
+        "runner_sha256": "04e67d230a6d1badfa2dfb82932dc0086779cffaed4afdff8d82bc9e473fceda",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-samuelcolvin-dirty-equals-43-2-3/attempt-20260909T051646Z-0ab31036/calibration.json",
+      "calibration_report_sha256": "1ce4411acbeeedc7ccd8798217bd3b137114f0bd22f3dbc9dd3a4444081ff90c"
+    },
+    {
+      "id": "cooperbench-go-chi-26-1-2",
+      "benchmark": "cooperbench",
+      "repo": "go_chi_task",
+      "task_id": 26,
+      "feature_ids": [1, 2],
+      "language": "Go",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "9436cc85db0d35be06e66b91b4f74bbc0295b07b",
+      "image": "akhatua/cooperbench-go-chi:task26",
+      "image_digest": "sha256:7c20c901458147cb42d9d75d969864da5a924867c92ec9093665734bf9be4526",
+      "selection_reason": "Go 1.22 PathValue propagation and route metrics are distinct router behaviors; coordinate request dispatch changes.",
+      "division_basis": "Assign feature 1 and feature 2 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 1,
+          "prompt_path": "go_chi_task/task26/feature1/feature.md",
+          "prompt_sha256": "a80c8aae551e085e1a5afcdc48069885a3e89683143d82dfa8c146f8f6f49da4",
+          "prompt_bytes": 1669,
+          "gold_patch_path": "go_chi_task/task26/feature1/feature.patch",
+          "gold_patch_sha256": "f0374fb016b8d4c692da95cd7125c69dde6f952f74d8374a14252920739199b9",
+          "tests_patch_path": "go_chi_task/task26/feature1/tests.patch",
+          "tests_patch_sha256": "6759431d3a30dbaac208312e7ae16ddd95a143a7345458388bcb540152890915"
+        },
+        {
+          "feature_id": 2,
+          "prompt_path": "go_chi_task/task26/feature2/feature.md",
+          "prompt_sha256": "03cb5073db9c9d5ebe22e53b90164e8da73df2f41d276838a9a8000cfe770522",
+          "prompt_bytes": 2552,
+          "gold_patch_path": "go_chi_task/task26/feature2/feature.patch",
+          "gold_patch_sha256": "1c2bc7005157ca2ee72633d802e288353e6ed2fbba8998d09b74a223ed18cd5b",
+          "tests_patch_path": "go_chi_task/task26/feature2/tests.patch",
+          "tests_patch_sha256": "6d0770700d2e2bd3c5d6310995a7f56fcdbeae9d28dc1b108363bcc6d48c07a0"
+        }
+      ],
+      "combined_patch_path": "go_chi_task/task26/combined.patch",
+      "combined_patch_sha256": "ea9210a0e4c327e566f39325a1c33abeeec74c13ab162b1f536b624c2ff5af69",
+      "setup": {
+        "official_dockerfile": "go_chi_task/task26/Dockerfile",
+        "dockerfile_sha256": "d72b0d5b3c7b7998dde5996a5ac0ab141a8a9f968d7d4e7b9d24485db91ce30b",
+        "runner_path": "go_chi_task/task26/runner.sh",
+        "runner_sha256": "bc20a264330e3635b67d6e38f0c233172fe16198bfad27993178b34e3e058549",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-go-chi-26-1-2/attempt-20260909T052115Z-9edd8cf1/calibration.json",
+      "calibration_report_sha256": "7e366a731d422ef7ec43b12ada7d3bd30156c1acf86a5a323b76072ff42a8ded"
+    },
+    {
+      "id": "cooperbench-go-chi-27-2-4",
+      "benchmark": "cooperbench",
+      "repo": "go_chi_task",
+      "task_id": 27,
+      "feature_ids": [2, 4],
+      "language": "Go",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "9436cc85db0d35be06e66b91b4f74bbc0295b07b",
+      "image": "akhatua/cooperbench-go-chi:task27",
+      "image_digest": "sha256:9a01949be6aa6e9821bca6164d74479ef59a5b6d9017df6012dc2eed623faef5",
+      "selection_reason": "HTTP method aliases/case normalization and path-prefix routing can be built independently; integrate shared pattern parsing.",
+      "division_basis": "Assign feature 2 and feature 4 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "go_chi_task/task27/feature2/feature.md",
+          "prompt_sha256": "4533f2cd6747a677085f0639970fad6d027d43e606be357fb1c8369ed4a37714",
+          "prompt_bytes": 790,
+          "gold_patch_path": "go_chi_task/task27/feature2/feature.patch",
+          "gold_patch_sha256": "102cde0c5997d43d719c493a0ec955f36d39267d37198c50d3e5a6bd466d3b7d",
+          "tests_patch_path": "go_chi_task/task27/feature2/tests.patch",
+          "tests_patch_sha256": "002845a5f9121abb34a4d423eb525b289b2740b97e926c3db88993974f4e0bcf"
+        },
+        {
+          "feature_id": 4,
+          "prompt_path": "go_chi_task/task27/feature4/feature.md",
+          "prompt_sha256": "b298e45b1074fd89a9ceb8947f145e463a32119160ba84ff8a0a48987ec9ffc6",
+          "prompt_bytes": 616,
+          "gold_patch_path": "go_chi_task/task27/feature4/feature.patch",
+          "gold_patch_sha256": "5a769b642591c9613a0f2e1865fec4447383cfa49bafc5b5adcedd3d32271ae3",
+          "tests_patch_path": "go_chi_task/task27/feature4/tests.patch",
+          "tests_patch_sha256": "e24ec11ef849336e89a08221bd33ab9b23ea34f9193e2d07dbb89fc57afa4873"
+        }
+      ],
+      "combined_patch_path": "go_chi_task/task27/combined.patch",
+      "combined_patch_sha256": "cc79148fd4eaa386ac7435f8f149d3c702ca71369b223b8016a40ab2109e6eb4",
+      "setup": {
+        "official_dockerfile": "go_chi_task/task27/Dockerfile",
+        "dockerfile_sha256": "c97d67af93ddb49ea3755b92e997c16a6e8c7a96b5fa20a6cbe729ee5fcdf9b3",
+        "runner_path": "go_chi_task/task27/runner.sh",
+        "runner_sha256": "7b2013520a179273cf5998ef37a8c6516294c47f0a4e4396ae612fe9f0f62dde",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-go-chi-27-2-4/attempt-20260909T052233Z-e3e1deca/calibration.json",
+      "calibration_report_sha256": "312042d9aa864b1b9f66fab5aa1c7503e2b1dc723ae59d6edf233378f7a51b69"
+    },
+    {
+      "id": "cooperbench-go-chi-56-2-4",
+      "benchmark": "cooperbench",
+      "repo": "go_chi_task",
+      "task_id": 56,
+      "feature_ids": [2, 4],
+      "language": "Go",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "7f280968675bcc9f310008fc6b8abff0b923734c",
+      "image": "akhatua/cooperbench-go-chi:task56",
+      "image_digest": "sha256:91a3058d55c6222ab8d9c4838a5a36c8981b31bba160017e06e620d412f9c1bd",
+      "selection_reason": "Core unknown-method handling and reusable per-route method validation middleware are independent HTTP behavior requirements with shared router helper integration.",
+      "division_basis": "Assign features 2 and 4 to separate child sandboxes; coordinate router helper API and HTTP response behavior.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "go_chi_task/task56/feature2/feature.md",
+          "prompt_sha256": "d2a2e43f9813729d2c69a71c8e80677b7e17ac460883790693228785823b15cf",
+          "gold_patch_path": "go_chi_task/task56/feature2/feature.patch",
+          "gold_patch_sha256": "9f8f0158b06170be471571b6d2735fe2cb291ee25b874ddf4cf48abcf2bac80a",
+          "tests_patch_path": "go_chi_task/task56/feature2/tests.patch",
+          "tests_patch_sha256": "defd20cde8778c587798d333b8ebd5074a44ee0869894ee3f807e71079da995a",
+          "prompt_bytes": 2637
+        },
+        {
+          "feature_id": 4,
+          "prompt_path": "go_chi_task/task56/feature4/feature.md",
+          "prompt_sha256": "a5f379bcb17cd95c60b734806c1a6447b9dde354502baa95019534efadc59e80",
+          "gold_patch_path": "go_chi_task/task56/feature4/feature.patch",
+          "gold_patch_sha256": "8066de12888445b494febf22d707c3a75e7be31fe865e23032cc1d7a79dfa815",
+          "tests_patch_path": "go_chi_task/task56/feature4/tests.patch",
+          "tests_patch_sha256": "b0068e06626622655c6af4e3419ec2eb0b59d057b4db48e789d1a3300cf97254",
+          "prompt_bytes": 2704
+        }
+      ],
+      "combined_patch_path": "go_chi_task/task56/combined.patch",
+      "combined_patch_sha256": "b28bfec114125c3dfad5f14d2c1d5fe6a84cbde9ecb018922ac2cb13a60c53e3",
+      "setup": {
+        "official_dockerfile": "go_chi_task/task56/Dockerfile",
+        "dockerfile_sha256": "db6bdc7889670052df12939cca167cff2254ee591cb08bdacc5806d08d3378b9",
+        "runner_path": "go_chi_task/task56/runner.sh",
+        "runner_sha256": "7b0462063345e48d4eb713c0caa3282981079472ee2906379189ac25f59c0a27",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "replaces": {
+        "id": "cooperbench-go-chi-56-1-5",
+        "reason": "Individual feature 1 gold failed its order-sensitive Allow header assertion under official Go image; preserve failed calibration and diagnostic evidence."
+      },
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-go-chi-56-2-4/attempt-20260909T051826Z-ae88ea9b/calibration.json",
+      "calibration_report_sha256": "df994b06625d9747ddb524ee81ed4acb4c68c2a0187d3e0f09cbf4f5d0b623bd"
+    },
+    {
+      "id": "cooperbench-react-hook-form-153-2-3",
+      "benchmark": "cooperbench",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "feature_ids": [2, 3],
+      "language": "TypeScript",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "image": "akhatua/cooperbench-react-hook-form:task153",
+      "image_digest": "sha256:b0d760ab6ec8e30155cc8670e104533a7747de5c8a2b815148af6db326f71712",
+      "selection_reason": "Post-submission onFinally and validation lifecycle hooks are separable async behaviors sharing handleSubmit ordering and types.",
+      "division_basis": "Assign feature 2 and feature 3 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "react_hook_form_task/task153/feature2/feature.md",
+          "prompt_sha256": "f7abb38a95fafb2955f95c375e01708e2e3e802145a8c0c6cb0f7f8c8ff3a85e",
+          "prompt_bytes": 2623,
+          "gold_patch_path": "react_hook_form_task/task153/feature2/feature.patch",
+          "gold_patch_sha256": "b9d6cb4a047d9ce94d4c4031968e9510270bc3a242c325155ed8e18c51fd5ee9",
+          "tests_patch_path": "react_hook_form_task/task153/feature2/tests.patch",
+          "tests_patch_sha256": "a7c5f8f738ca080fe448467bf437267f793ca3e594015780d715c2c21eacea35"
+        },
+        {
+          "feature_id": 3,
+          "prompt_path": "react_hook_form_task/task153/feature3/feature.md",
+          "prompt_sha256": "d31322e6a68c14508ab326a8cd195ad06dfe1677c44795dab414338e388d5494",
+          "prompt_bytes": 2856,
+          "gold_patch_path": "react_hook_form_task/task153/feature3/feature.patch",
+          "gold_patch_sha256": "6e6dda5b8bc0ceaf1da375a816cc2a1b8f8d05f030f8e10043d35849482c404f",
+          "tests_patch_path": "react_hook_form_task/task153/feature3/tests.patch",
+          "tests_patch_sha256": "9c63920f7e84ffd8452ebec42b9acfd13e21c6a6d91b79998c48dde32b1aec7f"
+        }
+      ],
+      "combined_patch_path": "react_hook_form_task/task153/combined.patch",
+      "combined_patch_sha256": "79ee43aab012a3c8a0b9a7cf14d4caeab4e94f86826d3a736b6c00fe4a787817",
+      "setup": {
+        "official_dockerfile": "react_hook_form_task/task153/Dockerfile",
+        "dockerfile_sha256": "884918ce3cdac442317c6b753a3ff4064087d783f791e3c36d0d6a0f60e893ac",
+        "runner_path": "react_hook_form_task/task153/runner.sh",
+        "runner_sha256": "755bc363046e1edb2e71bdc1222ade8fc69643d75bcffcbb905d28ec4a373ffc",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-react-hook-form-153-2-3/attempt-20260909T051410Z-bf0dfae3/calibration.json",
+      "calibration_report_sha256": "cc90fdada422fb40ad248a0455d37bb58fb23a3bfc801d2fc32acf14637e8d23"
+    },
+    {
+      "id": "cooperbench-react-hook-form-85-3-4",
+      "benchmark": "cooperbench",
+      "repo": "react_hook_form_task",
+      "task_id": 85,
+      "feature_ids": [3, 4],
+      "language": "TypeScript",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "b5863b46346416972c025f4b621cb624ffc4a955",
+      "image": "akhatua/cooperbench-react-hook-form:task85",
+      "image_digest": "sha256:de42e7795dc146fdaa1a33410650d3ff85ba4bbf3bb0e0c71a2eee518ff2f0f6",
+      "selection_reason": "Default-value resolution callback and values-update debounce are independent lifecycle mechanisms; integrate hook state and cleanup.",
+      "division_basis": "Assign feature 3 and feature 4 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 3,
+          "prompt_path": "react_hook_form_task/task85/feature3/feature.md",
+          "prompt_sha256": "bf830d025ba9a82c07544c72c482f389a2174ff42ede39dbc8ebbf16b60ebf3e",
+          "prompt_bytes": 1937,
+          "gold_patch_path": "react_hook_form_task/task85/feature3/feature.patch",
+          "gold_patch_sha256": "f771b5e1350c88822870cacbae407715c72639cf55ff63a4beb83074a71d560c",
+          "tests_patch_path": "react_hook_form_task/task85/feature3/tests.patch",
+          "tests_patch_sha256": "ea0e4bbb4f6daa6a6fb7adb43b0bf90ed9e112674e022a6b6d4a5edd6888985a"
+        },
+        {
+          "feature_id": 4,
+          "prompt_path": "react_hook_form_task/task85/feature4/feature.md",
+          "prompt_sha256": "002148eb2281c9a61d90eff99df8173e794ac8f04747d817f9b9a0c6328546d2",
+          "prompt_bytes": 2547,
+          "gold_patch_path": "react_hook_form_task/task85/feature4/feature.patch",
+          "gold_patch_sha256": "544ee353fa138582262a04f097677d62d7d86e0fb58e5ebea53fbd05910104c9",
+          "tests_patch_path": "react_hook_form_task/task85/feature4/tests.patch",
+          "tests_patch_sha256": "bbd088d6dc6b2969dfe94321c33123d5e7b8e08c3036b406e4b877b1ffead68f"
+        }
+      ],
+      "combined_patch_path": "react_hook_form_task/task85/combined.patch",
+      "combined_patch_sha256": "5ef07a9ffee02a9a536edf601db16826df9bdef20cff2dbd9fe6de1c25251e42",
+      "setup": {
+        "official_dockerfile": "react_hook_form_task/task85/Dockerfile",
+        "dockerfile_sha256": "23bb5973bfbc6ad70c71dc7619a356716ffbd70d62bdad954cd518ae8c7bc157",
+        "runner_path": "react_hook_form_task/task85/runner.sh",
+        "runner_sha256": "588da71dc6ef4d14ec375a9d35dd89fba9125e62eba73c3488364b5ae3434fee",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-react-hook-form-85-3-4/attempt-20260909T051435Z-c8094eb5/calibration.json",
+      "calibration_report_sha256": "d40c297c838b88824cf743e6aa24a7e34211062f04463ff92725772fa78de9e6"
+    },
+    {
+      "id": "cooperbench-pallets-click-2068-2-10",
+      "benchmark": "cooperbench",
+      "repo": "pallets_click_task",
+      "task_id": 2068,
+      "feature_ids": [2, 10],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "d791537317947448a3960662d00acf160eff2602",
+      "image": "akhatua/cooperbench-pallets-click:task2068",
+      "image_digest": "sha256:ccc68eebb563aa84296fe49e5dbd70556ed18c9bc799dc5681e4c30b159ce48f",
+      "selection_reason": "Editor timeout control and editor working-directory support are independent process behaviors sharing edit API and launch code.",
+      "division_basis": "Assign feature 2 and feature 10 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "pallets_click_task/task2068/feature2/feature.md",
+          "prompt_sha256": "90bd71e1d55949828571723fbd91b4ad4f5439663a1444e3fefebc849f0f4764",
+          "prompt_bytes": 2328,
+          "gold_patch_path": "pallets_click_task/task2068/feature2/feature.patch",
+          "gold_patch_sha256": "a6d06f25e30e9988ded0f0ec82fe56471ed989bbb1221321e1d805d8a8b45f59",
+          "tests_patch_path": "pallets_click_task/task2068/feature2/tests.patch",
+          "tests_patch_sha256": "55fd26e382970dd34280195a0f2fd5ee6c73b45681ac2eed08a63c665927f2e0"
+        },
+        {
+          "feature_id": 10,
+          "prompt_path": "pallets_click_task/task2068/feature10/feature.md",
+          "prompt_sha256": "dbc931039f8a439a3a14aa1f505909020c907c35e26d39e833a8d025dc1455b9",
+          "prompt_bytes": 1975,
+          "gold_patch_path": "pallets_click_task/task2068/feature10/feature.patch",
+          "gold_patch_sha256": "aa4da37ffd9b1dabc0bab4a15800e64a7d5b6964894d16d89f25fb8fc0d6ebf5",
+          "tests_patch_path": "pallets_click_task/task2068/feature10/tests.patch",
+          "tests_patch_sha256": "b8d310534967a99d581079fe8fa670a28558f00df7f4e3e11f9922ec303b9a09"
+        }
+      ],
+      "combined_patch_path": "pallets_click_task/task2068/combined.patch",
+      "combined_patch_sha256": "a2a27645cd6b1f140baf7bf3097a0cffee26e33e6d6f9464655b437dcc2390b2",
+      "setup": {
+        "official_dockerfile": "pallets_click_task/task2068/Dockerfile",
+        "dockerfile_sha256": "4b3cbaa3089aa5b784ef1f8b317c4f3c5b1dd6690473fd79bb305612ecc5bab7",
+        "runner_path": "pallets_click_task/task2068/runner.sh",
+        "runner_sha256": "ed67cd097a75040cbba6ebc5c7496c2ec483fdafb17bdefa0007496340e37bc4",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pallets-click-2068-2-10/attempt-20260909T053450Z-582f2c7d/calibration.json",
+      "calibration_report_sha256": "4824a37b579e5d37fc3f893c86fa5daae7b773c3c2a6668dc0dc330826301f51"
+    },
+    {
+      "id": "cooperbench-pallets-click-2800-6-7",
+      "benchmark": "cooperbench",
+      "repo": "pallets_click_task",
+      "task_id": 2800,
+      "feature_ids": [6, 7],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "d8763b93021c416549b5f8b4b5497234619410db",
+      "image": "akhatua/cooperbench-pallets-click:task2800",
+      "image_digest": "sha256:f3e6cb251bcdd218666c83e453468ca1358f2c0ce3d06c8522de3b90ffc4fd95",
+      "selection_reason": "Context snapshot/restore and nested-context validation require distinct state behaviors; coordinate context lifecycle integration.",
+      "division_basis": "Assign feature 6 and feature 7 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 6,
+          "prompt_path": "pallets_click_task/task2800/feature6/feature.md",
+          "prompt_sha256": "2c798ab9c3fed0e8a437d688abc0dd67a86cf299b398c60a3b2db13d50949c77",
+          "prompt_bytes": 3972,
+          "gold_patch_path": "pallets_click_task/task2800/feature6/feature.patch",
+          "gold_patch_sha256": "ca6a8ce924ccad31f938abc71430159b07f1ec748faec715e13ff696b9c09c49",
+          "tests_patch_path": "pallets_click_task/task2800/feature6/tests.patch",
+          "tests_patch_sha256": "33b1ece26122639de9ab54c3919b12079f04f1f011ee356d83acd9a1e9fb4391"
+        },
+        {
+          "feature_id": 7,
+          "prompt_path": "pallets_click_task/task2800/feature7/feature.md",
+          "prompt_sha256": "9bc12c7277204288a0b53518be01da13d6d2a1cfde2f46b1c1f28481b078d59b",
+          "prompt_bytes": 3596,
+          "gold_patch_path": "pallets_click_task/task2800/feature7/feature.patch",
+          "gold_patch_sha256": "0142a7293f22e396939a50f175589fdea534e36f1ab7db5e20463bf9eb4d2c80",
+          "tests_patch_path": "pallets_click_task/task2800/feature7/tests.patch",
+          "tests_patch_sha256": "1435860039fe40b0cd0b8099d7785a4b68e536253301034548adac44c0a9e43f"
+        }
+      ],
+      "combined_patch_path": "pallets_click_task/task2800/combined.patch",
+      "combined_patch_sha256": "d7f0477dfe77af4107d5087be3ecf9fbeeeb85de51851d7bcdf4676cf49046b8",
+      "setup": {
+        "official_dockerfile": "pallets_click_task/task2800/Dockerfile",
+        "dockerfile_sha256": "ece1d628a3cfe491ad2f9b93906ded5296bf100077d5111bbc699e62b1fb586c",
+        "runner_path": "pallets_click_task/task2800/runner.sh",
+        "runner_sha256": "4755a39855b9df524408a203cc15ee211a90f1399829edfd325fca54d63bef9e",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pallets-click-2800-6-7/attempt-20260909T053515Z-e6785724/calibration.json",
+      "calibration_report_sha256": "15b11f75dabfc21abb435a86238e11733cc5bfdf928ff81990f7eb49d2f76066"
+    },
+    {
+      "id": "cooperbench-pallets-click-2956-2-7",
+      "benchmark": "cooperbench",
+      "repo": "pallets_click_task",
+      "task_id": 2956,
+      "feature_ids": [2, 7],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "5c1239b0116b66492cdd0848144ab3c78a04495a",
+      "image": "akhatua/cooperbench-pallets-click:task2956",
+      "image_digest": "sha256:761b834e18950cb14185915c891809d7798db1c96e49c20fd523cab1bd8abeb3",
+      "selection_reason": "Option validation chains and option conflict detection are separate constraints that meet in option processing.",
+      "division_basis": "Assign feature 2 and feature 7 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "pallets_click_task/task2956/feature2/feature.md",
+          "prompt_sha256": "281dc2a20d25ad6db9a93c810c84059ec5721c607613b7f1848e7a3211cd47dc",
+          "prompt_bytes": 2154,
+          "gold_patch_path": "pallets_click_task/task2956/feature2/feature.patch",
+          "gold_patch_sha256": "05f2f03f68418268761169ed07be7253ae74d1054780735b01247ad893ac0225",
+          "tests_patch_path": "pallets_click_task/task2956/feature2/tests.patch",
+          "tests_patch_sha256": "97bdc0a9e2590ff9befd92e5d9d6e738f95094a71c2c3d166785ff16629dd91d"
+        },
+        {
+          "feature_id": 7,
+          "prompt_path": "pallets_click_task/task2956/feature7/feature.md",
+          "prompt_sha256": "bb7ed487220061211196ea00254318edd0c69e0eb943de90cf0c6390c0b6e729",
+          "prompt_bytes": 3260,
+          "gold_patch_path": "pallets_click_task/task2956/feature7/feature.patch",
+          "gold_patch_sha256": "bb7ab223710fd04045c9d94e9fa3fefc11ddedd2b7ab398a4ea38e4fa609c0ed",
+          "tests_patch_path": "pallets_click_task/task2956/feature7/tests.patch",
+          "tests_patch_sha256": "25e8dcbcd90c83c080e1b8b76246962a947d94f258dca7b3fcbf3cb26fccd0a8"
+        }
+      ],
+      "combined_patch_path": "pallets_click_task/task2956/combined.patch",
+      "combined_patch_sha256": "66f0b03815e6c680da7fc42f6e9989365493f2aaf3a0fa15176023e8b1b42a0e",
+      "setup": {
+        "official_dockerfile": "pallets_click_task/task2956/Dockerfile",
+        "dockerfile_sha256": "e1c761a7ecd47cb02c1d7d121bd3f0c13cad7b5c9f5f1c434b5dcf6da207be02",
+        "runner_path": "pallets_click_task/task2956/runner.sh",
+        "runner_sha256": "93cf9186b6ce5c22567d2ffbf973222eb9b96615ab23df4b8570e79409403415",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pallets-click-2956-2-7/attempt-20260909T053527Z-7f4bd1e7/calibration.json",
+      "calibration_report_sha256": "89131582f5fd9f1d53f5180665ce4234088d702d49c2634eff5a61b2e444c5f4"
+    },
+    {
+      "id": "cooperbench-pallets-jinja-1465-2-3",
+      "benchmark": "cooperbench",
+      "repo": "pallets_jinja_task",
+      "task_id": 1465,
+      "feature_ids": [2, 3],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "20eb7f5e33120f1717b78bdf85540ab75631187a",
+      "image": "akhatua/cooperbench-pallets-jinja:task1465",
+      "image_digest": "sha256:83fe4800d91ebd4a41a3cc2f039dd0bb76ba0ad5d34551cc2f181c596ae50e3c",
+      "selection_reason": "Descending group ordering and custom nested-attribute separator are independent filter semantics sharing groupby API.",
+      "division_basis": "Assign feature 2 and feature 3 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "pallets_jinja_task/task1465/feature2/feature.md",
+          "prompt_sha256": "04b563486caae8c7d485dce459df098073c86ab64835628e68ae3ed0f6b31ff1",
+          "prompt_bytes": 1627,
+          "gold_patch_path": "pallets_jinja_task/task1465/feature2/feature.patch",
+          "gold_patch_sha256": "7b2aef451358b18f9dcf223921e74fb6218b0633d6037ec470389669befa9fa6",
+          "tests_patch_path": "pallets_jinja_task/task1465/feature2/tests.patch",
+          "tests_patch_sha256": "77bcdb6c67ffc777cd7e6062ecbae4f83a135eb11a8fe42eb29a3aaf4d97251a"
+        },
+        {
+          "feature_id": 3,
+          "prompt_path": "pallets_jinja_task/task1465/feature3/feature.md",
+          "prompt_sha256": "a824981ca0072bf3629b7fd69e99c909e3747973dd62426af1a460e2f1d9ae39",
+          "prompt_bytes": 1910,
+          "gold_patch_path": "pallets_jinja_task/task1465/feature3/feature.patch",
+          "gold_patch_sha256": "720c1bc9149688529b25434eed3291add166898f8f67653ae6e184aeb2db8281",
+          "tests_patch_path": "pallets_jinja_task/task1465/feature3/tests.patch",
+          "tests_patch_sha256": "67d0cae6b074637f9d17e964a9c8bfffa2c381359d05145dc17d0caa9254c315"
+        }
+      ],
+      "combined_patch_path": "pallets_jinja_task/task1465/combined.patch",
+      "combined_patch_sha256": "8ec5e16344e43e3c587af9b1b1693961210c58488e5d331a67f0b48b2ef925dd",
+      "setup": {
+        "official_dockerfile": "pallets_jinja_task/task1465/Dockerfile",
+        "dockerfile_sha256": "22b8face43e316e394c86fd7c18c98d452bcc8018518d9f35bb7c14469ed7252",
+        "runner_path": "pallets_jinja_task/task1465/runner.sh",
+        "runner_sha256": "83e52fdde51b8eaac6d7917aef40efe25218eda47feddf4f04cc47286cc26e33",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pallets-jinja-1465-2-3/attempt-20260909T053541Z-7a048c00/calibration.json",
+      "calibration_report_sha256": "01c080e46758097a2368afbf0d7c446c2368b43d93f1babd431a05124b215c5a"
+    },
+    {
+      "id": "cooperbench-pallets-jinja-1559-6-9",
+      "benchmark": "cooperbench",
+      "repo": "pallets_jinja_task",
+      "task_id": 1559,
+      "feature_ids": [6, 9],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "896a62135bcc151f2997e028c5125bec2cb2431f",
+      "image": "akhatua/cooperbench-pallets-jinja:task1559",
+      "image_digest": "sha256:b6cb99f2ca579663ece4de742d11bed6ac1e458fdc5b071df85cbc5ad523abdd",
+      "selection_reason": "Translation caching and translation extraction markers are different runtime/extraction work streams with shared extension registration.",
+      "division_basis": "Assign feature 6 and feature 9 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 6,
+          "prompt_path": "pallets_jinja_task/task1559/feature6/feature.md",
+          "prompt_sha256": "7264ecb0da3ca52aa66edf0ee318b58ecca0fc78365d75f51d476f6db9f40c89",
+          "prompt_bytes": 2782,
+          "gold_patch_path": "pallets_jinja_task/task1559/feature6/feature.patch",
+          "gold_patch_sha256": "2df0b89ab0344d55b3b1cc7d952ea805e41574b556e62711a511ec7807de1dd3",
+          "tests_patch_path": "pallets_jinja_task/task1559/feature6/tests.patch",
+          "tests_patch_sha256": "d9cddb47239815f70411e4f40a91fa0ff881d7c5ffebdc11bf7fa441ca96fcb4"
+        },
+        {
+          "feature_id": 9,
+          "prompt_path": "pallets_jinja_task/task1559/feature9/feature.md",
+          "prompt_sha256": "64bdd17b8d8ae3d477bb3bdc91819d1d22e0c28c693898fb32c6bdb330b5337c",
+          "prompt_bytes": 4232,
+          "gold_patch_path": "pallets_jinja_task/task1559/feature9/feature.patch",
+          "gold_patch_sha256": "5fc86c6037b5a2a8aa13751209282813a5355a3c9338541b15fa64bad6d1d5b4",
+          "tests_patch_path": "pallets_jinja_task/task1559/feature9/tests.patch",
+          "tests_patch_sha256": "f9f1d90f83f5dce9fa7bf63631bbe189a4cb1cf6aa154bc7aaca0c958bc9f9b2"
+        }
+      ],
+      "combined_patch_path": "pallets_jinja_task/task1559/combined.patch",
+      "combined_patch_sha256": "9d382841c9377c907263b160682426ad819e0f702408461e69893af831a31849",
+      "setup": {
+        "official_dockerfile": "pallets_jinja_task/task1559/Dockerfile",
+        "dockerfile_sha256": "91de2edc1254f5444a66e4f002df61593c0cda8cd7e2b110e5dbb4fee41876ab",
+        "runner_path": "pallets_jinja_task/task1559/runner.sh",
+        "runner_sha256": "160cd82672f34449a063b7764ce89f79deb899aeb6c3dd41a3b2e14ec6000665",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pallets-jinja-1559-6-9/attempt-20260909T053557Z-963729fb/calibration.json",
+      "calibration_report_sha256": "db8c63b3d7780ec8afdbd9a880d01ad33e9451d8e12463ec33be56f9282ed276"
+    },
+    {
+      "id": "cooperbench-pallets-jinja-1621-2-9",
+      "benchmark": "cooperbench",
+      "repo": "pallets_jinja_task",
+      "task_id": 1621,
+      "feature_ids": [2, 9],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "a2920752fd111c2d52c88eb57487667b3cf0ea7b",
+      "image": "akhatua/cooperbench-pallets-jinja:task1621",
+      "image_digest": "sha256:aa69cc168701c29a8f3caffe5db23047ef4f9fa48b1a6b47c074628e1d3763ac",
+      "selection_reason": "Template path normalization and monitored cache invalidation are independent loader behaviors with path identity coordination.",
+      "division_basis": "Assign feature 2 and feature 9 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "pallets_jinja_task/task1621/feature2/feature.md",
+          "prompt_sha256": "d84cbd0c73bf6ed602bd7057a5faadba434a3a6303a110665ba9b43cef0a805b",
+          "prompt_bytes": 3232,
+          "gold_patch_path": "pallets_jinja_task/task1621/feature2/feature.patch",
+          "gold_patch_sha256": "31c258573d654942ed0b09452a302380991196ee8d598c07a8a6681ec41b78c7",
+          "tests_patch_path": "pallets_jinja_task/task1621/feature2/tests.patch",
+          "tests_patch_sha256": "57795dcffdac56132e735906f4632ef90453ded3fd89bb947ef44de6e93ef2a2"
+        },
+        {
+          "feature_id": 9,
+          "prompt_path": "pallets_jinja_task/task1621/feature9/feature.md",
+          "prompt_sha256": "c2cf305357f0eae3ae3f6afc1a0eed03ee1b7299dd5d529ff801808b96a5df8c",
+          "prompt_bytes": 3783,
+          "gold_patch_path": "pallets_jinja_task/task1621/feature9/feature.patch",
+          "gold_patch_sha256": "667339d1a657466aa723e5f978a316442bd0c5b2164f3f9bdcf7c29bc8f1e7de",
+          "tests_patch_path": "pallets_jinja_task/task1621/feature9/tests.patch",
+          "tests_patch_sha256": "93b689458357158cfc1a22e89f69ce0befa691111c26eedff45c06d801bb150e"
+        }
+      ],
+      "combined_patch_path": "pallets_jinja_task/task1621/combined.patch",
+      "combined_patch_sha256": "49e13cd5cdc04166bc89bf35e8837e5ad6d6204cc3ba6c640fd50ecec1d804e6",
+      "setup": {
+        "official_dockerfile": "pallets_jinja_task/task1621/Dockerfile",
+        "dockerfile_sha256": "bf8bedcf720d83d70cee45921825cd2a464c5ca43bdf88dd81887ea30c830e89",
+        "runner_path": "pallets_jinja_task/task1621/runner.sh",
+        "runner_sha256": "38e7039dadf918ea29979f49a775618e057d5f66abffe3a88cb96bcf137652dd",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pallets-jinja-1621-2-9/attempt-20260909T053726Z-7d2f0896/calibration.json",
+      "calibration_report_sha256": "85d93b04fd6765981b97d6a4946264aca581b50722aa82976926e1f3bc6f0460"
+    },
+    {
+      "id": "cooperbench-pillow-25-3-4",
+      "benchmark": "cooperbench",
+      "repo": "pillow_task",
+      "task_id": 25,
+      "feature_ids": [3, 4],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "869aa5843c79c092db074b17234e792682eada41",
+      "image": "akhatua/cooperbench-pillow:task25",
+      "image_digest": "sha256:f0dbe7ff9011f5ac5e94533e2b1c4c40cc51adc724b560a7ad9e8837d2ad83cf",
+      "selection_reason": "Dry-run save validation and overwrite backup management are distinct filesystem behaviors sharing the save lifecycle; isolated sandboxes avoid shared-file interference.",
+      "division_basis": "Assign feature 3 and feature 4 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 3,
+          "prompt_path": "pillow_task/task25/feature3/feature.md",
+          "prompt_sha256": "874b5f44d37126a8ce4d4e70bc717dafcdecb368e78cd0b3e1fb02533a09763e",
+          "prompt_bytes": 1638,
+          "gold_patch_path": "pillow_task/task25/feature3/feature.patch",
+          "gold_patch_sha256": "e6237e0265b13faed2918be322057294faf4ac093ac4eb7ed8b52b4b844885f7",
+          "tests_patch_path": "pillow_task/task25/feature3/tests.patch",
+          "tests_patch_sha256": "2ca8548cf4d2a0cba6dd49a25e24c900809cfd9a91b406a5d5ed1f21523ceac4"
+        },
+        {
+          "feature_id": 4,
+          "prompt_path": "pillow_task/task25/feature4/feature.md",
+          "prompt_sha256": "dec91214ff1c53a090d8b61a346e17ee1a9e51ebdb88198a40773c91f9126a93",
+          "prompt_bytes": 1865,
+          "gold_patch_path": "pillow_task/task25/feature4/feature.patch",
+          "gold_patch_sha256": "935305991a4fc948409ee5d2a24a9a5764afb660e46bc7434acba49bfe198599",
+          "tests_patch_path": "pillow_task/task25/feature4/tests.patch",
+          "tests_patch_sha256": "99b87674932f421817161182ab6bd80c4e67d7561e63b3f40b12e8c69f6ec11b"
+        }
+      ],
+      "combined_patch_path": "pillow_task/task25/combined.patch",
+      "combined_patch_sha256": "5b9c9650d2f26f0305cf87daa3407092914bf69b3a42cbb153134509741960fb",
+      "setup": {
+        "official_dockerfile": "pillow_task/task25/Dockerfile",
+        "dockerfile_sha256": "d94b6a9e1604848e5f43a84473fefedef625e1ed6362a42875dbc83dbe7cce53",
+        "runner_path": "pillow_task/task25/runner.sh",
+        "runner_sha256": "217ad5c84c6abf011e42e5df606325cdee040af011cad3db0d41ab81f1f21f25",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-pillow-25-3-4/attempt-20260909T053802Z-053723f3/calibration.json",
+      "calibration_report_sha256": "035996b678575419706c2420ec5850f23bc7509259f97311e2f8373f4c04c950"
+    },
+    {
+      "id": "cooperbench-huggingface-datasets-3997-2-4",
+      "benchmark": "cooperbench",
+      "repo": "huggingface_datasets_task",
+      "task_id": 3997,
+      "feature_ids": [2, 4],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "e229fade6d1a5b8eedb02370b5e6605b9b8b44aa",
+      "image": "akhatua/cooperbench-huggingface-datasets:task3997",
+      "image_digest": "sha256:1e1776eba8a3969217502b90f4360920851f3f3ac3df20782ba1346ce109a115",
+      "selection_reason": "Custom decoding criteria and extended update semantics are independently specifiable Features behaviors with shared cached state.",
+      "division_basis": "Assign feature 2 and feature 4 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 2,
+          "prompt_path": "huggingface_datasets_task/task3997/feature2/feature.md",
+          "prompt_sha256": "f76c87c1f61a7f0d3b80cfe3479493f65ae820ba0d75447825e026b314793bdb",
+          "prompt_bytes": 1126,
+          "gold_patch_path": "huggingface_datasets_task/task3997/feature2/feature.patch",
+          "gold_patch_sha256": "d545321988572ecde74487d99d65eef33d5e6edd92f0a91e33f28b49a9869608",
+          "tests_patch_path": "huggingface_datasets_task/task3997/feature2/tests.patch",
+          "tests_patch_sha256": "97829068eaa31ab4d1159c80d3cea684e83a5e31187d0d8839e428305afa509c"
+        },
+        {
+          "feature_id": 4,
+          "prompt_path": "huggingface_datasets_task/task3997/feature4/feature.md",
+          "prompt_sha256": "fe171e7205c1c9dbfad7da968f61fc797cb5c21287c209dfb57a885d16671ab9",
+          "prompt_bytes": 906,
+          "gold_patch_path": "huggingface_datasets_task/task3997/feature4/feature.patch",
+          "gold_patch_sha256": "1d85102f0b422e45d6b60c805088fc11db60d41cabcf284e4710e6c9d63e3234",
+          "tests_patch_path": "huggingface_datasets_task/task3997/feature4/tests.patch",
+          "tests_patch_sha256": "73c6c8998dcfee84811fd4a8c754ffd8992c58134a092b43fd83c7cef4e8102d"
+        }
+      ],
+      "combined_patch_path": "huggingface_datasets_task/task3997/combined.patch",
+      "combined_patch_sha256": "b5f7a49899544e4b9b4aff5c583b7ace3f801443018c89069a34f45e2b745fc0",
+      "setup": {
+        "official_dockerfile": "huggingface_datasets_task/task3997/Dockerfile",
+        "dockerfile_sha256": "5de4bfb7c5865f47ad800b2d2217c917240212eed53fa8bd97c8b82045694555",
+        "runner_path": "huggingface_datasets_task/task3997/runner.sh",
+        "runner_sha256": "599de2b4a2116b93e657fb9a43731fa16cc75aa448798e9a6aef68eddef47a99",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-huggingface-datasets-3997-2-4/attempt-20260909T054015Z-61378f79/calibration.json",
+      "calibration_report_sha256": "70f5aef94d4a4df5cb2fd7c6d94c45fdab11520607bbc8fe0b60fc4134b90a02"
+    },
+    {
+      "id": "cooperbench-dspy-8394-3-4",
+      "benchmark": "cooperbench",
+      "repo": "dspy_task",
+      "task_id": 8394,
+      "feature_ids": [3, 4],
+      "language": "Python",
+      "source_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+      "base_commit": "3ded7a6266514c1569452b0e26bcd4e75c1ee6db",
+      "image": "akhatua/cooperbench-dspy:task8394",
+      "image_digest": "sha256:ed152bcf1afd367ede8309ec1184e5ea821e1d7b2f54e8e4ae9a170491b69a0d",
+      "selection_reason": "Cache entry TTL and cache hit/miss statistics are independent policies sharing get/put paths and require coordinated semantics.",
+      "division_basis": "Assign feature 3 and feature 4 to separate child sandboxes with the same immutable base; retain both child patches before parent integration.",
+      "resources": {
+        "cpu": 2,
+        "memory_gib": 4,
+        "gpu": false,
+        "notes": "Provisional evaluation/agent sizing; measured calibration timings and actual image requirements override this estimate."
+      },
+      "features": [
+        {
+          "feature_id": 3,
+          "prompt_path": "dspy_task/task8394/feature3/feature.md",
+          "prompt_sha256": "8a5aecae33f31adb4f06a8cc9bfe109fa44fac4a9795a60602536139f84cf0e5",
+          "prompt_bytes": 2634,
+          "gold_patch_path": "dspy_task/task8394/feature3/feature.patch",
+          "gold_patch_sha256": "f08d0fa3a5881989d4f36578222532226841d6998c461d96fca8f854ee2f019c",
+          "tests_patch_path": "dspy_task/task8394/feature3/tests.patch",
+          "tests_patch_sha256": "dd40cfbb14af51f17528d5b4a7cb8b8781c9eb7521681686511ab3de773323f8"
+        },
+        {
+          "feature_id": 4,
+          "prompt_path": "dspy_task/task8394/feature4/feature.md",
+          "prompt_sha256": "dad0ade51cd96d308fb27d9e729bc1b18f8fa6e9e4b8a7aed10d69f986a5771d",
+          "prompt_bytes": 3342,
+          "gold_patch_path": "dspy_task/task8394/feature4/feature.patch",
+          "gold_patch_sha256": "90bdaca70ced779106740ac0c26a83b672efaccc4458992024198c3351068cc3",
+          "tests_patch_path": "dspy_task/task8394/feature4/tests.patch",
+          "tests_patch_sha256": "b449a584aa4d6a8885983ebe603458a86d6f112fdb962fb7f4fb0d39ecf4d6f4"
+        }
+      ],
+      "combined_patch_path": "dspy_task/task8394/combined.patch",
+      "combined_patch_sha256": "c467e87c437873f804c561bdb901fd21edfa777d40a8576437fb18f55d15b021",
+      "setup": {
+        "official_dockerfile": "dspy_task/task8394/Dockerfile",
+        "dockerfile_sha256": "8eef6169ddae0368dbcf2a49a859f7942856c5315887d68c7c43b5d29757e0f7",
+        "runner_path": "dspy_task/task8394/runner.sh",
+        "runner_sha256": "e1be404c73ca26cddca9040dbbec9cf8b7c417d6af9acde570ec9041709ba9a2",
+        "workspace": "/workspace/repo",
+        "agent_init": "Sanitize official image: remove full git history and grader-only artifacts; initialize a single-commit repository preserving original visible tracked tests and dependencies."
+      },
+      "scoring": {
+        "child_patches": "Pinned upstream eval.sandbox.test_merged in feature_ids order; child 1 is agent1 for upstream fallback.",
+        "parent_patch": "Pinned upstream eval.sandbox.test_solo, labelled OpenInspect parent integration; never substituted for official child-patch score.",
+        "reference": "Each individual feature.patch against own tests; combined.patch against both test suites.",
+        "artifacts": "Two child binary git patches against prepared base plus separate parent final binary git patch."
+      },
+      "calibration_status": "passed",
+      "calibration_report": "runs/calibration/cooperbench/cooperbench-dspy-8394-3-4/attempt-20260909T054610Z-500fe7ef/calibration.json",
+      "calibration_report_sha256": "44e007bc6422ec8203b76ed1cf6ce274fd58e4bc720e5ff87fe39b2f3c932a76"
+    }
+  ],
+  "selection_frozen_at": "2026-09-09T05:51:32Z",
+  "selection_revision": 1
+}

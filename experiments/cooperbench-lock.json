@@ -1,0 +1,1459 @@
+{
+  "schema_version": 1,
+  "benchmark": "cooperbench",
+  "source": {
+    "url": "https://github.com/cooperbench/CooperBench.git",
+    "git_sha": "b0262a7b64df945944b5063745369bb2d78d4b57",
+    "path_relative_to_lab": "sources/CooperBench"
+  },
+  "dataset": {
+    "distribution": "Official GitHub dataset tree (upstream README explicitly supports this mirror alternative)",
+    "git_revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+    "git_tree_sha": "2c7c8ee47345a9e7d4aeac9448ede0bfdc704f1a",
+    "path_relative_to_lab": "datasets/cooperbench-b0262a7b64df",
+    "files": 771,
+    "bytes": 3205863,
+    "inventory_sha256": "388778654fad268ef73258e83acadcbc9d144a34bf7cd24459127338fc02ff13",
+    "inventory_hash_algorithm": "SHA-256 of UTF-8 json.dumps(inventory, sort_keys=True, separators=(comma, colon)); no trailing newline",
+    "inventory_file_sha256": "a1ac8d057d01ee4d4c970c6ab5a4083b3750be2068cb38603c6d6cab09573d3b"
+  },
+  "evaluator": {
+    "revision": "b0262a7b64df945944b5063745369bb2d78d4b57",
+    "path": "src/cooperbench/eval/sandbox.py",
+    "sha256": "cd69b9ce6fd04425a31e8e45ecb3eb8dbf379cef9c746107aecd0d92a5f438fc",
+    "backend": "docker CLI transport; original upstream grading functions dynamically loaded without model SDK dependencies",
+    "dependency_lock_sha256": "111b67fdedffa70a806d3482a5f0ebdd480a0aef45c1b6fe7b47a83e37405db0",
+    "semantics": "naive branch merge; identical-patch normalization; on conflict or failed apply only agent1 fallback; no union fallback"
+  },
+  "images": {
+    "akhatua/cooperbench-pallets-click:task2068": {
+      "tag": "akhatua/cooperbench-pallets-click:task2068",
+      "image_id": "sha256:e42f598f0955a3cedf15141bc26a5f6138fbb550acabd41bb84702ad789b2dd8",
+      "repo_digests": [
+        "akhatua/cooperbench-pallets-click@sha256:e42f598f0955a3cedf15141bc26a5f6138fbb550acabd41bb84702ad789b2dd8"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 578503650,
+      "image": "akhatua/cooperbench-pallets-click:task2068",
+      "requestedDigest": "sha256:2116cc975812211cdae8b97f63069c666b7fffc490ce0d329f8853e241342386",
+      "manifestDigest": "sha256:ccc68eebb563aa84296fe49e5dbd70556ed18c9bc799dc5681e4c30b159ce48f",
+      "configDigest": "sha256:d982a1b907472493b56585c57d7ecd7f4343b477ceb3cd8a77b78782293a4193",
+      "imageId": "sha256:e42f598f0955a3cedf15141bc26a5f6138fbb550acabd41bb84702ad789b2dd8",
+      "compressedBytes": 260775878,
+      "layers": [
+        {
+          "digest": "sha256:72c03230f1363a3fb61d2f98504cf168bad3fe22f511ad2005dc021515d7ce97",
+          "compressedBytes": 29785415
+        },
+        {
+          "digest": "sha256:8c471a93fc525f2012a1d483a12540ba9df9189f0bfe12238f74273aa72590a7",
+          "compressedBytes": 1293278
+        },
+        {
+          "digest": "sha256:8bd2cf7d3f6acc894d6ab00affeb6abf779933fa982aec49b9a4ebea322b7fbb",
+          "compressedBytes": 14360841
+        },
+        {
+          "digest": "sha256:3250ea7ceadc1e9a40a2d832082ee8fe68631ef9c9bf7bd5447fbcff9f527439",
+          "compressedBytes": 250
+        },
+        {
+          "digest": "sha256:0ae91e247a47a5cc5d8c9d7974dad2930c8b73a8980b1b60353f0ecf37f9e442",
+          "compressedBytes": 142294955
+        },
+        {
+          "digest": "sha256:bd20f4652b5a9141b850f71f4ed2ed01ab3adff61e8c581a9d46a612553d8c0f",
+          "compressedBytes": 54855845
+        },
+        {
+          "digest": "sha256:2f5f0c8d0c3134af6c8e26125f7a6471f5157a178986f39b755ece62bea4cdd6",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:8fea6f0ab93b4e9aeff949f6b757a162b79e150b090a422ff8b3c6f180519b1f",
+          "compressedBytes": 6085532
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:3350739384a58a1152f2781ae43ebf27561fcbd92b174eba1d6c36fdc7c80d4d",
+          "compressedBytes": 12097886
+        },
+        {
+          "digest": "sha256:f6d68ea7035a95ffcecffa245d353cacc62d45dce5ccd077bf3ff0a8a072cc5b",
+          "compressedBytes": 875
+        },
+        {
+          "digest": "sha256:247437239abc48952a43441b81ebc0ebf637399b9584da8a4d635c624e95632c",
+          "compressedBytes": 870
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pallets-click:task2068",
+      "loadedAt": "2026-09-09T05:34:59Z",
+      "source_verified": true,
+      "base_commit": "d791537317947448a3960662d00acf160eff2602",
+      "runner_sha256": "ed67cd097a75040cbba6ebc5c7496c2ec483fdafb17bdefa0007496340e37bc4",
+      "base_tree": "aede7d8fb75d9f23fa45890ecdb81e3a40764465"
+    },
+    "akhatua/cooperbench-pallets-click:task2800": {
+      "tag": "akhatua/cooperbench-pallets-click:task2800",
+      "image_id": "sha256:5f76af6f4a89ebd5d954acab0079d35e997b4beae7f34b0dff75dceab0f4463b",
+      "repo_digests": [
+        "akhatua/cooperbench-pallets-click@sha256:5f76af6f4a89ebd5d954acab0079d35e997b4beae7f34b0dff75dceab0f4463b"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 654311590,
+      "image": "akhatua/cooperbench-pallets-click:task2800",
+      "requestedDigest": "sha256:a80b15460f97844a8ac36cadeed51b21fcb68a726e3992374cc9d997fe397260",
+      "manifestDigest": "sha256:f3e6cb251bcdd218666c83e453468ca1358f2c0ce3d06c8522de3b90ffc4fd95",
+      "configDigest": "sha256:71a7d7b687c873ee16452ca5139f3b2dfcc50b0dcc48cd4722552a9e9f289053",
+      "imageId": "sha256:5f76af6f4a89ebd5d954acab0079d35e997b4beae7f34b0dff75dceab0f4463b",
+      "compressedBytes": 255233960,
+      "layers": [
+        {
+          "digest": "sha256:26c307b5e35a59ce911f5fde5b9458120ec8734e831ea2da5649a9ad14abfd3d",
+          "compressedBytes": 29780765
+        },
+        {
+          "digest": "sha256:2835c55197170c643a531e330159e6c5c215f044e97d1cde2ee1f3056c5ad840",
+          "compressedBytes": 1293262
+        },
+        {
+          "digest": "sha256:bbaff5426d0f7209ef9826582b46945e0e6851829b308e906c9c05874cf70915",
+          "compressedBytes": 14446471
+        },
+        {
+          "digest": "sha256:0fc9203b193a8869d7e8cdb9754932db059f4a0d5b9812b000b47d1f5d0b4488",
+          "compressedBytes": 249
+        },
+        {
+          "digest": "sha256:f0703ff4c8aa5104c6984d487673ce46a62d302d19606ed32f77d2685619ca3e",
+          "compressedBytes": 142312918
+        },
+        {
+          "digest": "sha256:c8a08c3974428c7804b0a8e9bfe7590f51c866fc10fa6d00d6f639fdc3107cff",
+          "compressedBytes": 49359132
+        },
+        {
+          "digest": "sha256:4b12be9998812539af7899e9991d0e1c47640601aaec847cc279898518a7cc9c",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:2c7cc77d9f92eee1a9c41a25e3ddaecc21be9bd0484f71e1d1c3ea9f1a3deca2",
+          "compressedBytes": 6287648
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:2eb9e1c0a18e00363eb3dfd1b03b4b75e3cecb925f3ee36d079e45c76f7a158f",
+          "compressedBytes": 11751612
+        },
+        {
+          "digest": "sha256:9a8a4cc8d73af215dabc02abdae2d39e590faff1d9a6381836b14fc5e5a43992",
+          "compressedBytes": 888
+        },
+        {
+          "digest": "sha256:7a1272cbecf2fb4c96edbbe8d3206c9bbf8d80140e399123baba32be7cc0140f",
+          "compressedBytes": 884
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pallets-click:task2800",
+      "loadedAt": "2026-09-09T05:19:34Z",
+      "source_verified": true,
+      "base_commit": "d8763b93021c416549b5f8b4b5497234619410db",
+      "runner_sha256": "4755a39855b9df524408a203cc15ee211a90f1399829edfd325fca54d63bef9e",
+      "base_tree": "29728e6bc92d44e543c5cf49dad67080aa70ac24"
+    },
+    "akhatua/cooperbench-pallets-jinja:task1621": {
+      "tag": "akhatua/cooperbench-pallets-jinja:task1621",
+      "image_id": "sha256:52df2ee6c11ef8872602927e1eab3e5fb0ddae4a83e8e9cc95c4dab87ae9bda2",
+      "repo_digests": [
+        "akhatua/cooperbench-pallets-jinja@sha256:52df2ee6c11ef8872602927e1eab3e5fb0ddae4a83e8e9cc95c4dab87ae9bda2"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 657022630,
+      "image": "akhatua/cooperbench-pallets-jinja:task1621",
+      "requestedDigest": "sha256:b51b95853994225afb5050ab32439561032b0e2f69c2fddea779fcd88f33da5c",
+      "manifestDigest": "sha256:aa69cc168701c29a8f3caffe5db23047ef4f9fa48b1a6b47c074628e1d3763ac",
+      "configDigest": "sha256:e6dd0d07f4ca33a4d9e47395160679f912076632eced558c01ad94dbc3a6bc35",
+      "imageId": "sha256:52df2ee6c11ef8872602927e1eab3e5fb0ddae4a83e8e9cc95c4dab87ae9bda2",
+      "compressedBytes": 257520098,
+      "layers": [
+        {
+          "digest": "sha256:26c307b5e35a59ce911f5fde5b9458120ec8734e831ea2da5649a9ad14abfd3d",
+          "compressedBytes": 29780765
+        },
+        {
+          "digest": "sha256:2835c55197170c643a531e330159e6c5c215f044e97d1cde2ee1f3056c5ad840",
+          "compressedBytes": 1293262
+        },
+        {
+          "digest": "sha256:bbaff5426d0f7209ef9826582b46945e0e6851829b308e906c9c05874cf70915",
+          "compressedBytes": 14446471
+        },
+        {
+          "digest": "sha256:0fc9203b193a8869d7e8cdb9754932db059f4a0d5b9812b000b47d1f5d0b4488",
+          "compressedBytes": 249
+        },
+        {
+          "digest": "sha256:2710b43ddb967342e204b613785569e38d3019ee982e931ea816597ecf8c3a92",
+          "compressedBytes": 142312976
+        },
+        {
+          "digest": "sha256:9cdacb2471fe906add623eea621a033b7dc54896e8b4b4146b01928da8fbcd1d",
+          "compressedBytes": 49359109
+        },
+        {
+          "digest": "sha256:146e84f0b44dea64af4ae872abfa879d9e42b1dadae434d2b0b0a7208e63865b",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:dbc4419060ad08f2cf40076fb4cba8527568e759619090634950a907c68340ae",
+          "compressedBytes": 7536154
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:7a0995455f6691781cebe97c64aaa59aa9f9820975164865a33afd4d8ca9168d",
+          "compressedBytes": 12789239
+        },
+        {
+          "digest": "sha256:276625293157d15a80af98bc3d56c15cb2a0c9578315e8f88e12ce688b7f63cf",
+          "compressedBytes": 873
+        },
+        {
+          "digest": "sha256:58d05ce15ca34309e556686884ff006f6b1d0f97bdfea01957f5238df39e677a",
+          "compressedBytes": 869
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pallets-jinja:task1621",
+      "loadedAt": "2026-09-09T05:26:58Z",
+      "source_verified": true,
+      "base_commit": "a2920752fd111c2d52c88eb57487667b3cf0ea7b",
+      "runner_sha256": "38e7039dadf918ea29979f49a775618e057d5f66abffe3a88cb96bcf137652dd",
+      "base_tree": "662854d4cf57f2a7318e4b3066d95bb7269a5749"
+    },
+    "akhatua/cooperbench-go-chi:task26": {
+      "tag": "akhatua/cooperbench-go-chi:task26",
+      "image_id": "sha256:738d3fec89a811cc1177514cf16b1a361548b446563b5a8fb6671975ea13dc34",
+      "repo_digests": [
+        "akhatua/cooperbench-go-chi@sha256:738d3fec89a811cc1177514cf16b1a361548b446563b5a8fb6671975ea13dc34"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 322492450,
+      "image": "akhatua/cooperbench-go-chi:task26",
+      "requestedDigest": "sha256:82493162967558e99c6fe470323856d7902f32ac5f01852c9f74ca9d73e29f74",
+      "manifestDigest": "sha256:7c20c901458147cb42d9d75d969864da5a924867c92ec9093665734bf9be4526",
+      "configDigest": "sha256:5b116c7d31d37eb65b075e224452c37f4f29db91997f974e68e8a3071d7aee3a",
+      "imageId": "sha256:738d3fec89a811cc1177514cf16b1a361548b446563b5a8fb6671975ea13dc34",
+      "compressedBytes": 106006992,
+      "layers": [
+        {
+          "digest": "sha256:1f3e46996e2966e4faa5846e56e76e3748b7315e2ded61476c24403d592134f0",
+          "compressedBytes": 3641715
+        },
+        {
+          "digest": "sha256:4d75fd4b73869ed224045c010cdec78756eefb6752a5a8e4804294009eac11e9",
+          "compressedBytes": 294898
+        },
+        {
+          "digest": "sha256:afa154b433c7f72db064d19e1bcfa84ee196ad29120328f6bdb2c5fbd7b8eeac",
+          "compressedBytes": 69364787
+        },
+        {
+          "digest": "sha256:5f837c998576dcb54bc285997f33fcc2166dff6aa48fe3a374da92474efd5fe8",
+          "compressedBytes": 126
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:91a79f699cffe8aadd9c5a8f0cd46d6dcc92ce466b57a7b764ce8602e0a7d3e9",
+          "compressedBytes": 28510658
+        },
+        {
+          "digest": "sha256:0d1cfae43902f998f53da50d29571318895bd9be6d6cf20829dfbf1217304023",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:474b8690c8e44390447209314dbefacc63fd3644958b8339efbc88563a067d85",
+          "compressedBytes": 4191088
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:61d5b495079d7924336568a193baa87251ca726883f4ee08a2292bf9cae61365",
+          "compressedBytes": 1764
+        },
+        {
+          "digest": "sha256:8a564f97e6b5c242d0e6961c68b455566006b1fc8e1ae90c6924bf447400941f",
+          "compressedBytes": 1761
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-go-chi:task26",
+      "loadedAt": "2026-09-09T05:12:52Z",
+      "source_verified": true,
+      "base_commit": "9436cc85db0d35be06e66b91b4f74bbc0295b07b",
+      "runner_sha256": "bc20a264330e3635b67d6e38f0c233172fe16198bfad27993178b34e3e058549",
+      "base_tree": "f7268a42ee57fdfdc11b9f9bcfefecf32df59412"
+    },
+    "akhatua/cooperbench-go-chi:task27": {
+      "tag": "akhatua/cooperbench-go-chi:task27",
+      "image_id": "sha256:5b6abd7b16c9fa8df43ef1b6b09536ca82e4598330c735ec87c2e32444a887c1",
+      "repo_digests": [
+        "akhatua/cooperbench-go-chi@sha256:5b6abd7b16c9fa8df43ef1b6b09536ca82e4598330c735ec87c2e32444a887c1"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 316170762,
+      "image": "akhatua/cooperbench-go-chi:task27",
+      "requestedDigest": "sha256:ad15fb7672d97d19b9998af32ef2753b33339548c2686958767ec0547f4211c0",
+      "manifestDigest": "sha256:9a01949be6aa6e9821bca6164d74479ef59a5b6d9017df6012dc2eed623faef5",
+      "configDigest": "sha256:29c066a19abd54bcb102492bbadca7c8012938959d9ab2520363086d04307a49",
+      "imageId": "sha256:5b6abd7b16c9fa8df43ef1b6b09536ca82e4598330c735ec87c2e32444a887c1",
+      "compressedBytes": 103995085,
+      "layers": [
+        {
+          "digest": "sha256:c6a83fedfae6ed8a4f5f7cbb6a7b6f1c1ec3d86fea8cb9e5ba2e5e6673fde9f6",
+          "compressedBytes": 3622892
+        },
+        {
+          "digest": "sha256:41db7493d1c6f3f26428d119962e3862c14a9e20bb0b8fefc36e7282d015d099",
+          "compressedBytes": 290886
+        },
+        {
+          "digest": "sha256:54bf7053e2d96c2c7f4637ad7580bd64345b3c9fabb163e1fdb8894aea8a9af0",
+          "compressedBytes": 67010746
+        },
+        {
+          "digest": "sha256:4579008f8500d429ec007d092329191009711942d9380d060c8d9bd24c0c352c",
+          "compressedBytes": 126
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:4a2ed455cb2493975e4f70a9e282ff979a983f687483d731fa534a1bcf6287ca",
+          "compressedBytes": 28875792
+        },
+        {
+          "digest": "sha256:01480efdfcfaedf6a743e78f6080fc59d4523f608390c33d922ecd7ef39c7b23",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:11a85d54471e9fc234193515828218c8886fd5952a43aeee070015703514b283",
+          "compressedBytes": 4191102
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:62e75903f74563dbd3ae34f58bcc0ff8deb2f6155fb90167e90bdecedd49220d",
+          "compressedBytes": 1675
+        },
+        {
+          "digest": "sha256:ff7018b3dd9a082f62aab9fea4465a8d45f79db1a3e665abb49a4f62bbc55309",
+          "compressedBytes": 1671
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-go-chi:task27",
+      "loadedAt": "2026-09-09T05:22:46Z",
+      "source_verified": true,
+      "base_commit": "9436cc85db0d35be06e66b91b4f74bbc0295b07b",
+      "runner_sha256": "7b2013520a179273cf5998ef37a8c6516294c47f0a4e4396ae612fe9f0f62dde",
+      "base_tree": "f7268a42ee57fdfdc11b9f9bcfefecf32df59412"
+    },
+    "akhatua/cooperbench-huggingface-datasets:task3997": {
+      "tag": "akhatua/cooperbench-huggingface-datasets:task3997",
+      "image_id": "sha256:c6aacd1d6f110483e4a84187eb6f0b3fc11bbabf972499dbf21108365432f2e1",
+      "repo_digests": [
+        "akhatua/cooperbench-huggingface-datasets@sha256:c6aacd1d6f110483e4a84187eb6f0b3fc11bbabf972499dbf21108365432f2e1"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 1330685872,
+      "image": "akhatua/cooperbench-huggingface-datasets:task3997",
+      "requestedDigest": "sha256:2e013c5193ea3215b8fabaab34102ecbe49937412caccb340c39173c637890eb",
+      "manifestDigest": "sha256:1e1776eba8a3969217502b90f4360920851f3f3ac3df20782ba1346ce109a115",
+      "configDigest": "sha256:052fd7a88c4a68df202871e8588eeca8a07bf83cb17f6d440bf63c5d2cdc869b",
+      "imageId": "sha256:c6aacd1d6f110483e4a84187eb6f0b3fc11bbabf972499dbf21108365432f2e1",
+      "compressedBytes": 644627584,
+      "layers": [
+        {
+          "digest": "sha256:26c307b5e35a59ce911f5fde5b9458120ec8734e831ea2da5649a9ad14abfd3d",
+          "compressedBytes": 29780765
+        },
+        {
+          "digest": "sha256:5a31db4cd47898e862a567028aa41f7a11d814cf69be6904173402a8b8eac5cb",
+          "compressedBytes": 1293276
+        },
+        {
+          "digest": "sha256:c85ad0bcaca895afa08053538ec1ea7642c7e9e05f5684d18e3627a2316ca8ae",
+          "compressedBytes": 12113733
+        },
+        {
+          "digest": "sha256:b3c7a9bdb4f2a30d0a1358438d1539c06b86da99135cfd9d92756863cc87ae18",
+          "compressedBytes": 249
+        },
+        {
+          "digest": "sha256:751d0ff4037c2e723e7be4ab1881e8d28f63cc4058dd1eee336e248439313605",
+          "compressedBytes": 142312819
+        },
+        {
+          "digest": "sha256:8bbc46dd32cc4ebb555a4dbac57d4c891291ffd341c0f2029309553f0c50e79b",
+          "compressedBytes": 48652448
+        },
+        {
+          "digest": "sha256:55ca74127fd1de841995a2063e3f4184a7ae1b93039f46f39f299c10079481dd",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:5526d1452813e0c6225ae1d1b80cd8d5a98a699be2363206f8c44c4c20c11a04",
+          "compressedBytes": 163566776
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:d04c34af0d6b310f40328118fafbb5ff2024490246a234419473dc316ff52f49",
+          "compressedBytes": 246905593
+        },
+        {
+          "digest": "sha256:e997de139bc8acb1b91f7b21f1a40041e38f4b9b3655af71b703af5e262b1e52",
+          "compressedBytes": 899
+        },
+        {
+          "digest": "sha256:28071b5401478dd8026b0ac18d30c30394e8decb21a18513e427b6825ab59a85",
+          "compressedBytes": 895
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-huggingface-datasets:task3997",
+      "loadedAt": "2026-09-09T05:33:10Z",
+      "source_verified": true,
+      "base_commit": "e229fade6d1a5b8eedb02370b5e6605b9b8b44aa",
+      "runner_sha256": "599de2b4a2116b93e657fb9a43731fa16cc75aa448798e9a6aef68eddef47a99",
+      "base_tree": "c9e6b502430d36c8d6db1d248244063f3755eec8"
+    },
+    "akhatua/cooperbench-dspy:task8394": {
+      "tag": "akhatua/cooperbench-dspy:task8394",
+      "image_id": "sha256:8d504f8c6864518559d47893137870457f8e1f8750f7b685b5920d23ceca7ee9",
+      "repo_digests": [
+        "akhatua/cooperbench-dspy@sha256:8d504f8c6864518559d47893137870457f8e1f8750f7b685b5920d23ceca7ee9"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 2112517248,
+      "image": "akhatua/cooperbench-dspy:task8394",
+      "requestedDigest": "sha256:279e1ba7b11fdf418b1519104f6a00a9b0b0cbcfd48b1d509896b4b8d6112f46",
+      "manifestDigest": "sha256:ed152bcf1afd367ede8309ec1184e5ea821e1d7b2f54e8e4ae9a170491b69a0d",
+      "configDigest": "sha256:ad2b7f0c0d72d350d7c4732d9e3ad29f2cfbe8a3985feb44d431ade34b6290db",
+      "imageId": "sha256:8d504f8c6864518559d47893137870457f8e1f8750f7b685b5920d23ceca7ee9",
+      "compressedBytes": 1015221782,
+      "layers": [
+        {
+          "digest": "sha256:26c307b5e35a59ce911f5fde5b9458120ec8734e831ea2da5649a9ad14abfd3d",
+          "compressedBytes": 29780765
+        },
+        {
+          "digest": "sha256:2835c55197170c643a531e330159e6c5c215f044e97d1cde2ee1f3056c5ad840",
+          "compressedBytes": 1293262
+        },
+        {
+          "digest": "sha256:bbaff5426d0f7209ef9826582b46945e0e6851829b308e906c9c05874cf70915",
+          "compressedBytes": 14446471
+        },
+        {
+          "digest": "sha256:0fc9203b193a8869d7e8cdb9754932db059f4a0d5b9812b000b47d1f5d0b4488",
+          "compressedBytes": 249
+        },
+        {
+          "digest": "sha256:2c455e667c1de466361bc1615ec9e5110c1ce92d66f8fe187e9a87bea1c27bc9",
+          "compressedBytes": 150817387
+        },
+        {
+          "digest": "sha256:c18bed1a27e3c9c733bcb0ffe78bb0ad79853b48e637a331ef51e0cfaa1486f1",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:9e1f091fa8d10e82a34e8100dafbb6582ef88ea0f27de34e87a49ce7ed0d38b7",
+          "compressedBytes": 201515503
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:f1cbdd6bb841a10ddb63b0fa8a594b4bdc8d1f4059cae2ee22b86eeff852a8c2",
+          "compressedBytes": 595575239
+        },
+        {
+          "digest": "sha256:560fa546ea39628735fb5a20802400881971660821a1f96c191aa19b83232ac7",
+          "compressedBytes": 21789521
+        },
+        {
+          "digest": "sha256:8904b09cab8ef0d6d2d6b73d6bce04633a7caab78cb5f0fa18f4865fb4da0a2f",
+          "compressedBytes": 1629
+        },
+        {
+          "digest": "sha256:b0dfea190796fb565420a1d432b7daeb0782673637af6d0a2a10b92ee28c76bd",
+          "compressedBytes": 1625
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-dspy:task8394",
+      "loadedAt": "2026-09-09T05:34:32Z",
+      "source_verified": true,
+      "base_commit": "3ded7a6266514c1569452b0e26bcd4e75c1ee6db",
+      "runner_sha256": "e1be404c73ca26cddca9040dbbec9cf8b7c417d6af9acde570ec9041709ba9a2",
+      "base_tree": "5dbe45a2e1271effc0a6df4a6acb726dca813e4c"
+    },
+    "akhatua/cooperbench-go-chi:task56": {
+      "tag": "akhatua/cooperbench-go-chi:task56",
+      "image_id": "sha256:eb23c7f6de734610450cde15415ad717c69bc9712a998fed0fbfce8de4bfb54d",
+      "repo_digests": [
+        "akhatua/cooperbench-go-chi@sha256:eb23c7f6de734610450cde15415ad717c69bc9712a998fed0fbfce8de4bfb54d"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 316163081,
+      "image": "akhatua/cooperbench-go-chi:task56",
+      "requestedDigest": "sha256:ccd295ebdde0c92c38da03bbf87e9e20dbef12e448122c7f7d65e0d8606b38b0",
+      "manifestDigest": "sha256:91a3058d55c6222ab8d9c4838a5a36c8981b31bba160017e06e620d412f9c1bd",
+      "configDigest": "sha256:efb64e583d9040af4680d26062aea73cedc8df5d666fadb136a83c1ef4a793e1",
+      "imageId": "sha256:eb23c7f6de734610450cde15415ad717c69bc9712a998fed0fbfce8de4bfb54d",
+      "compressedBytes": 103993901,
+      "layers": [
+        {
+          "digest": "sha256:c6a83fedfae6ed8a4f5f7cbb6a7b6f1c1ec3d86fea8cb9e5ba2e5e6673fde9f6",
+          "compressedBytes": 3622892
+        },
+        {
+          "digest": "sha256:41db7493d1c6f3f26428d119962e3862c14a9e20bb0b8fefc36e7282d015d099",
+          "compressedBytes": 290886
+        },
+        {
+          "digest": "sha256:54bf7053e2d96c2c7f4637ad7580bd64345b3c9fabb163e1fdb8894aea8a9af0",
+          "compressedBytes": 67010746
+        },
+        {
+          "digest": "sha256:4579008f8500d429ec007d092329191009711942d9380d060c8d9bd24c0c352c",
+          "compressedBytes": 126
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:4a2ed455cb2493975e4f70a9e282ff979a983f687483d731fa534a1bcf6287ca",
+          "compressedBytes": 28875792
+        },
+        {
+          "digest": "sha256:01480efdfcfaedf6a743e78f6080fc59d4523f608390c33d922ecd7ef39c7b23",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:8a3d33d82566f548ec3feb7951df05eeab7a968d5f4c19db62b8e9824a2cef87",
+          "compressedBytes": 4189934
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:de507d30e1d090198fe3e6595732ccd4b03e678bc0ba60e29c43a4575e70f250",
+          "compressedBytes": 1667
+        },
+        {
+          "digest": "sha256:9762732207e61b29f95c53d79135d813ec453a1813d83b4ab849043b194a23b3",
+          "compressedBytes": 1663
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-go-chi:task56",
+      "loadedAt": "2026-09-09T05:13:17Z",
+      "source_verified": true,
+      "base_commit": "7f280968675bcc9f310008fc6b8abff0b923734c",
+      "runner_sha256": "7b0462063345e48d4eb713c0caa3282981079472ee2906379189ac25f59c0a27",
+      "base_tree": "37c2d7f515ea19e3cee2bdcda3ea73f955f564ac"
+    },
+    "akhatua/cooperbench-pillow:task25": {
+      "tag": "akhatua/cooperbench-pillow:task25",
+      "image_id": "sha256:570d071436fba1558621dd1a9f0d75567cd36852be943facca23420f339ddc0f",
+      "repo_digests": [
+        "akhatua/cooperbench-pillow@sha256:570d071436fba1558621dd1a9f0d75567cd36852be943facca23420f339ddc0f"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 947244006,
+      "image": "akhatua/cooperbench-pillow:task25",
+      "requestedDigest": "sha256:1c7399a4e8e7d08ef361b1288b8c232b4855deaf92f3da5336ce453717036d7e",
+      "manifestDigest": "sha256:f0dbe7ff9011f5ac5e94533e2b1c4c40cc51adc724b560a7ad9e8837d2ad83cf",
+      "configDigest": "sha256:99688824941c59c1bb8d7ec035faf6c61a6bb97468e5aded5d0f612fa06bd895",
+      "imageId": "sha256:570d071436fba1558621dd1a9f0d75567cd36852be943facca23420f339ddc0f",
+      "compressedBytes": 534923055,
+      "layers": [
+        {
+          "digest": "sha256:72c03230f1363a3fb61d2f98504cf168bad3fe22f511ad2005dc021515d7ce97",
+          "compressedBytes": 29785415
+        },
+        {
+          "digest": "sha256:8c471a93fc525f2012a1d483a12540ba9df9189f0bfe12238f74273aa72590a7",
+          "compressedBytes": 1293278
+        },
+        {
+          "digest": "sha256:8bd2cf7d3f6acc894d6ab00affeb6abf779933fa982aec49b9a4ebea322b7fbb",
+          "compressedBytes": 14360841
+        },
+        {
+          "digest": "sha256:3250ea7ceadc1e9a40a2d832082ee8fe68631ef9c9bf7bd5447fbcff9f527439",
+          "compressedBytes": 250
+        },
+        {
+          "digest": "sha256:45332ed2e65fe449e07a35c079a8066db6c40a64ff02914b06e9106fa7527a2b",
+          "compressedBytes": 169537474
+        },
+        {
+          "digest": "sha256:24546e21978c366d544706320e8c21d9899bef57b54f6d58fc436e3696ce31f1",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:dd3d5a6c29dbb48578b08bc51939d6e970562d9482ac32616e03ed4f0c929b9a",
+          "compressedBytes": 264967953
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:5db64acdfd14cbd2c8387d0ab0f0c0eaaa1f6dee4715267321cd8ae456263074",
+          "compressedBytes": 54974796
+        },
+        {
+          "digest": "sha256:0fc3cd13bf8d5e8ffff3569a0b4e1ca9a4342a21b7ffbd1557f81bb6479eabc7",
+          "compressedBytes": 718
+        },
+        {
+          "digest": "sha256:84d9b749e257068281fb8944d22bc2d8129f921a521deb17006fa56a6341b606",
+          "compressedBytes": 710
+        },
+        {
+          "digest": "sha256:58391a2d45c7298f4a1d66993d9acad12c62519612e26caa7522f462ec78b279",
+          "compressedBytes": 747
+        },
+        {
+          "digest": "sha256:b5e0d2b880d757a86c3abfa5db881b39d0f9944be0acacedf25af2fd6ddc758e",
+          "compressedBytes": 742
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pillow:task25",
+      "loadedAt": "2026-09-09T05:28:02Z",
+      "source_verified": true,
+      "base_commit": "869aa5843c79c092db074b17234e792682eada41",
+      "runner_sha256": "217ad5c84c6abf011e42e5df606325cdee040af011cad3db0d41ab81f1f21f25",
+      "base_tree": "a2df9ec0592c9638ec3e7a857e5cdd2ac9adaf7b"
+    },
+    "akhatua/cooperbench-samuelcolvin-dirty-equals:task43": {
+      "tag": "akhatua/cooperbench-samuelcolvin-dirty-equals:task43",
+      "image_id": "sha256:8aadce92c1bf5866ea80063a7453b1404de73496202852913f497d362c0a0c54",
+      "repo_digests": [
+        "akhatua/cooperbench-samuelcolvin-dirty-equals@sha256:8aadce92c1bf5866ea80063a7453b1404de73496202852913f497d362c0a0c54"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 575851539,
+      "image": "akhatua/cooperbench-samuelcolvin-dirty-equals:task43",
+      "requestedDigest": "sha256:c0d0ab8de32ec280797c0043d29c2904389b786cb8ad9f44fbf7b79032d68926",
+      "manifestDigest": "sha256:6389e650d888f04e0e3f8c1891e96ad1d7b9c7b94c9c479cece4f87b298a64f2",
+      "configDigest": "sha256:d9c32c868046c96b42160d819a4bf24c579e6d05fa60d3ec27b6a57d825630a7",
+      "imageId": "sha256:8aadce92c1bf5866ea80063a7453b1404de73496202852913f497d362c0a0c54",
+      "compressedBytes": 257579388,
+      "layers": [
+        {
+          "digest": "sha256:72c03230f1363a3fb61d2f98504cf168bad3fe22f511ad2005dc021515d7ce97",
+          "compressedBytes": 29785415
+        },
+        {
+          "digest": "sha256:8c471a93fc525f2012a1d483a12540ba9df9189f0bfe12238f74273aa72590a7",
+          "compressedBytes": 1293278
+        },
+        {
+          "digest": "sha256:8bd2cf7d3f6acc894d6ab00affeb6abf779933fa982aec49b9a4ebea322b7fbb",
+          "compressedBytes": 14360841
+        },
+        {
+          "digest": "sha256:3250ea7ceadc1e9a40a2d832082ee8fe68631ef9c9bf7bd5447fbcff9f527439",
+          "compressedBytes": 250
+        },
+        {
+          "digest": "sha256:0ae91e247a47a5cc5d8c9d7974dad2930c8b73a8980b1b60353f0ecf37f9e442",
+          "compressedBytes": 142294955
+        },
+        {
+          "digest": "sha256:bd20f4652b5a9141b850f71f4ed2ed01ab3adff61e8c581a9d46a612553d8c0f",
+          "compressedBytes": 54855845
+        },
+        {
+          "digest": "sha256:2f5f0c8d0c3134af6c8e26125f7a6471f5157a178986f39b755ece62bea4cdd6",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:ae36194fb89b692873c9fee3293844a3b8975fe684e0af8dd7d5f0c1f00c0c39",
+          "compressedBytes": 1861689
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:35b55fd994cac67d36e97e97ca76393c4388164d4da9608ca5c7eac98b51b69f",
+          "compressedBytes": 13125231
+        },
+        {
+          "digest": "sha256:7e86d73174c7396faecc0c1f03f9ec6e30c874d92fc9d275795c4e115791cc49",
+          "compressedBytes": 879
+        },
+        {
+          "digest": "sha256:fd15962861d76e678366877fa11de2be2c649a2cb5bc0060fb29d6c87d53feb5",
+          "compressedBytes": 874
+        }
+      ],
+      "status": "available",
+      "source_verified": true,
+      "base_commit": "593bcccf738ab8b724d7cb860881d74344171f5f",
+      "runner_sha256": "04e67d230a6d1badfa2dfb82932dc0086779cffaed4afdff8d82bc9e473fceda",
+      "base_tree": "f2086eaf7459021772f94d2ea70b5249da824a74"
+    },
+    "akhatua/cooperbench-react-hook-form:task85": {
+      "tag": "akhatua/cooperbench-react-hook-form:task85",
+      "image_id": "sha256:a7b132991bf1e30c64151438d07cae731148bcb3c955410d3c9e41108a63b593",
+      "repo_digests": [
+        "akhatua/cooperbench-react-hook-form@sha256:a7b132991bf1e30c64151438d07cae731148bcb3c955410d3c9e41108a63b593"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 1607961824,
+      "image": "akhatua/cooperbench-react-hook-form:task85",
+      "requestedDigest": "sha256:3f391d331f1e5dd46a0eb77fdea9eec276959f22a5dce675c1d7356189b1e219",
+      "manifestDigest": "sha256:de42e7795dc146fdaa1a33410650d3ff85ba4bbf3bb0e0c71a2eee518ff2f0f6",
+      "configDigest": "sha256:ff2797081ad0014aa81f8ea506aafb21aeb2edec81804acfd5e6115b9835280e",
+      "imageId": "sha256:a7b132991bf1e30c64151438d07cae731148bcb3c955410d3c9e41108a63b593",
+      "compressedBytes": 477638983,
+      "layers": [
+        {
+          "digest": "sha256:c02d17997ce3d2c82e082235ea0b5152d06ee659c4e2fabcf1e0079312f1bcde",
+          "compressedBytes": 28228572
+        },
+        {
+          "digest": "sha256:c06224db79377a9070235765c986fde15b2056fe616c2808c0cea189aa52876b",
+          "compressedBytes": 3309
+        },
+        {
+          "digest": "sha256:e1c9adef44853b9bab15246e8900feaa9b5426d3f5a88411f0aca8a3129a2573",
+          "compressedBytes": 49472719
+        },
+        {
+          "digest": "sha256:0c6ac2b87b09265a60e104e3d87872d2c15f913cbbfd4d401b5e4b5353e4ced4",
+          "compressedBytes": 1712660
+        },
+        {
+          "digest": "sha256:66cc9ecead9d0fe8970f3923a484fcd4fe1fd027fab911d462ca552cd57d5dbf",
+          "compressedBytes": 445
+        },
+        {
+          "digest": "sha256:172a2b0a059c88ee21c28d680e13d42d88f9ada2ecfb772f09dd7c8e6a42f996",
+          "compressedBytes": 170106617
+        },
+        {
+          "digest": "sha256:300e06ab621c24f6fc1042093396687073a8acdc3afd03f83d16ffd4c69dfeaa",
+          "compressedBytes": 9840621
+        },
+        {
+          "digest": "sha256:3c873fbc0a6b2b40c46befb37becb27606c775c6f7434ab15ed3544b1680fd05",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:15177184360daef3f7c1e29f94090a977d94cbcf99078c2e3d900120b9f8d20e",
+          "compressedBytes": 35187395
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:24319e1705ba699aa3da21ac111391064e6b7f33dc01738f42e8572484586e5e",
+          "compressedBytes": 183085049
+        },
+        {
+          "digest": "sha256:0db52ca103cf4d71a26384f32986e2b78f8c2273d8946106244c207827491bfc",
+          "compressedBytes": 734
+        },
+        {
+          "digest": "sha256:1f9a20b9f154c4cb89699e8739e039a399ae3d6f827ccbc84566b99a0d5f5b7e",
+          "compressedBytes": 731
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-react-hook-form:task85",
+      "loadedAt": "2026-09-09T05:16:59Z",
+      "source_verified": true,
+      "base_commit": "b5863b46346416972c025f4b621cb624ffc4a955",
+      "runner_sha256": "588da71dc6ef4d14ec375a9d35dd89fba9125e62eba73c3488364b5ae3434fee",
+      "base_tree": "c211763324a1da869735907d6b84a44df9010a14"
+    },
+    "akhatua/cooperbench-pallets-jinja:task1559": {
+      "tag": "akhatua/cooperbench-pallets-jinja:task1559",
+      "image_id": "sha256:e524892a8230b579d1d05e191ad348d2431abe5f9edb66db0f4ba3d170ad5377",
+      "repo_digests": [
+        "akhatua/cooperbench-pallets-jinja@sha256:e524892a8230b579d1d05e191ad348d2431abe5f9edb66db0f4ba3d170ad5377"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 657019559,
+      "image": "akhatua/cooperbench-pallets-jinja:task1559",
+      "requestedDigest": "sha256:0dd982105dc8afbbee465f50796540002546c0764ca1166ff82ee015af8e58e2",
+      "manifestDigest": "sha256:b6cb99f2ca579663ece4de742d11bed6ac1e458fdc5b071df85cbc5ad523abdd",
+      "configDigest": "sha256:66b66ed58cb24fb2243320cd21b8676a243fffb126519db595751bc77e6411e9",
+      "imageId": "sha256:e524892a8230b579d1d05e191ad348d2431abe5f9edb66db0f4ba3d170ad5377",
+      "compressedBytes": 257519235,
+      "layers": [
+        {
+          "digest": "sha256:26c307b5e35a59ce911f5fde5b9458120ec8734e831ea2da5649a9ad14abfd3d",
+          "compressedBytes": 29780765
+        },
+        {
+          "digest": "sha256:2835c55197170c643a531e330159e6c5c215f044e97d1cde2ee1f3056c5ad840",
+          "compressedBytes": 1293262
+        },
+        {
+          "digest": "sha256:bbaff5426d0f7209ef9826582b46945e0e6851829b308e906c9c05874cf70915",
+          "compressedBytes": 14446471
+        },
+        {
+          "digest": "sha256:0fc9203b193a8869d7e8cdb9754932db059f4a0d5b9812b000b47d1f5d0b4488",
+          "compressedBytes": 249
+        },
+        {
+          "digest": "sha256:b763e9e605736f1485eb04ab2824e46515d9a61386ab49236244e21cafaa7d05",
+          "compressedBytes": 142312957
+        },
+        {
+          "digest": "sha256:f239741947f7fcaeb11f5729b4c19e41e7ce52be6447b8e49eefc81ad706155e",
+          "compressedBytes": 49359086
+        },
+        {
+          "digest": "sha256:c3015d7eaec7fb4f5624d5dd64c119822520164e74348ebab851fa472ec6cf58",
+          "compressedBytes": 97
+        },
+        {
+          "digest": "sha256:28b454e54c7124d16d94328c4c801afa2d0ed38fd35126ddc16aaa81fd476b87",
+          "compressedBytes": 7535241
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:9529d32b386a4666b95435a44b7cc02b140d0f89e676bf38e38c7fffbe610d74",
+          "compressedBytes": 12789329
+        },
+        {
+          "digest": "sha256:b009eaa72540bde87b19eb6fa401e060232326079865ec637acbacb2200e1b9e",
+          "compressedBytes": 875
+        },
+        {
+          "digest": "sha256:aa5d73240767e0d045af06d4978076c3501cd78d8200626b216254215d9b6c3a",
+          "compressedBytes": 871
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pallets-jinja:task1559",
+      "loadedAt": "2026-09-09T05:37:07Z",
+      "source_verified": true,
+      "base_commit": "896a62135bcc151f2997e028c5125bec2cb2431f",
+      "runner_sha256": "160cd82672f34449a063b7764ce89f79deb899aeb6c3dd41a3b2e14ec6000665",
+      "base_tree": "dca4a04fa2f9fc5b78c215ea236a709ce5419041"
+    },
+    "akhatua/cooperbench-pallets-jinja:task1465": {
+      "tag": "akhatua/cooperbench-pallets-jinja:task1465",
+      "image_id": "sha256:4497f537b724e4c028e5274f32220520d895b13162a5f1e972fbd89b5e5188bf",
+      "repo_digests": [
+        "akhatua/cooperbench-pallets-jinja@sha256:4497f537b724e4c028e5274f32220520d895b13162a5f1e972fbd89b5e5188bf"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 581602788,
+      "image": "akhatua/cooperbench-pallets-jinja:task1465",
+      "requestedDigest": "sha256:c8c7802ed974eb11dff1692f2de9e58b75f01c7128a54bd258a157beb4714f7b",
+      "manifestDigest": "sha256:83fe4800d91ebd4a41a3cc2f039dd0bb76ba0ad5d34551cc2f181c596ae50e3c",
+      "configDigest": "sha256:4ce93b86cac581caa56d0d26b021e70418c8c423c1f017a48b6e4010f9957204",
+      "imageId": "sha256:4497f537b724e4c028e5274f32220520d895b13162a5f1e972fbd89b5e5188bf",
+      "compressedBytes": 263443467,
+      "layers": [
+        {
+          "digest": "sha256:72c03230f1363a3fb61d2f98504cf168bad3fe22f511ad2005dc021515d7ce97",
+          "compressedBytes": 29785415
+        },
+        {
+          "digest": "sha256:8c471a93fc525f2012a1d483a12540ba9df9189f0bfe12238f74273aa72590a7",
+          "compressedBytes": 1293278
+        },
+        {
+          "digest": "sha256:8bd2cf7d3f6acc894d6ab00affeb6abf779933fa982aec49b9a4ebea322b7fbb",
+          "compressedBytes": 14360841
+        },
+        {
+          "digest": "sha256:3250ea7ceadc1e9a40a2d832082ee8fe68631ef9c9bf7bd5447fbcff9f527439",
+          "compressedBytes": 250
+        },
+        {
+          "digest": "sha256:0ae91e247a47a5cc5d8c9d7974dad2930c8b73a8980b1b60353f0ecf37f9e442",
+          "compressedBytes": 142294955
+        },
+        {
+          "digest": "sha256:bd20f4652b5a9141b850f71f4ed2ed01ab3adff61e8c581a9d46a612553d8c0f",
+          "compressedBytes": 54855845
+        },
+        {
+          "digest": "sha256:2f5f0c8d0c3134af6c8e26125f7a6471f5157a178986f39b755ece62bea4cdd6",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:30f6149e2df7cc730fa360879d045b4d00b900646999f292eed1a6d522a13402",
+          "compressedBytes": 7533331
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:60113dc78c13c80823d54ab6c26acc2de56b8813795013086d929b70b756e9ae",
+          "compressedBytes": 13317653
+        },
+        {
+          "digest": "sha256:4902e8f0b9d0c71575b58eaa71696375b3844a03f211a1a617513d21581ec05b",
+          "compressedBytes": 886
+        },
+        {
+          "digest": "sha256:061cc917220069da8bb147a82e413b15d611cc497f85361a43b43bdc958cc418",
+          "compressedBytes": 882
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pallets-jinja:task1465",
+      "loadedAt": "2026-09-09T05:23:37Z",
+      "source_verified": true,
+      "base_commit": "20eb7f5e33120f1717b78bdf85540ab75631187a",
+      "runner_sha256": "83e52fdde51b8eaac6d7917aef40efe25218eda47feddf4f04cc47286cc26e33",
+      "base_tree": "abce210072c8825316c155ee9990cc0046c5f4fa"
+    },
+    "akhatua/cooperbench-pallets-click:task2956": {
+      "tag": "akhatua/cooperbench-pallets-click:task2956",
+      "image_id": "sha256:239aa7205bb287f3bde00b2ea5c218cc2ea573d0872f3cb3b9c9401ddd2106e4",
+      "repo_digests": [
+        "akhatua/cooperbench-pallets-click@sha256:239aa7205bb287f3bde00b2ea5c218cc2ea573d0872f3cb3b9c9401ddd2106e4"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 578670564,
+      "image": "akhatua/cooperbench-pallets-click:task2956",
+      "requestedDigest": "sha256:497bb01824e4f2bc5a53db80446a61f3edaca5b5e4e5bf3100d423b11e11eb9a",
+      "manifestDigest": "sha256:761b834e18950cb14185915c891809d7798db1c96e49c20fd523cab1bd8abeb3",
+      "configDigest": "sha256:f81898de17de799d9718b97c1e8b341cfbea07468a05fb55fd808242c7bf0383",
+      "imageId": "sha256:239aa7205bb287f3bde00b2ea5c218cc2ea573d0872f3cb3b9c9401ddd2106e4",
+      "compressedBytes": 260801169,
+      "layers": [
+        {
+          "digest": "sha256:72c03230f1363a3fb61d2f98504cf168bad3fe22f511ad2005dc021515d7ce97",
+          "compressedBytes": 29785415
+        },
+        {
+          "digest": "sha256:8c471a93fc525f2012a1d483a12540ba9df9189f0bfe12238f74273aa72590a7",
+          "compressedBytes": 1293278
+        },
+        {
+          "digest": "sha256:8bd2cf7d3f6acc894d6ab00affeb6abf779933fa982aec49b9a4ebea322b7fbb",
+          "compressedBytes": 14360841
+        },
+        {
+          "digest": "sha256:3250ea7ceadc1e9a40a2d832082ee8fe68631ef9c9bf7bd5447fbcff9f527439",
+          "compressedBytes": 250
+        },
+        {
+          "digest": "sha256:0ae91e247a47a5cc5d8c9d7974dad2930c8b73a8980b1b60353f0ecf37f9e442",
+          "compressedBytes": 142294955
+        },
+        {
+          "digest": "sha256:bd20f4652b5a9141b850f71f4ed2ed01ab3adff61e8c581a9d46a612553d8c0f",
+          "compressedBytes": 54855845
+        },
+        {
+          "digest": "sha256:2f5f0c8d0c3134af6c8e26125f7a6471f5157a178986f39b755ece62bea4cdd6",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:96b8fc4ea5cdb5b9c6f233d6e9d56573d49461d5052764095bd748202995db4a",
+          "compressedBytes": 6110712
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:8f4fa82fb7ffc0a6cdda773e065eae50ef309b558e722f357584af80d8ecfa29",
+          "compressedBytes": 12097945
+        },
+        {
+          "digest": "sha256:11e0b46363b45dcc83f0ad02730e378bb30ac59b8961358cc19ae4da23a3bc49",
+          "compressedBytes": 901
+        },
+        {
+          "digest": "sha256:d14bc13182218bd4b7eb83eeac973fdbf9bc548414a0ae0d15c40ccb93ca13e6",
+          "compressedBytes": 896
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-pallets-click:task2956",
+      "loadedAt": "2026-09-09T05:21:35Z",
+      "source_verified": true,
+      "base_commit": "5c1239b0116b66492cdd0848144ab3c78a04495a",
+      "runner_sha256": "93cf9186b6ce5c22567d2ffbf973222eb9b96615ab23df4b8570e79409403415",
+      "base_tree": "050109642651a8d1f0658934e0ef261285510d54"
+    },
+    "akhatua/cooperbench-react-hook-form:task153": {
+      "tag": "akhatua/cooperbench-react-hook-form:task153",
+      "image_id": "sha256:1143b56d70119d8914aede20e990fa06782a560d32c844fefde2d13b1891c8b9",
+      "repo_digests": [
+        "akhatua/cooperbench-react-hook-form@sha256:1143b56d70119d8914aede20e990fa06782a560d32c844fefde2d13b1891c8b9"
+      ],
+      "platform": "linux/amd64",
+      "size_bytes": 2247977840,
+      "image": "akhatua/cooperbench-react-hook-form:task153",
+      "requestedDigest": "sha256:a11a5799f5ed824085ee910d5f2fdacb1589bc8c0e9e6ea7a7673c85e26fa29a",
+      "manifestDigest": "sha256:b0d760ab6ec8e30155cc8670e104533a7747de5c8a2b815148af6db326f71712",
+      "configDigest": "sha256:ad02ae6c0e76707a269cd20d66ca8c0411a7cb80b328d7a97ed993fd81472c17",
+      "imageId": "sha256:1143b56d70119d8914aede20e990fa06782a560d32c844fefde2d13b1891c8b9",
+      "compressedBytes": 664558977,
+      "layers": [
+        {
+          "digest": "sha256:c02d17997ce3d2c82e082235ea0b5152d06ee659c4e2fabcf1e0079312f1bcde",
+          "compressedBytes": 28228572
+        },
+        {
+          "digest": "sha256:c06224db79377a9070235765c986fde15b2056fe616c2808c0cea189aa52876b",
+          "compressedBytes": 3309
+        },
+        {
+          "digest": "sha256:e1c9adef44853b9bab15246e8900feaa9b5426d3f5a88411f0aca8a3129a2573",
+          "compressedBytes": 49472719
+        },
+        {
+          "digest": "sha256:0c6ac2b87b09265a60e104e3d87872d2c15f913cbbfd4d401b5e4b5353e4ced4",
+          "compressedBytes": 1712660
+        },
+        {
+          "digest": "sha256:66cc9ecead9d0fe8970f3923a484fcd4fe1fd027fab911d462ca552cd57d5dbf",
+          "compressedBytes": 445
+        },
+        {
+          "digest": "sha256:1aed701ab1a08e812a98990004cc097bab69c47e4bca939d307927e909b67e83",
+          "compressedBytes": 170106058
+        },
+        {
+          "digest": "sha256:e4092cec5157940502b3c2eb7a756718cd94ce68e60ed61f78e81703e9926263",
+          "compressedBytes": 99
+        },
+        {
+          "digest": "sha256:f4f197a3df88501de98214d8f3210fb7268d6483ab639be12f7d8b10710942cf",
+          "compressedBytes": 35198159
+        },
+        {
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "compressedBytes": 32
+        },
+        {
+          "digest": "sha256:6cddf659e24bcd7ea20e231e9f6ef17b67bc05cd1cee07c7898560d374684a1f",
+          "compressedBytes": 379835426
+        },
+        {
+          "digest": "sha256:0c7d3930ecad3d4808d173e69a8eef6f44334d1be2d8da1939d413d6422c162c",
+          "compressedBytes": 751
+        },
+        {
+          "digest": "sha256:b9905d3959a5571551fd3a74883a289d7edd216b2cb5ef2b7e54f32f10326047",
+          "compressedBytes": 747
+        }
+      ],
+      "status": "available",
+      "loadedTag": "akhatua/cooperbench-react-hook-form:task153",
+      "loadedAt": "2026-09-09T05:17:38Z",
+      "source_verified": true,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "runner_sha256": "755bc363046e1edb2e71bdc1222ade8fc69643d75bcffcbb905d28ec4a373ffc",
+      "base_tree": "11af3a1d43425c4618c5f4d85801dd44ee443019"
+    }
+  },
+  "selection_status": "frozen-after-official-calibration",
+  "selection_count": 15,
+  "platform": "linux/amd64",
+  "offline_dependencies": {
+    "path_relative_to_lab": "cache/cooperbench-wheels",
+    "files": {
+      "poetry_core-2.2.1-py3-none-any.whl": "bdfce710edc10bfcf9ab35041605c480829be4ab23f5bc01202cfe5db8f125ab",
+      "setuptools-75.8.0-py3-none-any.whl": "e3982f444617239225d675215d51f6ba05f845d4eec313da4418fdbb56fb27e3",
+      "wheel-0.45.1-py3-none-any.whl": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+      "flit_core-3.11.0-py3-none-any.whl": "fe464c086f630f106c0fc5001ee377980f45938f03f8f0d03da08a4841748541",
+      "pyarrow-20.0.0-cp312-cp312-manylinux_2_28_x86_64.whl": "4250e28a22302ce8692d3a0e8ec9d9dde54ec00d237cff4dfa9c1fbf79e472a8",
+      "aiohappyeyeballs-2.7.1-py3-none-any.whl": "9243213661e29250eb41368e5daa826fc017156c3b8a11440826b2e3ed376472",
+      "aiohttp-3.14.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "53e7b4ce82b54a8bcc71b3b67a5cbd177ca1d7f592cbc92cd38b7349f73482db",
+      "aiosignal-1.4.0-py3-none-any.whl": "053243f8b92b990551949e63930a839ff0cf0b0ebbe0597b0f3fb19e1a0fe82e",
+      "annotated_types-0.8.0-py3-none-any.whl": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0",
+      "anyio-4.15.1-py3-none-any.whl": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101",
+      "apscheduler-3.11.3-py3-none-any.whl": "bbeb2ec02d23d3c06a6c07ed7f0f3939ada6680eb121fae809a69bb42c537a30",
+      "attrs-26.1.0-py3-none-any.whl": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+      "azure_core-1.41.0-py3-none-any.whl": "522b4011e8180b1a3dcd2024396a4e7fe9ac37fb8597db47163d230b5efe892d",
+      "azure_identity-1.25.3-py3-none-any.whl": "f4d0b956a8146f30333e071374171f3cfa7bdb8073adb8c3814b65567aa7447c",
+      "azure_storage_blob-12.30.1-py3-none-any.whl": "7dc09c37f4f58508e20532b4b4c178f4763f41b01e0b9063835b994fd9d2a7b3",
+      "backoff-2.2.1-py3-none-any.whl": "63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8",
+      "boto3-1.36.0-py3-none-any.whl": "d0ca7a58ce25701a52232cc8df9d87854824f1f2964b929305722ebc7959d5a9",
+      "botocore-1.36.26-py3-none-any.whl": "4e3f19913887a58502e71ef8d696fe7eaa54de7813ff73390cd5883f837dfa6e",
+      "certifi-2026.7.22-py3-none-any.whl": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+      "cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "34e261f78cb6ceaaa36f42f2613f4380d94d9c759a9c73c769ee6e0247364632",
+      "charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "c7b742bf31c88566b4bb6335a7f393bb322e580b6bb98df7bd0c25e6e3519ce8",
+      "click-8.5.0-py3-none-any.whl": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360",
+      "croniter-6.2.4-py3-none-any.whl": "8ef3d544107a5c05a150a2d78f8bf5a8eb9c5c4d93405a736b824109574e3f4d",
+      "cryptography-50.0.1-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "ff838d62ec1bfce4f9ba7fa16f4a7b554cd8d0c299e6be37502161a660c84eef",
+      "dnspython-2.8.0-py3-none-any.whl": "01d9bbc4a2d76bf0db7c1f729812ded6d912bd318d3b1cf81d30c0f845dbf3af",
+      "email_validator-2.3.0-py3-none-any.whl": "80f13f623413e6b197ae73bb10bf4eb0908faf509ad8362c5edeb0be7fd450b4",
+      "fastapi-0.115.14-py3-none-any.whl": "6c0c8bf9420bd58f565e585036d971872472b4f7d3f6c73b698e10cffdefb3ca",
+      "fastapi_sso-0.16.0-py3-none-any.whl": "3a66a942474ef9756d3a9d8b945d55bd9faf99781facdb9b87a40b73d6d6b0c3",
+      "fastuuid-0.14.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "bbb0c4b15d66b435d2538f3827f05e44e2baafcc003dd7d8472dc67807ab8fd8",
+      "filelock-3.32.6-py3-none-any.whl": "3f16ecd0117feae0dfc147e8c62eb5daeccd8bd800378c3ddf416de9b4feb6b1",
+      "frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl": "2552f44204b744fba866e573be4c1f9048d6a324dfe14475103fd51613eb1d1f",
+      "fsspec-2026.7.0-py3-none-any.whl": "b57ddbafedfaef7018c1ecab32aa200a9d7ca26b77965f64e48b70061249d279",
+      "gunicorn-23.0.0-py3-none-any.whl": "ec400d38950de4dfd418cff8328b2c8faed0edb0d517d3394e457c317908ca4d",
+      "h11-0.16.0-py3-none-any.whl": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86",
+      "hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "d62671bb130879cef0ee4c9ebe47a14af6c66ec53e6d84dc15936e5ffdfac82f",
+      "httpcore-1.0.9-py3-none-any.whl": "2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55",
+      "httpcore2-2.12.0-py3-none-any.whl": "7e04258ce01013d7d615e5b910a3b27fac937d7a95038227e79652b4ba3b4ceb",
+      "httpx-0.28.1-py3-none-any.whl": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad",
+      "httpx2-2.12.0-py3-none-any.whl": "cc8b6eecb8661c146b8f89a60e97456ee086e91a784ed31ac450c3a9e613dd36",
+      "httpx_sse-0.4.3-py3-none-any.whl": "0ac1c9fe3c0afad2e0ebb25a934a59f4c7823b60792691f779fad2c5568830fc",
+      "huggingface_hub-1.30.0-py3-none-any.whl": "96ae0a8e99a234374a6fe43e989ebd21c04640b91ab2927e7e5773ba1131ca59",
+      "idna-3.19-py3-none-any.whl": "815e7be7a7806d54abb586dc943addc79e8b2ee16915059658cbeff4b1b43bf4",
+      "importlib_metadata-9.0.1-py3-none-any.whl": "bba5600596a7e21f3eef53281cf28d6a5195634d2f2b78ff9501a3272c6eaab0",
+      "isodate-0.7.2-py3-none-any.whl": "28009937d8031054830160fce6d409ed342816b543597cece116d966c6d99e15",
+      "jinja2-3.1.6-py3-none-any.whl": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67",
+      "jiter-0.16.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "8597d23c87f59294f83bcb6229b9ed1fccee13dbba967b46930d2f1759466fee",
+      "jmespath-1.1.0-py3-none-any.whl": "a5663118de4908c91729bea0acadca56526eb2698e83de10cd116ae0f4e97c64",
+      "jsonschema-4.26.0-py3-none-any.whl": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce",
+      "jsonschema_specifications-2025.9.1-py3-none-any.whl": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+      "litellm-1.77.1-py3-none-any.whl": "407761dc3c35fbcd41462d3fe65dd3ed70aac705f37cde318006c18940f695a0",
+      "litellm_enterprise-0.1.19-py3-none-any.whl": "756d6123a39e4ba21b0de73be609babd63c3a13fd4a966bc7ba235930f248d47",
+      "litellm_proxy_extras-0.2.18-py3-none-any.whl": "c57a787ca6d06a09a210ab19bac2f1a4a74d633b1bd9a6c13fc37b1820d34ef6",
+      "markdown_it_py-4.2.0-py3-none-any.whl": "9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a",
+      "markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "0bf2a864d67e76e5c9a34dc26ec616a66b9888e25e7b9460e1c76d3293bd9dbf",
+      "mcp-1.12.4-py3-none-any.whl": "7aa884648969fab8e78b89399d59a683202972e12e6bc9a1c88ce7eda7743789",
+      "mdurl-0.1.2-py3-none-any.whl": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+      "msal-1.38.0-py3-none-any.whl": "765b9b98b6aa380ee8b8f1c75636e08863edaf0a953498955bd668650dde5d49",
+      "msal_extensions-1.3.1-py3-none-any.whl": "96d3de4d034504e969ac5e85bae8106c8373b5c6568e4c8fa7af2eca9dbe6bca",
+      "multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "439cbebd499f92e9aa6793016a8acaa161dfa749ae86d20960189f5398a19144",
+      "oauthlib-3.3.1-py3-none-any.whl": "88119c938d2b8fb88561af5f6ee0eec8cc8d552b7bb1f712743136eb7523b7a1",
+      "openai-3.10.0-py3-none-any.whl": "d1f307d866c7d12872809aeb68b7d1a085b49c2656787eae7c39ba381a41ad0d",
+      "orjson-3.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "9caf3d09f47c3c70c4451ada20ef9bc4a4cdffa26f49862cf0a253b329aae2d5",
+      "packaging-26.3-py3-none-any.whl": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+      "polars-1.44.1-py3-none-any.whl": "1fa62fc1c88fba77a68b28291b5aabdd69e5f38b34e59721a064ae3169b59bb5",
+      "polars_runtime_32-1.44.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "eea4283be8e60822d890dbda20588fe59b4172b508bd5ebf3471e531ca9f50d7",
+      "propcache-0.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "5aaa2b923c1944ac8febd6609cb373540a5563e7cbcb0fd770f75dace2eb817b",
+      "pycparser-3.0-py3-none-any.whl": "b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992",
+      "pydantic-2.13.5-py3-none-any.whl": "346a034f080da3755d8e9cb5e00e8b07de1d39e4f6e2c87d8ab7cafa0b269a73",
+      "pydantic_core-2.46.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "49776eab08766a08dfff7012f8b422dcd7e25e43b316eedf0477c24fcfa84b7c",
+      "pydantic_settings-2.15.0-py3-none-any.whl": "0ba092c291c94baceb5eff768aa0d56400a457585bc0175925a5a5510303da42",
+      "pygments-2.21.0-py3-none-any.whl": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+      "pyjwt-2.13.0-py3-none-any.whl": "66adcc2aff09b3f1bbd95fc1e1577df8ac8723c978552fd43304c8a290ac5728",
+      "pynacl-1.6.2-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "22de65bb9010a725b0dac248f353bb072969c94fa8d6b1f34b87d7953cf7bbe4",
+      "python_dateutil-2.9.0.post0-py2.py3-none-any.whl": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+      "python_dotenv-1.2.3-py3-none-any.whl": "904552145e8bfed22162c09dab1c2b9b54fefa7b23ba780f4f26ca0316b0f0d9",
+      "python_multipart-0.0.18-py3-none-any.whl": "efe91480f485f6a361427a541db4796f9e1591afc0fb8e7a4ba06bfbc6708996",
+      "pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "b8bb0864c5a28024fac8a632c443c87c5aa6f215c0b126c449ae1a150412f31d",
+      "redis-8.1.0-py3-none-any.whl": "a4fe1aac3d3b3cc791d4b3d5931c5a956045dc951ee74d1c913ee3ac4d2ee9fb",
+      "referencing-0.37.0-py3-none-any.whl": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+      "regex-2026.9.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "99034ec353c973e2c89555866083491b9a2dbe81f2fbe15fb0f2b68506232f01",
+      "requests-2.34.2-py3-none-any.whl": "2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0",
+      "rich-13.7.1-py3-none-any.whl": "4edbae314f59eb482f54e9e30bf00d33350aaa94f4bfcd4e9e3110e64d0d7222",
+      "rpds_py-2026.6.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "9c1255b302953c86a486b81d330d5ee1d5bd937691ce271b6be0ef0e299eaab7",
+      "rq-2.12.0-py3-none-any.whl": "97e349a00e9f2a18962102b3dca156cb5ce315d3ef38145e24ba9cabd16a9361",
+      "s3transfer-0.11.3-py3-none-any.whl": "ca855bdeb885174b5ffa95b9913622459d4ad8e331fc98eb01e6d5eb6a30655d",
+      "six-1.17.0-py2.py3-none-any.whl": "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+      "sniffio-1.3.1-py3-none-any.whl": "2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2",
+      "sse_starlette-3.0.3-py3-none-any.whl": "af5bf5a6f3933df1d9c7f8539633dc8444ca6a97ab2e2a7cd3b6e431ac03a431",
+      "starlette-0.46.2-py3-none-any.whl": "595633ce89f8ffa71a015caed34a5b2dc1c0cdb3f0f1fbd1e69339cf2abeec35",
+      "tiktoken-0.14.0-cp311-cp311-manylinux_2_28_x86_64.whl": "f5e7665f6624e052e5e7f6a36919ab69279decdc976d7b16b4fa15e1897d0513",
+      "tokenizers-0.23.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "41c2f84d172449b4dadb9cdc508e3e364076613c35b16e76ecfe47a60d1e3305",
+      "tqdm-4.70.0-py3-none-any.whl": "7f585706bfddbdebf89daac705b2dfcc16890130727d3197ca62c732b4310953",
+      "truststore-0.10.4-py3-none-any.whl": "adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981",
+      "typing_extensions-4.16.0-py3-none-any.whl": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+      "typing_inspection-0.4.4-py3-none-any.whl": "65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147",
+      "tzlocal-5.4.4-py3-none-any.whl": "aae09f0126a8a86fa736be266eb4a471380d26a0de3bc14844e7821fee3e2a15",
+      "urllib3-2.7.0-py3-none-any.whl": "9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897",
+      "uvicorn-0.29.0-py3-none-any.whl": "2c2aac7ff4f4365c206fd773a39bf4ebd1047c238f8b8268ad996829323473de",
+      "uvloop-0.21.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "8a375441696e2eda1c43c44ccb66e04d61ceeffcd76e4929e527b7fa401b90fb",
+      "websockets-13.1-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "87c6e35319b46b99e168eb98472d6c7d8634ee37750d7693656dc766395df096",
+      "yarl-1.24.5-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "570fec8fbd22b032733625f03f10b7ff023bc399213db15e72a7acaef28c2f4e",
+      "zipp-4.1.0-py3-none-any.whl": "25ad4e16390cd314347dd8f1de67a2ac538ae658ed4ab9db16029c07c188e97f"
+    },
+    "environment": {
+      "PIP_NO_INDEX": "1",
+      "PIP_FIND_LINKS": "/opt/cooperbench-wheels"
+    },
+    "purpose": "Pinned offline wheelhouse for official runner editable installs and runtime dependency reinstalls.",
+    "urls": {
+      "poetry_core-2.2.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/c7/d8/bb2f602f5e012e177e1c8560125f9770945d36622595990cf1cb794477c2/poetry_core-2.2.1-py3-none-any.whl",
+      "setuptools-75.8.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/69/8a/b9dc7678803429e4a3bc9ba462fa3dd9066824d3c607490235c6a796be5a/setuptools-75.8.0-py3-none-any.whl",
+      "wheel-0.45.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl",
+      "flit_core-3.11.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/b5/0c/039f1ec352977330a372c783adcbc5c3773868fa71cb00bb7db7b428e76a/flit_core-3.11.0-py3-none-any.whl",
+      "pyarrow-20.0.0-cp312-cp312-manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/bb/1b/2168d6050e52ff1e6cefc61d600723870bf569cbf41d13db939c8cf97a16/pyarrow-20.0.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+      "aiohappyeyeballs-2.7.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/71/43/1947f06babed6b3f1d7f38b0c767f52df66bfb2bc10b468c4a7de9eceff2/aiohappyeyeballs-2.7.1-py3-none-any.whl",
+      "aiohttp-3.14.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/a5/b9/2b8f0c0ce09c87a1daf80fd483431b56b1435d3f62789bc86f572e1245de/aiohttp-3.14.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "aiosignal-1.4.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/fb/76/641ae371508676492379f16e2fa48f4e2c11741bd63c48be4b12a6b09cba/aiosignal-1.4.0-py3-none-any.whl",
+      "annotated_types-0.8.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl",
+      "anyio-4.15.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/12/b8/4bd346e22b28902df4d651910f5242c28d84e4a5c2435ca5c3f797ed7e2e/anyio-4.15.1-py3-none-any.whl",
+      "apscheduler-3.11.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/42/c9/8638db32514dbb9157b3d82680c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl",
+      "attrs-26.1.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl",
+      "azure_core-1.41.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/5b/db/325c6d7312d2200251c52323878281045aaffcb5586612296484e4280eaa/azure_core-1.41.0-py3-none-any.whl",
+      "azure_identity-1.25.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/49/9a/417b3a533e01953a7c618884df2cb05a71e7b68bdbce4fbdb62349d2a2e8/azure_identity-1.25.3-py3-none-any.whl",
+      "azure_storage_blob-12.30.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/ff/90/f06915ccf78a6d965901aae093bd7e88e486c52e0773202656fb29c2304a/azure_storage_blob-12.30.1-py3-none-any.whl",
+      "backoff-2.2.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl",
+      "boto3-1.36.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/c0/36/b91f560a0ed11f7f90ac59554cbc52340158ce24db879a7c8faa68ff1cef/boto3-1.36.0-py3-none-any.whl",
+      "botocore-1.36.26-py3-none-any.whl": "https://files.pythonhosted.org/packages/dd/0c/a3eeca35b22ac8f441d412881582a5f3b8665de0269baf9fdeb8e86d7f1c/botocore-1.36.26-py3-none-any.whl",
+      "certifi-2026.7.22-py3-none-any.whl": "https://files.pythonhosted.org/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl",
+      "cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "https://files.pythonhosted.org/packages/f7/a4/4399daaf8f7dfee9d7c3327fdb0426ee041cc63edc358b93911ceb2bfc7a/cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/0d/35/731ac04aa0a097fc1c97f0994c375bdb230c6c96619db794208fe664e9ce/charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "click-8.5.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl",
+      "croniter-6.2.4-py3-none-any.whl": "https://files.pythonhosted.org/packages/cd/ba/d678e5bd329646ca51d3c92addbc77804e86d21f4b6b6a027218e6abb010/croniter-6.2.4-py3-none-any.whl",
+      "cryptography-50.0.1-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "https://files.pythonhosted.org/packages/57/26/e6d4fc8512a51a5f9ee7bfdbfb853bce1197087df40c9ad993ad370b846f/cryptography-50.0.1-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "dnspython-2.8.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/ba/5a/18ad964b0086c6e62e2e7500f7edc89e3faa45033c71c1893d34eed2b2de/dnspython-2.8.0-py3-none-any.whl",
+      "email_validator-2.3.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/de/15/545e2b6cf2e3be84bc1ed85613edd75b8aea69807a71c26f4ca6a9258e82/email_validator-2.3.0-py3-none-any.whl",
+      "fastapi-0.115.14-py3-none-any.whl": "https://files.pythonhosted.org/packages/53/50/b1222562c6d270fea83e9c9075b8e8600b8479150a18e4516a6138b980d1/fastapi-0.115.14-py3-none-any.whl",
+      "fastapi_sso-0.16.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/72/84/df15745ff06c1b44e478b72759d5cf48e4583e221389d4cdea76c472dd1c/fastapi_sso-0.16.0-py3-none-any.whl",
+      "fastuuid-0.14.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/fc/c2/f84c90167cc7765cb82b3ff7808057608b21c14a38531845d933a4637307/fastuuid-0.14.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "filelock-3.32.6-py3-none-any.whl": "https://files.pythonhosted.org/packages/cc/06/4f138f618dbea66803291274f228f01daf29f306fe8b96bc30dab765df75/filelock-3.32.6-py3-none-any.whl",
+      "frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl": "https://files.pythonhosted.org/packages/11/b1/71a477adc7c36e5fb628245dfbdea2166feae310757dea848d02bd0689fd/frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl",
+      "fsspec-2026.7.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/fd/3c/6a2bf344106328fd04963664a60b9bb6496fc25df8e962fcdc1367285fb9/fsspec-2026.7.0-py3-none-any.whl",
+      "gunicorn-23.0.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/cb/7d/6dac2a6e1eba33ee43f318edbed4ff29151a49b5d37f080aad1e6469bca4/gunicorn-23.0.0-py3-none-any.whl",
+      "h11-0.16.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl",
+      "hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "https://files.pythonhosted.org/packages/67/4e/a28359bf1c1ecf11eba22123168c138698f7cb576ac678f5a2e16cd5da08/hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "httpcore-1.0.9-py3-none-any.whl": "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl",
+      "httpcore2-2.12.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/d2/74/d370e55600d9bcfa0d9794b0166126d49291a3d2b20c268fc98c453a4948/httpcore2-2.12.0-py3-none-any.whl",
+      "httpx-0.28.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl",
+      "httpx2-2.12.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/c8/95/411ba65569158e862368917aaf56597f3e5fa3b91b0502919638465a08f3/httpx2-2.12.0-py3-none-any.whl",
+      "httpx_sse-0.4.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl",
+      "huggingface_hub-1.30.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/c3/0e/3e45bbe0dd48f4e56b1d46649d342de853cd1c7e815323472ab62687f153/huggingface_hub-1.30.0-py3-none-any.whl",
+      "idna-3.19-py3-none-any.whl": "https://files.pythonhosted.org/packages/57/b0/0e52c878c53f245edd3a11020f20979b3f490f245af532c7cae3027754b5/idna-3.19-py3-none-any.whl",
+      "importlib_metadata-9.0.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/b3/55/ecca97ae19075f1fac62def77731e7f535e6c1fb8f92ff08160c5e6dade8/importlib_metadata-9.0.1-py3-none-any.whl",
+      "isodate-0.7.2-py3-none-any.whl": "https://files.pythonhosted.org/packages/15/aa/0aca39a37d3c7eb941ba736ede56d689e7be91cab5d9ca846bde3999eba6/isodate-0.7.2-py3-none-any.whl",
+      "jinja2-3.1.6-py3-none-any.whl": "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",
+      "jiter-0.16.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/40/cd/0fcc3f7d39183674d5bfa9ec640faaeb506c60be7c8f94625dfba366e37c/jiter-0.16.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "jmespath-1.1.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl",
+      "jsonschema-4.26.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/69/90/f63fb5873511e014207a475e2bb4e8b2e570d655b00ac19a9a0ca0a385ee/jsonschema-4.26.0-py3-none-any.whl",
+      "jsonschema_specifications-2025.9.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "litellm-1.77.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/bb/dc/ff4f119cd4d783742c9648a03e0ba5c2b52fc385b2ae9f0d32acf3a78241/litellm-1.77.1-py3-none-any.whl",
+      "litellm_enterprise-0.1.19-py3-none-any.whl": "https://files.pythonhosted.org/packages/59/4c/397d0bc405f7df2cc7f6e3ce1c217980ae10a8c442a0206f57e031495e79/litellm_enterprise-0.1.19-py3-none-any.whl",
+      "litellm_proxy_extras-0.2.18-py3-none-any.whl": "https://files.pythonhosted.org/packages/97/c8/95f0aa38ffffbe89a0dac4c8e443f2e90f858fb347df8c99441994083a2b/litellm_proxy_extras-0.2.18-py3-none-any.whl",
+      "markdown_it_py-4.2.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/b3/81/4da04ced5a082363ecfa159c010d200ecbd959ae410c10c0264a38cac0f5/markdown_it_py-4.2.0-py3-none-any.whl",
+      "markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/30/ac/0273f6fcb5f42e314c6d8cd99effae6a5354604d461b8d392b5ec9530a54/markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "mcp-1.12.4-py3-none-any.whl": "https://files.pythonhosted.org/packages/ad/68/316cbc54b7163fa22571dcf42c9cc46562aae0a021b974e0a8141e897200/mcp-1.12.4-py3-none-any.whl",
+      "mdurl-0.1.2-py3-none-any.whl": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+      "msal-1.38.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/c4/ca/d768f77a27d81ed0a6884f2458f8613c31c79b2eb95defbeca2273fd0754/msal-1.38.0-py3-none-any.whl",
+      "msal_extensions-1.3.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/5e/75/bd9b7bb966668920f06b200e84454c8f3566b102183bc55c5473d96cb2b9/msal_extensions-1.3.1-py3-none-any.whl",
+      "multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/5a/56/21b27c560c13822ed93133f08aa6372c53a8e067f11fbed37b4adcdac922/multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "oauthlib-3.3.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl",
+      "openai-3.10.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/dd/50/0d796ada2d1222cfe609cf435ce7a688450735cee401b24737882c9b9612/openai-3.10.0-py3-none-any.whl",
+      "orjson-3.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/5b/e1/15169e9d22b59a406264f99d6db387c0b0b12b6357a8a0169917c2a713eb/orjson-3.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "packaging-26.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl",
+      "polars-1.44.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/3a/f1/59154659081930fbde291ea6225607956b500a71b0ce45d88217b7d32da2/polars-1.44.1-py3-none-any.whl",
+      "polars_runtime_32-1.44.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/fc/0a/0858f60cb5a6f8f73ec4cdd73eccd9f748d66bfc23304c5c23fa3468094a/polars_runtime_32-1.44.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "propcache-0.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/27/1b/16ab7f2cf2041da2f60d156ba64c2484eadf9168075b4ff43c3ef60045af/propcache-0.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "pycparser-3.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl",
+      "pydantic-2.13.5-py3-none-any.whl": "https://files.pythonhosted.org/packages/eb/47/c95ffc2009878c7aac0c5e08528022dcb885933252a88b5f170058014464/pydantic-2.13.5-py3-none-any.whl",
+      "pydantic_core-2.46.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/cf/bc/3fa2d76b83162820a17da7f645b28d1cba99fc8e1e5fc6517067ec450fa1/pydantic_core-2.46.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "pydantic_settings-2.15.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/30/a4/2bffa9f8e804325a09867f0e9d30795c80ea9f8d62560bd1b6ad6220eb2f/pydantic_settings-2.15.0-py3-none-any.whl",
+      "pygments-2.21.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl",
+      "pyjwt-2.13.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/a3/5e/ecf12fdb62546d64385c158514e9b2b671f7832108ef2ecd2020ce0af2d1/pyjwt-2.13.0-py3-none-any.whl",
+      "pynacl-1.6.2-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "https://files.pythonhosted.org/packages/7f/81/d60984052df5c97b1d24365bc1e30024379b42c4edcd79d2436b1b9806f2/pynacl-1.6.2-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "python_dateutil-2.9.0.post0-py2.py3-none-any.whl": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "python_dotenv-1.2.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/0d/17/c5c6b53ddc18f297992099b3d9ec16c855c0ccc83263a21fe4d1c625ec6c/python_dotenv-1.2.3-py3-none-any.whl",
+      "python_multipart-0.0.18-py3-none-any.whl": "https://files.pythonhosted.org/packages/13/6b/b60f47101ba2cac66b4a83246630e68ae9bbe2e614cbae5f4465f46dee13/python_multipart-0.0.18-py3-none-any.whl",
+      "pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/71/60/917329f640924b18ff085ab889a11c763e0b573da888e8404ff486657602/pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "redis-8.1.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/66/9d/c5731f6e3608663d4d3656fd8d3aecee8b509c3082818f5a13eae925baea/redis-8.1.0-py3-none-any.whl",
+      "referencing-0.37.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl",
+      "regex-2026.9.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/19/e4/a7bb1e4038a170714c824dc7c739f8b911cb1172f87ab950be39e0691f95/regex-2026.9.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "requests-2.34.2-py3-none-any.whl": "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl",
+      "rich-13.7.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/87/67/a37f6214d0e9fe57f6ae54b2956d550ca8365857f42a1ce0392bb21d9410/rich-13.7.1-py3-none-any.whl",
+      "rpds_py-2026.6.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/5e/19/7e98f468bd50346faff5b10e5297374b443bfdddacc8e9fbc65984539597/rpds_py-2026.6.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "rq-2.12.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/a4/c2/995863e88669133a058c2a6a912b62d18a64fa7baaf78eb66aaa4350b48d/rq-2.12.0-py3-none-any.whl",
+      "s3transfer-0.11.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/e4/81/48c41b554a54d75d4407740abb60e3a102ae416284df04d1dbdcbe3dbf24/s3transfer-0.11.3-py3-none-any.whl",
+      "six-1.17.0-py2.py3-none-any.whl": "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl",
+      "sniffio-1.3.1-py3-none-any.whl": "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl",
+      "sse_starlette-3.0.3-py3-none-any.whl": "https://files.pythonhosted.org/packages/23/a0/984525d19ca5c8a6c33911a0c164b11490dd0f90ff7fd689f704f84e9a11/sse_starlette-3.0.3-py3-none-any.whl",
+      "starlette-0.46.2-py3-none-any.whl": "https://files.pythonhosted.org/packages/8b/0c/9d30a4ebeb6db2b25a841afbb80f6ef9a854fc3b41be131d249a977b4959/starlette-0.46.2-py3-none-any.whl",
+      "tiktoken-0.14.0-cp311-cp311-manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/24/65/8c5dddd7cb67f6571d154a58d7c6e2f07da54bf84c49b6a1839965b7c35e/tiktoken-0.14.0-cp311-cp311-manylinux_2_28_x86_64.whl",
+      "tokenizers-0.23.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/2c/ca/ca6b93c7820df123b2662a9469e8facc826ccc94e98fdd0d615f6431e73a/tokenizers-0.23.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "tqdm-4.70.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/f9/1c/01bfd571a64e7f270e6bab5e33777debe0edc56759233ce84f27dec92d14/tqdm-4.70.0-py3-none-any.whl",
+      "truststore-0.10.4-py3-none-any.whl": "https://files.pythonhosted.org/packages/19/97/56608b2249fe206a67cd573bc93cd9896e1efb9e98bce9c163bcdc704b88/truststore-0.10.4-py3-none-any.whl",
+      "typing_extensions-4.16.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl",
+      "typing_inspection-0.4.4-py3-none-any.whl": "https://files.pythonhosted.org/packages/67/81/4add07e5172b7ac40d8ed5ff580409a7801a4fe26d529bdd915401dabfbe/typing_inspection-0.4.4-py3-none-any.whl",
+      "tzlocal-5.4.4-py3-none-any.whl": "https://files.pythonhosted.org/packages/9e/a4/017a7a6cbe387d961a688ec31364ae60a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl",
+      "urllib3-2.7.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl",
+      "uvicorn-0.29.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/73/f5/cbb16fcbe277c1e0b8b3ddd188f2df0e0947f545c49119b589643632d156/uvicorn-0.29.0-py3-none-any.whl",
+      "uvloop-0.21.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/8a/ca/0864176a649838b838f36d44bf31c451597ab363b60dc9e09c9630619d41/uvloop-0.21.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "websockets-13.1-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "https://files.pythonhosted.org/packages/af/9b/8c06d425a1d5a74fd764dd793edd02be18cf6fc3b1ccd1f29244ba132dc0/websockets-13.1-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "yarl-1.24.5-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "https://files.pythonhosted.org/packages/66/ca/95aa4d0e5b7ea4f20e4d577c42d001ed9df207569fdb063cc5ed4ebb496b/yarl-1.24.5-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "zipp-4.1.0-py3-none-any.whl": "https://files.pythonhosted.org/packages/3a/13/547360d81e6d88d58492968ffda9f9542854f11310ee556fef14260cc886/zipp-4.1.0-py3-none-any.whl"
+    },
+    "groups": {
+      "dspy-litellm-proxy": {
+        "requirement": "litellm[proxy]==1.77.1",
+        "python": "CPython 3.11",
+        "platform": "Linux amd64",
+        "files": [
+          "aiohappyeyeballs-2.7.1-py3-none-any.whl",
+          "aiohttp-3.14.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "aiosignal-1.4.0-py3-none-any.whl",
+          "annotated_types-0.8.0-py3-none-any.whl",
+          "anyio-4.15.1-py3-none-any.whl",
+          "apscheduler-3.11.3-py3-none-any.whl",
+          "attrs-26.1.0-py3-none-any.whl",
+          "azure_core-1.41.0-py3-none-any.whl",
+          "azure_identity-1.25.3-py3-none-any.whl",
+          "azure_storage_blob-12.30.1-py3-none-any.whl",
+          "backoff-2.2.1-py3-none-any.whl",
+          "boto3-1.36.0-py3-none-any.whl",
+          "botocore-1.36.26-py3-none-any.whl",
+          "certifi-2026.7.22-py3-none-any.whl",
+          "cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "click-8.5.0-py3-none-any.whl",
+          "croniter-6.2.4-py3-none-any.whl",
+          "cryptography-50.0.1-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "dnspython-2.8.0-py3-none-any.whl",
+          "email_validator-2.3.0-py3-none-any.whl",
+          "fastapi-0.115.14-py3-none-any.whl",
+          "fastapi_sso-0.16.0-py3-none-any.whl",
+          "fastuuid-0.14.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "filelock-3.32.6-py3-none-any.whl",
+          "frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl",
+          "fsspec-2026.7.0-py3-none-any.whl",
+          "gunicorn-23.0.0-py3-none-any.whl",
+          "h11-0.16.0-py3-none-any.whl",
+          "hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "httpcore-1.0.9-py3-none-any.whl",
+          "httpcore2-2.12.0-py3-none-any.whl",
+          "httpx-0.28.1-py3-none-any.whl",
+          "httpx2-2.12.0-py3-none-any.whl",
+          "httpx_sse-0.4.3-py3-none-any.whl",
+          "huggingface_hub-1.30.0-py3-none-any.whl",
+          "idna-3.19-py3-none-any.whl",
+          "importlib_metadata-9.0.1-py3-none-any.whl",
+          "isodate-0.7.2-py3-none-any.whl",
+          "jinja2-3.1.6-py3-none-any.whl",
+          "jiter-0.16.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "jmespath-1.1.0-py3-none-any.whl",
+          "jsonschema-4.26.0-py3-none-any.whl",
+          "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+          "litellm-1.77.1-py3-none-any.whl",
+          "litellm_enterprise-0.1.19-py3-none-any.whl",
+          "litellm_proxy_extras-0.2.18-py3-none-any.whl",
+          "markdown_it_py-4.2.0-py3-none-any.whl",
+          "markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "mcp-1.12.4-py3-none-any.whl",
+          "mdurl-0.1.2-py3-none-any.whl",
+          "msal-1.38.0-py3-none-any.whl",
+          "msal_extensions-1.3.1-py3-none-any.whl",
+          "multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "oauthlib-3.3.1-py3-none-any.whl",
+          "openai-3.10.0-py3-none-any.whl",
+          "orjson-3.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "packaging-26.3-py3-none-any.whl",
+          "polars-1.44.1-py3-none-any.whl",
+          "polars_runtime_32-1.44.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "propcache-0.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "pycparser-3.0-py3-none-any.whl",
+          "pydantic-2.13.5-py3-none-any.whl",
+          "pydantic_core-2.46.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "pydantic_settings-2.15.0-py3-none-any.whl",
+          "pygments-2.21.0-py3-none-any.whl",
+          "pyjwt-2.13.0-py3-none-any.whl",
+          "pynacl-1.6.2-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+          "python_dotenv-1.2.3-py3-none-any.whl",
+          "python_multipart-0.0.18-py3-none-any.whl",
+          "pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "redis-8.1.0-py3-none-any.whl",
+          "referencing-0.37.0-py3-none-any.whl",
+          "regex-2026.9.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "requests-2.34.2-py3-none-any.whl",
+          "rich-13.7.1-py3-none-any.whl",
+          "rpds_py-2026.6.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "rq-2.12.0-py3-none-any.whl",
+          "s3transfer-0.11.3-py3-none-any.whl",
+          "six-1.17.0-py2.py3-none-any.whl",
+          "sniffio-1.3.1-py3-none-any.whl",
+          "sse_starlette-3.0.3-py3-none-any.whl",
+          "starlette-0.46.2-py3-none-any.whl",
+          "tiktoken-0.14.0-cp311-cp311-manylinux_2_28_x86_64.whl",
+          "tokenizers-0.23.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "tqdm-4.70.0-py3-none-any.whl",
+          "truststore-0.10.4-py3-none-any.whl",
+          "typing_extensions-4.16.0-py3-none-any.whl",
+          "typing_inspection-0.4.4-py3-none-any.whl",
+          "tzlocal-5.4.4-py3-none-any.whl",
+          "urllib3-2.7.0-py3-none-any.whl",
+          "uvicorn-0.29.0-py3-none-any.whl",
+          "uvloop-0.21.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "websockets-13.1-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "yarl-1.24.5-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+          "zipp-4.1.0-py3-none-any.whl"
+        ]
+      }
+    }
+  },
+  "selection_frozen_at": "2026-09-09T05:51:32Z",
+  "selection_manifest_sha256": "857adfbebfd3eedcf573587b83400fdb21e1e19a34826e185e4264d107289d7b",
+  "selection_manifest_hash_algorithm": "SHA-256 of exact raw bytes in experiments/cooperbench-tasks.json after formatting",
+  "final_runtime_validation": {
+    "status": "passed",
+    "tasks": 15,
+    "core_image_id": "sha256:20a32f60311a04e2e8a4cdba230c293b04db963eef3d4a4872c8e0ab5b334269",
+    "runtime_source_sha256": {
+      "environment.py": "f206edff7bda73059a8518758d4ee6fadf642ca0a66d3e06c720794a0fa1a262",
+      "launch_opencode.py": "4a5d7478bc7c3378fca9ec5c5e02fc0887abb00cdb2c0c435b4ff540ba05cee0",
+      "configure_overlay.py": "0c9befb15c04f9e5f242311a470c4617151644f34fb9f259b0bd3b2600c477e0",
+      "artifacts.py": "eab123efd199c9f55d7abf4576b5a5515298cc47ab5f8f2710c1b515fd5a0291"
+    },
+    "verification_report": "runs/calibration/cooperbench/final-20a32f60-20260909T065404Z/verification.json",
+    "verification_report_sha256": "2cc87de829b327ef222258e9e1a282c4eb7db4a6b2bfa0bd39594e0bf1c4ca38",
+    "verification_scope": "All 15 final images: UID10001/no_new_privs task tools, original visible tests, writable workspace, inaccessible private runtime dependencies; official root baseline/individual/combined gold; exact original test counts/outcomes; no model calls",
+    "independent_stage_acceptance": "Stage 2a runtime boundaries passed; final benchmark evidence awaiting separate independent acceptance"
+  }
+}

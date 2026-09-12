@@ -1,0 +1,457 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "featurebench",
+  "source": {
+    "url": "https://github.com/LiberCoders/FeatureBench",
+    "gitCommit": "8d4e347ec57546685c5a87e8676bf575db022ea6",
+    "path": "sources/FeatureBench",
+    "version": "0.2.3"
+  },
+  "dataset": {
+    "url": "https://huggingface.co/datasets/LiberCoders/FeatureBench",
+    "requestedRevision": "v1.1",
+    "revision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+    "path": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736",
+    "files": {
+      "README.md": {
+        "sha256": "e79a788c9619086aa0d1c6c616fada76c5f732e9f382c92fd9925596880978d9",
+        "bytes": 3366
+      },
+      "data/fast-00000-of-00001.parquet": {
+        "sha256": "d775855a031b0fb5932ff7fdf4512ce733fbc6716528395bf15cbad22df5d2c3",
+        "bytes": 3137774
+      },
+      "data/full-00000-of-00001.parquet": {
+        "sha256": "1989012f1d7003bde5e79cb5d6f7b5580c1597ae36d533019a53a1da44b2c160",
+        "bytes": 5411152
+      },
+      "data/lite-00000-of-00001.parquet": {
+        "sha256": "8740f33eb89e443e8e32b46c98508be05a2db2cbf65f856ff38e4e7730b1cc99",
+        "bytes": 775383
+      },
+      "fast.json": {
+        "sha256": "3a6598e4eb652c37fe7b20ffe981203066a05d85199835ec822fea43054d8bef",
+        "bytes": 9508697
+      },
+      "full.json": {
+        "sha256": "a92c318658d3cb5fde0d19302a81cd1790ab1b57c1b43acac2be93b57d204581",
+        "bytes": 17296404
+      },
+      "lite.json": {
+        "sha256": "454f8291d74cfa3e0fd12f2190f1af97fd3ba719d80af04e40ce8542dbf7461b",
+        "bytes": 2403891
+      }
+    },
+    "splits": {
+      "fast": 100,
+      "full": 200,
+      "lite": 30
+    }
+  },
+  "selectionSha256": "ddd1afd400a6ae2fb1eb772ffbf2913542569dd19a0928d66a720a97e79035d1",
+  "images": {
+    "libercoders/featurebench-specs_packaging-instance_c393a6a8:latest": {
+      "digest": "sha256:96b12548b35b5983ac1dab9a101b4a49946fceb6a05c97690cd942ff014be916",
+      "compressedBytes": 10178975763,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:96b12548b35b5983ac1dab9a101b4a49946fceb6a05c97690cd942ff014be916",
+      "configDigest": "sha256:a3d10525a21b9986b5230f1aba5b00fd3a2dab0fba084d9a8cc466b057e5b36f",
+      "layerCount": 19,
+      "imageId": "sha256:07dc5c570d8e1fbf744cac6437b29655d3b31a4da7616502fbf45c652e6852e1"
+    },
+    "libercoders/featurebench-specs_mlflow-instance_efffa87e:latest": {
+      "digest": "sha256:5a63b594bc99a6dcd876289974979606b276edd49e966020111db3590c40add4",
+      "compressedBytes": 14073256440,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:5a63b594bc99a6dcd876289974979606b276edd49e966020111db3590c40add4",
+      "configDigest": "sha256:ac3ab9caaa9e7943cb4eb4b267a1733e2d2f7d84c5826483e1f31353e6e18b66",
+      "layerCount": 19,
+      "imageId": "sha256:1bb04cad31b3e37d59b6df72e775af78c3f9e9a16d71dee5ae9d820be6ca509e"
+    },
+    "libercoders/featurebench-specs_meson-instance_80dbfb11:latest": {
+      "digest": "sha256:fa8e46b573d2153376c6e089996712d3aa67c3cb8b8569ec232e7a4b7934ec24",
+      "compressedBytes": 10287044268,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:fa8e46b573d2153376c6e089996712d3aa67c3cb8b8569ec232e7a4b7934ec24",
+      "configDigest": "sha256:83014da4532baa5b7d6d5e031f4f598ec3c59acbd65cff94c75067a496d4171d",
+      "layerCount": 19,
+      "imageId": "sha256:65adc6ebd65fc2d4b786e8f8fc46f62582977de729ba02e3f261bbe648ecb1a8"
+    },
+    "libercoders/featurebench-specs_metaflow-instance_87a4ffa7:latest": {
+      "digest": "sha256:b319caebd869643983a3302839c3604cd885b4b2fe6dafb79686564bfcd52654",
+      "compressedBytes": 10416561713,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:b319caebd869643983a3302839c3604cd885b4b2fe6dafb79686564bfcd52654",
+      "configDigest": "sha256:6d757ede6f89fc321146e46ed260ce35e25920f995c240b4fdc347e67bbae6e4",
+      "layerCount": 19,
+      "imageId": "sha256:12e9f1c1d3a94813cc16e64fa1e564d187437fc5c3dba61a8d6116830a8c5531"
+    },
+    "libercoders/featurebench-specs_pandas-instance_15f634a6:latest": {
+      "digest": "sha256:e484ae407255b4c2c481a842e476c3c3285d2032738adf0abd410fb5f776dab7",
+      "compressedBytes": 12060793666,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:e484ae407255b4c2c481a842e476c3c3285d2032738adf0abd410fb5f776dab7",
+      "configDigest": "sha256:6f6d3d0b0d4e14808f16063410116070010b0c455761f6aa6dce53c890748fb5",
+      "layerCount": 19,
+      "imageId": "sha256:8a9b2f6368bc333e7a524a78b74a5ad34d106a671840d00c39621aa0b0ce94bf"
+    },
+    "libercoders/featurebench-specs_sympy-instance_3d889fef:latest": {
+      "digest": "sha256:207ff124011e74d2b6abbdce2f8d3244546949cd0abfb7949d7dd414368f8935",
+      "compressedBytes": 10648078585,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:207ff124011e74d2b6abbdce2f8d3244546949cd0abfb7949d7dd414368f8935",
+      "configDigest": "sha256:677064f1d1c3ba2ab111781c8fdf6d784719c03e975086e1dce45cac16b57c6a",
+      "layerCount": 19,
+      "imageId": "sha256:da73b125fd35cb80aaec5a535f5039cef29a880a725aef770479ba16f1838439"
+    },
+    "libercoders/featurebench-specs_xarray-instance_62de996a:latest": {
+      "digest": "sha256:075803e6495efc4aa64c015effcae52986a62352655127f69a262dfbedfbb7d7",
+      "compressedBytes": 11013566703,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:075803e6495efc4aa64c015effcae52986a62352655127f69a262dfbedfbb7d7",
+      "configDigest": "sha256:e21d60eb6e1737c874c1219b042d491511c12814e53b64003525e27365946c3e",
+      "layerCount": 19,
+      "imageId": "sha256:e93d87b26ac654ad52540ef2f6e0507902675e15188ca3ce9e018a6f027c6f47"
+    },
+    "libercoders/featurebench-specs_setuptools-instance_732b794d:latest": {
+      "digest": "sha256:f3d9abad25bc0f3c32208d33115df07ee6af2d34e00de8e0a004e1af127072a2",
+      "compressedBytes": 10286099706,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:f3d9abad25bc0f3c32208d33115df07ee6af2d34e00de8e0a004e1af127072a2",
+      "configDigest": "sha256:7604cf3e023c4e86bda39530b9e8bd0533cea6534f1d49791c1d3523cecec5ef",
+      "layerCount": 19,
+      "imageId": "sha256:5bc67828d79c51d51901ea84fdc8ae0942d76cca0d00955275d592a58c628491"
+    },
+    "libercoders/featurebench-specs_pytest-instance_2b74d6c4:latest": {
+      "digest": "sha256:90aad241a5422d096bff4b5a796300bcb737fbe347531f5c0dc71ea93421f291",
+      "compressedBytes": 10259696691,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:90aad241a5422d096bff4b5a796300bcb737fbe347531f5c0dc71ea93421f291",
+      "configDigest": "sha256:9d7284aee292a93504b845885e6e47b9af621f37f23f1f1609ba6c9d3fd667f3",
+      "layerCount": 19,
+      "imageId": "sha256:025378493c7e19d41da1f96d5c519439dbb4637cdc2cb0fc7c366c9da3cc2ff3"
+    },
+    "libercoders/featurebench-specs_astropy-instance_493bb78b:latest": {
+      "digest": "sha256:4b5e7489d8bee8e20b53f94c74833e6d9ee0163673ac4a36eecb0372ef01fda2",
+      "compressedBytes": 10670341439,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:4b5e7489d8bee8e20b53f94c74833e6d9ee0163673ac4a36eecb0372ef01fda2",
+      "configDigest": "sha256:2d6d33ba199f48ef4086c319515c4f5a627232b6268ad9fbbde44f48e79c29dd",
+      "layerCount": 19,
+      "imageId": "sha256:6818c7c197f6023859050e3b16af33f3e297bb145802736bf4088503be6fb097"
+    },
+    "libercoders/featurebench-specs_pydantic-instance_78693714:latest": {
+      "digest": "sha256:755c424c73170faf66d88006022ed2733f8e269446f330f301d762b0d0ab7d6b",
+      "compressedBytes": 10978895720,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:755c424c73170faf66d88006022ed2733f8e269446f330f301d762b0d0ab7d6b",
+      "configDigest": "sha256:6d4e96aa005ff35925cd2d374fa12c71cd025d789b3b298b903107b08325f307",
+      "layerCount": 19,
+      "imageId": "sha256:5350dd2807bfaea8307fc11865334df43c71f176bc2c1ef11b83880fe0a5cbf5"
+    },
+    "libercoders/featurebench-specs_matplotlib-instance_1a84341f:latest": {
+      "digest": "sha256:6356bd09b20e4291aadfaa649146b3e59c57446ea2fcb36e959147b756bd5dbc",
+      "compressedBytes": 11440555760,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:6356bd09b20e4291aadfaa649146b3e59c57446ea2fcb36e959147b756bd5dbc",
+      "configDigest": "sha256:19d971e05308a948ef37c8b6976bffaeda3e46da50ddd29a5d47b2a779395133",
+      "layerCount": 19,
+      "imageId": "sha256:b87656465a56b051b2cc834ae219066ccc6bb8591c06dbed21513434095694f3"
+    },
+    "libercoders/featurebench-specs_seaborn-instance_52738fbb:latest": {
+      "digest": "sha256:fe27a1a5205fa0939453e79d0f40c74cb402bad8ea1d42fff7de5e2106e77ce1",
+      "compressedBytes": 10408195402,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:fe27a1a5205fa0939453e79d0f40c74cb402bad8ea1d42fff7de5e2106e77ce1",
+      "configDigest": "sha256:7e784ba1565a6df3e15f0c47b26629e1f2654ef9fa5f7a7a023039c993fca670",
+      "layerCount": 19,
+      "imageId": "sha256:3dfd389097a879f038edeffa513bef461cba4cd9aca88abb85b670c8129d4bc8"
+    },
+    "libercoders/featurebench-specs_scikit_learn-instance_d734ea34:latest": {
+      "digest": "sha256:a9bd4207ee63bfdc8e96f99b0867c6248c3bf2700fdc4deb2442d316ce6a3ade",
+      "compressedBytes": 18278313267,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:a9bd4207ee63bfdc8e96f99b0867c6248c3bf2700fdc4deb2442d316ce6a3ade",
+      "configDigest": "sha256:46f458b35d574ffa7be03c237b86c62903acec5e966ded7c064c1c5bda0d051f",
+      "layerCount": 29,
+      "imageId": "sha256:3538308a27fdee879557554c6a7ef35fdf994969066aae68fee9f9f9bd270326"
+    },
+    "libercoders/featurebench-specs_sphinx-instance_6191afb1:latest": {
+      "digest": "sha256:15b434473e16386e33c864d8b7f4a3bddb9c5585961758c0ed0f06b51b3f0268",
+      "compressedBytes": 10516105460,
+      "architecture": "linux/amd64",
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "Docker Hub tags API",
+      "manifestDigest": "sha256:15b434473e16386e33c864d8b7f4a3bddb9c5585961758c0ed0f06b51b3f0268",
+      "configDigest": "sha256:b828a4b348c6cc46dacf6c6289345cda018977e64b603eae274941b0f907577a",
+      "layerCount": 19,
+      "imageId": "sha256:0058ea1fd439abbe81b788cbe887a923dc8bdf2ca4debab9d7aab62e621adcb9"
+    },
+    "libercoders/featurebench-specs_hatch-instance_02086956:latest": {
+      "digest": "sha256:70c443280ebe701fe0b6ca24d22c139f3b5c92817a5c1c16c2fc5762b67a4fb1",
+      "manifestDigest": "sha256:70c443280ebe701fe0b6ca24d22c139f3b5c92817a5c1c16c2fc5762b67a4fb1",
+      "configDigest": "sha256:f205cd379edfada5909f8bf7a1a9ce256efdd4d1132de0ef8802ef58c19f955a",
+      "compressedBytes": 10360738559,
+      "architecture": "linux/amd64",
+      "layerCount": 19,
+      "status": "downloaded_and_locally_validated",
+      "resolvedVia": "OCI Registry API",
+      "imageId": "sha256:18005c0ce6afadc9d62e184ec4e8aa0fd1470fc1fb4a43c797e9ebcb90638c4e"
+    }
+  },
+  "dependencies": {
+    "environmentPath": "cache/featurebench-venv",
+    "python": "3.13.5",
+    "freezePath": "cache/featurebench-requirements.lock.txt",
+    "status": "installed",
+    "sha256": "aee41be7192f0747766eadbd74d9ced48818bccc0525653325781e0f54540268",
+    "packages": [
+      "aiohappyeyeballs==2.7.1",
+      "aiohttp==3.14.3",
+      "aiosignal==1.4.0",
+      "anyio==4.15.1",
+      "attrs==26.1.0",
+      "certifi==2026.7.22",
+      "charset-normalizer==3.5.1",
+      "click==8.5.0",
+      "datasets==4.6.1",
+      "dill==0.4.0",
+      "docker==7.1.0",
+      "filelock==3.24.3",
+      "frozenlist==1.8.0",
+      "fsspec==2026.2.0",
+      "h11==0.16.0",
+      "hf-xet==1.6.0",
+      "httpcore==1.0.9",
+      "httpx==0.28.1",
+      "huggingface_hub==1.30.0",
+      "idna==3.19",
+      "Jinja2==3.1.6",
+      "markdown-it-py==4.2.0",
+      "MarkupSafe==3.0.3",
+      "mdurl==0.1.2",
+      "multidict==6.7.1",
+      "multiprocess==0.70.18",
+      "numpy==2.5.3",
+      "packaging==26.3",
+      "pandas==2.3.3",
+      "propcache==0.5.2",
+      "pyarrow==23.0.1",
+      "Pygments==2.21.0",
+      "python-dateutil==2.9.0.post0",
+      "pytz==2026.3.post1",
+      "PyYAML==6.0.3",
+      "requests==2.34.2",
+      "rich==14.3.3",
+      "six==1.17.0",
+      "toml==0.10.2",
+      "tqdm==4.70.0",
+      "typing_extensions==4.16.0",
+      "tzdata==2026.3",
+      "urllib3==2.7.0",
+      "xxhash==4.0.1",
+      "yarl==1.24.5"
+    ]
+  },
+  "calibration": {
+    "status": "passed",
+    "requiredTasks": 15,
+    "completedTasks": 15,
+    "baselinePolicy": "official test path with an inert new sentinel file patch because official harness rejects an empty prediction before executing tests",
+    "passedTasks": 15,
+    "indexPath": "runs/calibration/featurebench/current-selection-index.json",
+    "runtimeParityPassedTasks": 15,
+    "agentEnvironmentPassedTasks": 15
+  },
+  "agentBoundary": {
+    "originalPrompt": "UTF-8 bytes from the pinned problem_statement value; no trimming/newline normalization",
+    "forbidden": "full dataset, removal/gold patches, hidden F2P tests, pristine repository, prior git history and stale bytecode/package caches",
+    "workingDirectory": "/testbed; /workspace alias may point to /testbed"
+  },
+  "imageCapacity": {
+    "uniqueLayerCount": 144,
+    "uniqueCompressedBytes": 90151496052,
+    "sumPerImageCompressedBytes": 171516480583
+  },
+  "retiredTasks": [
+    {
+      "createdAt": "2026-09-09T08:17:51Z",
+      "oldTaskId": "pypa__setuptools.d198e86f.test_bdist_wheel.51482fc6.lv1",
+      "replacementTaskId": "pypa__hatch.ff4b4040.test_fmt.782c88a8.lv1",
+      "reason": "Official baseline mask breaks two pre-existing P2P cases through date-triggered calls to deleted _should_enforce; no model run has occurred.",
+      "oldCalibrationPath": "runs/calibration/featurebench/pypa__setuptools.d198e86f.test_bdist_wheel.51482fc6.lv1/20260909-official-01/calibration.json",
+      "sameRepositorySearch": {
+        "fastCount": 1,
+        "fullCount": 1,
+        "liteCount": 0,
+        "uniqueTaskCount": 1
+      },
+      "selectionReview": "pending_independent_review",
+      "replacementCalibration": "pending",
+      "oldTask": {
+        "taskId": "pypa__setuptools.d198e86f.test_bdist_wheel.51482fc6.lv1",
+        "benchmark": "featurebench",
+        "repo": "pypa/setuptools",
+        "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+        "split": "fast",
+        "level": 1,
+        "baseCommit": "d198e86f57231e83de87975c5c82bc40c196da79",
+        "environment": {
+          "image": "libercoders/featurebench-specs_setuptools-instance_732b794d:latest",
+          "digest": "sha256:f3d9abad25bc0f3c32208d33115df07ee6af2d34e00de8e0a004e1af127072a2",
+          "pythonBase": "python310",
+          "gpuRequired": false,
+          "cpus": 2,
+          "memoryGiB": 8,
+          "testTimeoutSeconds": 600
+        },
+        "promptSha256": "f9efe8188e2570330805a979a31b3a931370cace203e9d4e3f92f9513d0e087c",
+        "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pypa__setuptools.d198e86f.test_bdist_wheel.51482fc6.lv1:problem_statement",
+        "selectionReason": "Command initialization/ABI tagging and pyproject configuration application are independent packaging paths.",
+        "decomposition": {
+          "basis": "original problem_statement only; never injected into agent prompt",
+          "parts": [
+            "Command option initialization and wheel ABI tags",
+            "Distribution configuration application and error policy"
+          ],
+          "integration": "Integrate the command defaults with configuration-controlled distribution metadata."
+        },
+        "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+        "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+        "scoring": {
+          "entrypoint": "tools/benchmark/featurebench.py score",
+          "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+          "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+        },
+        "calibrationStatus": "pending_image_availability"
+      }
+    },
+    {
+      "createdAt": "2026-09-09T08:27:56Z",
+      "oldTaskId": "pydantic__pydantic.e1dcaf9e.test_deprecated_fields.40a2ec54.lv1",
+      "replacementTaskId": "pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1",
+      "reason": "Official baseline P2P test_missing_sentinel_json_schema fails because the task mask deletes GenerateJsonSchema.computed_field_schema while dispatch still requires it; gold restores the method and passes. No model run has occurred.",
+      "oldCalibrationPath": "runs/calibration/featurebench/pydantic__pydantic.e1dcaf9e.test_deprecated_fields.40a2ec54.lv1/20260909-official-01/calibration.json",
+      "sameRepositorySearch": {
+        "fastCount": 5,
+        "fullCount": 5,
+        "liteCount": 1,
+        "uniqueTaskCount": 5
+      },
+      "selectionReview": "pending_independent_review",
+      "replacementCalibration": "pending",
+      "oldTask": {
+        "taskId": "pydantic__pydantic.e1dcaf9e.test_deprecated_fields.40a2ec54.lv1",
+        "benchmark": "featurebench",
+        "repo": "pydantic/pydantic",
+        "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+        "split": "fast",
+        "level": 1,
+        "baseCommit": "e1dcaf9e68fc89731b45235e53245447edf35084",
+        "environment": {
+          "image": "libercoders/featurebench-specs_pydantic-instance_78693714:latest",
+          "digest": "sha256:755c424c73170faf66d88006022ed2733f8e269446f330f301d762b0d0ab7d6b",
+          "pythonBase": "python312",
+          "gpuRequired": false,
+          "cpus": 2,
+          "memoryGiB": 8,
+          "testTimeoutSeconds": 600
+        },
+        "promptSha256": "20d337570c340e9266f4d7f34a739dcac69c511bae30783a061dfeed63b3ffb6",
+        "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pydantic__pydantic.e1dcaf9e.test_deprecated_fields.40a2ec54.lv1:problem_statement",
+        "selectionReason": "Deprecated property descriptors and computed-field metadata/decorator handling are distinct protocols.",
+        "decomposition": {
+          "basis": "original problem_statement only; never injected into agent prompt",
+          "parts": [
+            "Property conversion and deprecated field descriptor behavior",
+            "Computed-field decorator and property metadata/private detection"
+          ],
+          "integration": "Integrate warning emission with validation/serialization metadata."
+        },
+        "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+        "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+        "scoring": {
+          "entrypoint": "tools/benchmark/featurebench.py score",
+          "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+          "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+        },
+        "calibrationStatus": "pending_image_availability"
+      }
+    },
+    {
+      "createdAt": "2026-09-09T08:47:48Z",
+      "oldTaskId": "pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1",
+      "replacementTaskId": "sympy__sympy.c1097516.test_inverse.c240ffe7.lv1",
+      "reason": "Second Pydantic candidate official baseline breaks three P2P JSON-schema cases through masked dispatch methods; replace with a distinct CPU-fast Sympy matrix task. No model run has occurred.",
+      "oldCalibrationPath": "runs/calibration/featurebench/pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1/20260909-pydantic-replacement-01/calibration.json",
+      "policyAdjustment": "One task per repository was an implementation preference, not the handoff requirement. Fifteen independent tasks now cover fourteen repositories with distinct features; no Level 1/2 variant duplication.",
+      "selectionReview": "pending_independent_review",
+      "replacementCalibration": "pending",
+      "oldTask": {
+        "taskId": "pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1",
+        "benchmark": "featurebench",
+        "repo": "pydantic/pydantic",
+        "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+        "split": "fast",
+        "level": 1,
+        "baseCommit": "e1dcaf9e68fc89731b45235e53245447edf35084",
+        "environment": {
+          "image": "libercoders/featurebench-specs_pydantic-instance_78693714:latest",
+          "digest": "sha256:755c424c73170faf66d88006022ed2733f8e269446f330f301d762b0d0ab7d6b",
+          "pythonBase": "python312",
+          "gpuRequired": false,
+          "cpus": 2,
+          "memoryGiB": 8,
+          "testTimeoutSeconds": 600
+        },
+        "promptSha256": "86d954703a5da7abb242cf06ea377a9e4d1060c95ed4310d8b7552e2b84ef7d9",
+        "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1:problem_statement",
+        "selectionReason": "Pipeline step compilation/composition and constraint execution are substantive independent behaviors, connected through core schemas and TypeAdapter JSON schema export.",
+        "decomposition": {
+          "basis": "original problem_statement only; never injected into agent prompt",
+          "parts": [
+            "Pipeline step compilation/composition and TypeAdapter JSON schema export",
+            "Constraint execution in _apply_constraint/_check_func and corresponding fluent comparison/predicate/datetime/string APIs"
+          ],
+          "integration": "Compile pipeline steps into a core schema using the constraint-execution contract, then export the combined schema through TypeAdapter with the requested JSON schema options."
+        },
+        "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+        "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+        "scoring": {
+          "entrypoint": "tools/benchmark/featurebench.py score",
+          "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+          "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+        },
+        "calibrationStatus": "pending_official_calibration"
+      }
+    }
+  ]
+}

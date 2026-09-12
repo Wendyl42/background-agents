@@ -1,0 +1,608 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "featurebench",
+  "selectionStatus": "all_environment_checks_passed",
+  "selectedCount": 15,
+  "repositoryCount": 14,
+  "taskUnit": "one independent Level 1 feature task",
+  "selectionPolicy": "fast Level 1; substantive distinct workstreams from original prompt; multiple repositories and distinct functionality; no duplicate Level variants; no model-result-based replacement",
+  "tasks": [
+    {
+      "taskId": "pypa__packaging.013f3b03.test_metadata.e00b5801.lv1",
+      "benchmark": "featurebench",
+      "repo": "pypa/packaging",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "013f3b03a61fb795587d2b6e0c288656abca1d45",
+      "environment": {
+        "image": "libercoders/featurebench-specs_packaging-instance_c393a6a8:latest",
+        "digest": "sha256:96b12548b35b5983ac1dab9a101b4a49946fceb6a05c97690cd942ff014be916",
+        "pythonBase": "python310",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "edcbc8a3c7e2c4783f1a866612ddb4185d6c844eb3e28c9f4a909844dbc409c0",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pypa__packaging.013f3b03.test_metadata.e00b5801.lv1:problem_statement",
+      "selectionReason": "Metadata format conversion and field validation form complementary subsystems.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Email/RFC822 parsing and serialization with encoding handling",
+          "Version-aware metadata field and requirement validation"
+        ],
+        "integration": "Both implement against the documented RawMetadata/Metadata contract; integrate round-trip and validation behavior."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "mlflow__mlflow.93dab383.test_client.42de781c.lv1",
+      "benchmark": "featurebench",
+      "repo": "mlflow/mlflow",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "93dab383a1a3fc9882ebc32283ad2a05d79ff70f",
+      "environment": {
+        "image": "libercoders/featurebench-specs_mlflow-instance_efffa87e:latest",
+        "digest": "sha256:5a63b594bc99a6dcd876289974979606b276edd49e966020111db3590c40add4",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 1200
+      },
+      "promptSha256": "a3a660584272141a884afd1e164c11a6c2c67ce2cf3627b6ad7f69d99240aa5c",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=mlflow__mlflow.93dab383.test_client.42de781c.lv1:problem_statement",
+      "selectionReason": "Queue/lifecycle and remote-configuration/event filtering are independently testable concerns.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Thread-safe record queue, flush and client lifecycle",
+          "Configuration retrieval and event enable/disable policy"
+        ],
+        "integration": "Integrate activation and flush behavior against the same event policy."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "mesonbuild__meson.f5d81d07.cargotests.8e49c2d0.lv1",
+      "benchmark": "featurebench",
+      "repo": "mesonbuild/meson",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "f5d81d071e411618ca0c1ec270565aa6f4b12dbc",
+      "environment": {
+        "image": "libercoders/featurebench-specs_meson-instance_80dbfb11:latest",
+        "digest": "sha256:fa8e46b573d2153376c6e089996712d3aa67c3cb8b8569ec232e7a4b7934ec24",
+        "pythonBase": "python310",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "f271c58da81094b3368cfc061461831196763b5d5acc657336b82ae5f938dc70",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=mesonbuild__meson.f5d81d07.cargotests.8e49c2d0.lv1:problem_statement",
+      "selectionReason": "Cargo syntax/version processing and manifest/lockfile interpretation have explicit intermediate contracts.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "cfg parser/evaluation and Cargo version conversion",
+          "TOML, lockfile and manifest/workspace helpers"
+        ],
+        "integration": "Integrate parsed constraints and manifests into Meson-compatible definitions."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "Netflix__metaflow.b390a8d4.test_stub_generator.7bf08c98.lv1",
+      "benchmark": "featurebench",
+      "repo": "Netflix/metaflow",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "b390a8d4459fed4c5e13271a434f9d77e756164c",
+      "environment": {
+        "image": "libercoders/featurebench-specs_metaflow-instance_87a4ffa7:latest",
+        "digest": "sha256:b319caebd869643983a3302839c3604cd885b4b2fe6dafb79686564bfcd52654",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "c29fb5eaeaad2912131fd974cfb9a1da237584bb50d1e98411f9299f7eff6983",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=Netflix__metaflow.b390a8d4.test_stub_generator.7bf08c98.lv1:problem_statement",
+      "selectionReason": "Class and callable stub generation can progress independently while sharing annotation formatting.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Annotation formatting and class-stub generation",
+          "Callable signatures, overloads, decorators and function-stub generation"
+        ],
+        "integration": "Parent reconciles shared imports/forward references and per-module reset state."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "pandas-dev__pandas.82fa2715.test_iceberg.85771c70.lv1",
+      "benchmark": "featurebench",
+      "repo": "pandas-dev/pandas",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "82fa27153e5b646ecdb78cfc6ecf3e1750443892",
+      "environment": {
+        "image": "libercoders/featurebench-specs_pandas-instance_15f634a6:latest",
+        "digest": "sha256:e484ae407255b4c2c481a842e476c3c3285d2032738adf0abd410fb5f776dab7",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "a20e3ffdbf6a6564d33a517ed968be8715043006fdacd7a5a3d055b68d6a94fb",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pandas-dev__pandas.82fa2715.test_iceberg.85771c70.lv1:problem_statement",
+      "selectionReason": "Iceberg reading and writing expose two separate public interfaces on the same catalog model.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Read path: catalog/table loading, scan/filter and conversion",
+          "Write path: creation/replacement/append and DataFrame interface"
+        ],
+        "integration": "Integrate catalog conventions and public exports; independent sandboxes isolate mutable table fixtures."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "sympy__sympy.c1097516.test_puiseux.cd575f09.lv1",
+      "benchmark": "featurebench",
+      "repo": "sympy/sympy",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "c1097516c793b0364c4f3fe2eeb66b15a94eedfd",
+      "environment": {
+        "image": "libercoders/featurebench-specs_sympy-instance_3d889fef:latest",
+        "digest": "sha256:207ff124011e74d2b6abbdce2f8d3244546949cd0abfb7949d7dd414368f8935",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "5c8b85b1e77ed8176785a6067b096f937feaa4e140b051ecc2564742431b69eb",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=sympy__sympy.c1097516.test_puiseux.cd575f09.lv1:problem_statement",
+      "selectionReason": "Rational arithmetic and Puiseux ring operations are distinct mathematical layers.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "PythonMPQ arithmetic and canonical hashing",
+          "Puiseux polynomial/ring operations and coercion"
+        ],
+        "integration": "Integrate fractional exponent arithmetic with consistent rational/domain invariants."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "pydata__xarray.97f3a746.test_treenode.aa8ba777.lv1",
+      "benchmark": "featurebench",
+      "repo": "pydata/xarray",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "97f3a7465a66638f68129581b658853a3992dd89",
+      "environment": {
+        "image": "libercoders/featurebench-specs_xarray-instance_62de996a:latest",
+        "digest": "sha256:075803e6495efc4aa64c015effcae52986a62352655127f69a262dfbedfbb7d7",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "f56a50819e8d8563f54358b6401467b9799513695a3e9ec9cfa9e0de7a18c46b",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pydata__xarray.97f3a746.test_treenode.aa8ba777.lv1:problem_statement",
+      "selectionReason": "Tree mutation and tree traversal/querying expose distinct invariants and public methods.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Parent/item mutation, reparenting, orphaning and path assignment",
+          "Ancestors/descendants, subtree grouping, lookup and aggregate tree properties"
+        ],
+        "integration": "Integrate against one parent/child invariant and verify mutation effects on traversal."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "pypa__hatch.ff4b4040.test_fmt.782c88a8.lv1",
+      "benchmark": "featurebench",
+      "repo": "pypa/hatch",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "ff4b4040fe84c9a5911137791695380d976577dc",
+      "environment": {
+        "image": "libercoders/featurebench-specs_hatch-instance_02086956:latest",
+        "digest": "sha256:70c443280ebe701fe0b6ca24d22c139f3b5c92817a5c1c16c2fc5762b67a4fb1",
+        "pythonBase": "python310",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "df18a163086a7175ee0d21f75373fdbecf01759ee8b4a35f25df444b9f9a8645",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pypa__hatch.ff4b4040.test_fmt.782c88a8.lv1:problem_statement",
+      "selectionReason": "Project/environment configuration and formatting-command execution are separate substantive paths joined by an environment configuration contract.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Project configuration, environment lookup/preparation and plugin configuration",
+          "Formatting-command execution, platform argument joining and Ruff configuration selection/writing"
+        ],
+        "integration": "Pass the resolved project/environment settings into the formatting workflow and its command/configuration generation."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "pytest-dev__pytest.68016f0e.test_local.40fb2f1f.lv1",
+      "benchmark": "featurebench",
+      "repo": "pytest-dev/pytest",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "68016f0effe59cd91120112f5170fdd057dba1d9",
+      "environment": {
+        "image": "libercoders/featurebench-specs_pytest-instance_2b74d6c4:latest",
+        "digest": "sha256:90aad241a5422d096bff4b5a796300bcb737fbe347531f5c0dc71ea93421f291",
+        "pythonBase": "python310",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "8d1e6680aee884d164c47b860587dd8c3d3b52474afae489a7b94896a4a20483",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=pytest-dev__pytest.68016f0e.test_local.40fb2f1f.lv1:problem_statement",
+      "selectionReason": "Filesystem data operations and temporary-directory/import process behavior have separate side effects.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Path identity, metadata, read/write/copy and links",
+          "Temporary/numbered directories, cwd contexts, import and process helpers"
+        ],
+        "integration": "Independent sandboxes avoid cwd/import/temp-root interference; parent integrates LocalPath behavior."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "astropy__astropy.b0db0daa.test_vo.8fd473ce.lv1",
+      "benchmark": "featurebench",
+      "repo": "astropy/astropy",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "b0db0daac6b851596851cb43e5456fb6c916c071",
+      "environment": {
+        "image": "libercoders/featurebench-specs_astropy-instance_493bb78b:latest",
+        "digest": "sha256:4b5e7489d8bee8e20b53f94c74833e6d9ee0163673ac4a36eecb0372ef01fda2",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "6339cce908d4fd5a0574fa822eaee7b03343f85cafdef520b20dcd090f8aca55",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=astropy__astropy.b0db0daa.test_vo.8fd473ce.lv1:problem_statement",
+      "selectionReason": "VOTable tree/reference navigation and conversion to Table are separate feature surfaces.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Tree iteration, reference lookup and first-table selection",
+          "TableElement conversion and preservation of column metadata"
+        ],
+        "integration": "Integrate element identity and metadata semantics between navigation and conversion."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "sympy__sympy.c1097516.test_inverse.c240ffe7.lv1",
+      "benchmark": "featurebench",
+      "repo": "sympy/sympy",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "c1097516c793b0364c4f3fe2eeb66b15a94eedfd",
+      "environment": {
+        "image": "libercoders/featurebench-specs_sympy-instance_3d889fef:latest",
+        "digest": "sha256:207ff124011e74d2b6abbdce2f8d3244546949cd0abfb7949d7dd414368f8935",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "b37f91d74d0dc027f6b5daab933f5313c92c978f0080c49a50377aefb331ff7d",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=sympy__sympy.c1097516.test_inverse.c240ffe7.lv1:problem_statement",
+      "selectionReason": "DomainMatrix algebra/domain/representation and denominator/adjugate behavior combine with low-level dense inversion and recursive approximate comparison; these are distinct from the existing Puiseux-series task.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "DomainMatrix algebra, domain/shape/representation contracts, denominator cancellation and adjugate/inverse interfaces",
+          "Low-level in-place dense inversion (ddm_iinv) and recursive tolerance-based approximate comparison (all_close)"
+        ],
+        "integration": "Preserve domain, shape and matrix-representation contracts when the DomainMatrix inverse interface invokes dense inversion; use the requested exact and approximate comparison semantics."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "matplotlib__matplotlib.86a476d2.test_backend_registry.872ba384.lv1",
+      "benchmark": "featurebench",
+      "repo": "matplotlib/matplotlib",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "86a476d26aa86a280fa000560bdfc773a07d1a41",
+      "environment": {
+        "image": "libercoders/featurebench-specs_matplotlib-instance_1a84341f:latest",
+        "digest": "sha256:6356bd09b20e4291aadfaa649146b3e59c57446ea2fcb36e959147b756bd5dbc",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "271d353a0585c0c0ea25132a979f30026eea885f2779c0b9f8e019d60e8b5351",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=matplotlib__matplotlib.86a476d2.test_backend_registry.872ba384.lv1:problem_statement",
+      "selectionReason": "Built-in GUI/backend mapping and third-party entry-point registration/resolution are separate registries.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Built-in listings, filtering and GUI-framework mapping",
+          "Entry-point validation, lazy discovery and backend resolution"
+        ],
+        "integration": "Integrate normalized names and conflict behavior; sandboxes isolate backend imports and registry state."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "mwaskom__seaborn.7001ebe7.test_regression.ce8c62e2.lv1",
+      "benchmark": "featurebench",
+      "repo": "mwaskom/seaborn",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "7001ebe72423238e99c0434a2ef0a0ebc9cb55c1",
+      "environment": {
+        "image": "libercoders/featurebench-specs_seaborn-instance_52738fbb:latest",
+        "digest": "sha256:fe27a1a5205fa0939453e79d0f40c74cb402bad8ea1d42fff7de5e2106e77ce1",
+        "pythonBase": "python310",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "bbec7663e14083521d5cc2b90a9885121d7e7ff86f398fa5ffbd629858d6b5c1",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=mwaskom__seaborn.7001ebe7.test_regression.ce8c62e2.lv1:problem_statement",
+      "selectionReason": "Data preparation and model/interval computations form independently verifiable stages.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Variable establishment, missing data, binning and scatter/estimate data",
+          "Regression fitting, residualization and confidence intervals"
+        ],
+        "integration": "Integrate one prepared-data contract across supported fitting modes."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "scikit-learn__scikit-learn.5741bac9.test_public_functions.28421aef.lv1",
+      "benchmark": "featurebench",
+      "repo": "scikit-learn/scikit-learn",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "5741bac9a1ccc9c43e3597a796e430ef9eeedc0f",
+      "environment": {
+        "image": "libercoders/featurebench-specs_scikit_learn-instance_d734ea34:latest",
+        "digest": "sha256:a9bd4207ee63bfdc8e96f99b0867c6248c3bf2700fdc4deb2442d316ce6a3ade",
+        "pythonBase": "python310_cu121_torch28",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 1200
+      },
+      "promptSha256": "0f8eda8a2ccef29d5aaebe068e7527b7e226e8c1fdbe61ac191c313ac09ba3df",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=scikit-learn__scikit-learn.5741bac9.test_public_functions.28421aef.lv1:problem_statement",
+      "selectionReason": "Public decomposition/covariance APIs and clustering/validation helpers provide independent algorithm families.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Dictionary learning, NMF and covariance estimation functions",
+          "Clustering functions and parameter-validation generators"
+        ],
+        "integration": "Integrate public exports and consistency with existing estimator APIs."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    },
+    {
+      "taskId": "sphinx-doc__sphinx.e347e59c.test_ext_intersphinx.04901873.lv1",
+      "benchmark": "featurebench",
+      "repo": "sphinx-doc/sphinx",
+      "sourceRevision": "76b4a4566e04f4bcc13c35125d4f301791efa736",
+      "split": "fast",
+      "level": 1,
+      "baseCommit": "e347e59ccc27a646c974526252e39a63870f6ea3",
+      "environment": {
+        "image": "libercoders/featurebench-specs_sphinx-instance_6191afb1:latest",
+        "digest": "sha256:15b434473e16386e33c864d8b7f4a3bddb9c5585961758c0ed0f06b51b3f0268",
+        "pythonBase": "python311",
+        "gpuRequired": false,
+        "cpus": 2,
+        "memoryGiB": 8,
+        "testTimeoutSeconds": 600
+      },
+      "promptSha256": "69005dd15df31bf0ea2b0b435c150561b7fdc39a2a6f601c923bee1679d7c88b",
+      "promptSource": "datasets/FeatureBench/76b4a4566e04f4bcc13c35125d4f301791efa736/fast.json#instance_id=sphinx-doc__sphinx.e347e59c.test_ext_intersphinx.04901873.lv1:problem_statement",
+      "selectionReason": "Inventory loading/cache management and cross-reference resolution have a clear data boundary.",
+      "decomposition": {
+        "basis": "original problem_statement only; never injected into agent prompt",
+        "parts": [
+          "Inventory fetch/parse, configuration, cache and safe-URL handling",
+          "Reference resolution/dispatch and inventory-inspection CLI"
+        ],
+        "integration": "Integrate normalized inventory entries and reference fallback semantics."
+      },
+      "initialization": "Official Level 1 masking + F2P removal + pristine-copy/history/cache removal, then export a clean baseline",
+      "referenceSolution": "Scorer only: reverse the dataset mask patch using the pinned official harness preprocess_hf_patch; never stage with agent assets",
+      "scoring": {
+        "entrypoint": "tools/benchmark/featurebench.py score",
+        "implementation": "featurebench.harness.runtime.run_instance_level1 + official report functions",
+        "requiredArtifact": "Git binary-capable unified diff against prepared initial commit; attempt retained even for empty/failed predictions"
+      },
+      "calibrationStatus": "passed_official_runtime_and_agent_environment"
+    }
+  ],
+  "selectionChanges": [
+    {
+      "createdAt": "2026-09-09T08:17:51Z",
+      "oldTaskId": "pypa__setuptools.d198e86f.test_bdist_wheel.51482fc6.lv1",
+      "replacementTaskId": "pypa__hatch.ff4b4040.test_fmt.782c88a8.lv1",
+      "reason": "Official baseline mask breaks two pre-existing P2P cases through date-triggered calls to deleted _should_enforce; no model run has occurred.",
+      "oldCalibrationPath": "runs/calibration/featurebench/pypa__setuptools.d198e86f.test_bdist_wheel.51482fc6.lv1/20260909-official-01/calibration.json",
+      "sameRepositorySearch": {
+        "fastCount": 1,
+        "fullCount": 1,
+        "liteCount": 0,
+        "uniqueTaskCount": 1
+      },
+      "selectionReview": "pending_independent_review",
+      "replacementCalibration": "pending"
+    },
+    {
+      "createdAt": "2026-09-09T08:27:56Z",
+      "oldTaskId": "pydantic__pydantic.e1dcaf9e.test_deprecated_fields.40a2ec54.lv1",
+      "replacementTaskId": "pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1",
+      "reason": "Official baseline P2P test_missing_sentinel_json_schema fails because the task mask deletes GenerateJsonSchema.computed_field_schema while dispatch still requires it; gold restores the method and passes. No model run has occurred.",
+      "oldCalibrationPath": "runs/calibration/featurebench/pydantic__pydantic.e1dcaf9e.test_deprecated_fields.40a2ec54.lv1/20260909-official-01/calibration.json",
+      "sameRepositorySearch": {
+        "fastCount": 5,
+        "fullCount": 5,
+        "liteCount": 1,
+        "uniqueTaskCount": 5
+      },
+      "selectionReview": "pending_independent_review",
+      "replacementCalibration": "pending"
+    },
+    {
+      "createdAt": "2026-09-09T08:47:48Z",
+      "oldTaskId": "pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1",
+      "replacementTaskId": "sympy__sympy.c1097516.test_inverse.c240ffe7.lv1",
+      "reason": "Second Pydantic candidate official baseline breaks three P2P JSON-schema cases through masked dispatch methods; replace with a distinct CPU-fast Sympy matrix task. No model run has occurred.",
+      "oldCalibrationPath": "runs/calibration/featurebench/pydantic__pydantic.e1dcaf9e.test_pipeline.c9b08962.lv1/20260909-pydantic-replacement-01/calibration.json",
+      "policyAdjustment": "One task per repository was an implementation preference, not the handoff requirement. Fifteen independent tasks now cover fourteen repositories with distinct features; no Level 1/2 variant duplication.",
+      "selectionReview": "pending_independent_review",
+      "replacementCalibration": "pending"
+    }
+  ]
+}

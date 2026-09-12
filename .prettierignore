@@ -24,6 +24,9 @@ package-lock.json
 pnpm-lock.yaml
 yarn.lock
 
+# Frozen benchmark manifests/configuration are byte-hashed historical evidence.
+experiments/**/*.json
+
 # Generated files
 *.d.ts
 *.min.js
