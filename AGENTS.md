@@ -161,6 +161,8 @@ CI runs lint, typecheck, and tests for all TypeScript and Python packages on eve
 
 ## Further Reading
 
+- [docs/benchmark/README.md](docs/benchmark/README.md) — benchmark summary, recommended reading
+  order, results, and operations entrypoints
 - [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) — deploy your own instance
 - [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md) — detailed architecture and session lifecycle
 - [CONTRIBUTING.md](CONTRIBUTING.md) — contribution guidelines
