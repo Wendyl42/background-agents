@@ -25,6 +25,8 @@ export interface OpenSandboxProviderConfig {
   apiKey: string;
   /** Locally built image containing sandbox_runtime and the agent toolchain. */
   image: string;
+  /** Deployment-owned executable for images with an isolated runtime interpreter. */
+  pythonPath?: string;
   scmProvider: SourceControlProviderName;
 }
 
@@ -40,6 +42,9 @@ export class OpenSandboxProvider implements SandboxProvider {
   };
 
   constructor(private readonly config: OpenSandboxProviderConfig) {
+    if (config.pythonPath && !/^\/[\w./-]+$/.test(config.pythonPath)) {
+      throw new Error("OpenSandbox pythonPath must be an absolute executable path");
+    }
     const url = new URL(config.apiUrl);
     if (
       !["http:", "https:"].includes(url.protocol) ||
@@ -99,7 +104,7 @@ export class OpenSandboxProvider implements SandboxProvider {
     // Full CP sandbox IDs live in runtime logs/env; join via session + startup attempt.
     const body = {
       image: { uri: this.config.image },
-      entrypoint: ["python", "-m", "sandbox_runtime.entrypoint"],
+      entrypoint: [this.config.pythonPath ?? "python", "-m", "sandbox_runtime.entrypoint"],
       timeout: timeoutSeconds,
       resourceLimits: { cpu: String(cpuCores), memory: `${memoryMib}Mi` },
       env: buildSandboxEnvVars(

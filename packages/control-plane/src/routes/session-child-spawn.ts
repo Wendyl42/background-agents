@@ -80,8 +80,15 @@ async function handleSpawnChild(
     resolvedChildSandboxSettings.maxTotalChildSessions ?? DEFAULT_MAX_TOTAL_CHILD_SESSIONS;
 
   const parentDepth = await sessionStore.getSpawnDepth(parentId);
-  if (parentDepth >= MAX_SPAWN_DEPTH) {
-    return error(`Maximum spawn depth (${MAX_SPAWN_DEPTH}) exceeded`, 403);
+  const maxSpawnDepth =
+    env.SESSION_MAX_SPAWN_DEPTH === undefined
+      ? MAX_SPAWN_DEPTH
+      : Number(env.SESSION_MAX_SPAWN_DEPTH);
+  if (!Number.isInteger(maxSpawnDepth) || maxSpawnDepth < 1 || maxSpawnDepth > MAX_SPAWN_DEPTH) {
+    return error("Invalid session spawn depth configuration", 503);
+  }
+  if (parentDepth >= maxSpawnDepth) {
+    return error(`Maximum spawn depth (${maxSpawnDepth}) exceeded`, 403);
   }
 
   const totalCount = await sessionStore.countTotalChildren(parentId);

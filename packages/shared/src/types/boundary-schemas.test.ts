@@ -25,6 +25,7 @@ import {
   spawnChildSessionRequestSchema,
 } from "./session-api";
 import { MAX_WEB_PROMPT_CHARS } from "./websocket";
+import { MAX_API_PROMPT_CHARS, webPromptPayloadSchema } from "./prompts";
 import {
   listEventsResponseSchema,
   sandboxEventSchema,
@@ -304,6 +305,20 @@ describe("boundary schemas", () => {
   });
 
   describe("sendPromptRequestSchema", () => {
+    it("accepts full API specifications while retaining the web prompt limit", () => {
+      const content = "x".repeat(MAX_WEB_PROMPT_CHARS + 1);
+      const parsed = sendPromptRequestSchema.safeParse({ content });
+      expect(parsed.success).toBe(true);
+      if (parsed.success) expect(parsed.data.content).toBe(content);
+      expect(webPromptPayloadSchema.safeParse({ content }).success).toBe(false);
+      expect(
+        sendPromptRequestSchema.safeParse({ content: "x".repeat(MAX_API_PROMPT_CHARS) }).success
+      ).toBe(true);
+      expect(
+        sendPromptRequestSchema.safeParse({ content: "x".repeat(MAX_API_PROMPT_CHARS + 1) }).success
+      ).toBe(false);
+    });
+
     it("parses a valid prompt request with a Slack callback context", () => {
       const result = sendPromptRequestSchema.safeParse({
         content: "Investigate the failure",

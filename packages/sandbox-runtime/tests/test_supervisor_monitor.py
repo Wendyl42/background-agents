@@ -3,6 +3,8 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from sandbox_runtime.supervisor import SandboxSupervisor
 from tests.runtime_helpers import make_supervisor
 
@@ -23,6 +25,32 @@ def _fake_process(returncode: int | None) -> MagicMock:
     proc = MagicMock()
     proc.returncode = returncode
     return proc
+
+
+@pytest.mark.parametrize("component", ["agent_bridge", "opencode_server"])
+async def test_zero_restart_policy_stops_after_first_process_failure(monkeypatch, component):
+    monkeypatch.setenv("SANDBOX_MAX_RESTARTS", "0")
+    supervisor = _make_supervisor()
+    process = getattr(supervisor, component)
+    process.exit_code = MagicMock(return_value=1)
+    process.start = AsyncMock()
+    supervisor._report_fatal_error = AsyncMock()
+    handler = (
+        supervisor._handle_bridge_exit
+        if component == "agent_bridge"
+        else supervisor._handle_opencode_exit
+    )
+    await handler(0)
+    assert supervisor.shutdown_event.is_set()
+    process.start.assert_not_awaited()
+    supervisor._report_fatal_error.assert_awaited_once()
+
+
+@pytest.mark.parametrize("value", ["-1", "6", "invalid"])
+def test_invalid_restart_policy_is_rejected(monkeypatch, value):
+    monkeypatch.setenv("SANDBOX_MAX_RESTARTS", value)
+    with pytest.raises(ValueError):
+        _make_supervisor()
 
 
 class TestBridgeGracefulShutdown:

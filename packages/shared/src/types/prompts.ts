@@ -2,6 +2,8 @@ import { z } from "zod";
 import { sessionAttachmentReferencesSchema } from "./session-attachments";
 
 export const MAX_WEB_PROMPT_CHARS = 64_000;
+// API callers can supply full task specifications without the web composer's size limit.
+export const MAX_API_PROMPT_CHARS = 128_000;
 export const MAX_UNFINISHED_PROMPTS = 10;
 export const BLANK_PROMPT_MESSAGE = "Prompt content must not be blank without attachments";
 
@@ -15,6 +17,7 @@ export function isBlankPrompt(prompt: {
 }
 
 export const promptContentSchema = z.string().max(MAX_WEB_PROMPT_CHARS);
+export const apiPromptContentSchema = z.string().max(MAX_API_PROMPT_CHARS);
 
 export const webPromptPayloadSchema = z
   .object({

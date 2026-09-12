@@ -3,13 +3,13 @@ import { sessionAttachmentReferencesSchema } from "@open-inspect/shared/types/se
 import {
   BLANK_PROMPT_MESSAGE,
   isBlankPrompt,
-  promptContentSchema,
+  apiPromptContentSchema,
 } from "@open-inspect/shared/types/prompts";
 import { z } from "zod";
 
 export const enqueuePromptRequestSchema = z
   .object({
-    content: promptContentSchema,
+    content: apiPromptContentSchema,
     authorId: z.string(),
     canonicalUserId: z.string().nullable().optional(),
     source: messageSourceSchema,

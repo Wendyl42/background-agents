@@ -78,6 +78,9 @@ export interface Env {
   OPENSANDBOX_API_URL?: string;
   OPENSANDBOX_API_KEY?: string;
   OPENSANDBOX_IMAGE?: string;
+  OPENSANDBOX_PYTHON_PATH?: string;
+  /** Optional stricter deployment limit; cannot exceed the built-in depth limit. */
+  SESSION_MAX_SPAWN_DEPTH?: string;
   /** Initial sandbox boot/connect deadline; also controls stale-spawn recovery. */
   SANDBOX_STARTUP_TIMEOUT_MS?: string;
   SANDBOX_LEGACY_PROVIDER?: string; // Explicit historical owner of unlabelled sandbox/snapshot handles

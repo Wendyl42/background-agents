@@ -30,6 +30,41 @@ afterEach(() => {
 });
 
 describe("OpenSandbox provider", () => {
+  it("uses the deployment runtime interpreter without changing task environment paths", async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValue(Response.json({ id: "osb-runtime", status: { state: "Running" } }));
+    vi.stubGlobal("fetch", fetcher);
+    const isolated = createSandboxProviderFromEnv({
+      SANDBOX_PROVIDER: "opensandbox",
+      OPENSANDBOX_API_URL: "http://localhost:8090",
+      OPENSANDBOX_API_KEY: "test-key",
+      OPENSANDBOX_IMAGE: "task:fixed",
+      OPENSANDBOX_PYTHON_PATH: "/opt/oi-runtime/bin/python3.12",
+    } as Env);
+    await isolated.createSandbox(config);
+    const body = JSON.parse(fetcher.mock.calls[0][1].body);
+    expect(body.entrypoint).toEqual([
+      "/opt/oi-runtime/bin/python3.12",
+      "-m",
+      "sandbox_runtime.entrypoint",
+    ]);
+    expect(body.env.PYTHONHOME).toBeUndefined();
+    expect(body.env.LD_LIBRARY_PATH).toBeUndefined();
+  });
+
+  it("rejects a non-absolute deployment interpreter", () => {
+    expect(
+      () =>
+        new OpenSandboxProvider({
+          apiUrl: "http://localhost:8090",
+          apiKey: "test-key",
+          image: "task:fixed",
+          scmProvider: "github",
+          pythonPath: "python -c injected",
+        })
+    ).toThrow("absolute executable");
+  });
   it("finds and deletes a late creation after its response is lost, without touching another attempt", async () => {
     vi.useFakeTimers();
     const metadata = {

@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
-const state = resolve(root, ".cache/opensandbox");
+const state = resolve(process.env.OPENINSPECT_LOCAL_STATE ?? resolve(root, ".cache/opensandbox"));
 const LOCAL_SANDBOX_STARTUP_TIMEOUT_MS = 600_000;
 const bindingsFile = resolve(state, "control-plane-env.json");
 const connection = JSON.parse(readFileSync(resolve(state, "connection.json"), "utf8"));
@@ -39,7 +39,8 @@ const gateway = JSON.parse(
     encoding: "utf8",
   })
 )[0].Gateway;
-const port = 8787;
+const port = Number(process.env.OPENINSPECT_LOCAL_PORT ?? 8787);
+if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error("Invalid local port");
 const env = { ...privateBindings, OPENSANDBOX_API_KEY: connection.api_key };
 writeFileSync(
   resolve(state, ".dev.vars"),
@@ -63,9 +64,18 @@ const config = {
   vars: {
     DEPLOYMENT_NAME: "opensandbox-local",
     SANDBOX_PROVIDER: "opensandbox",
-    SANDBOX_STARTUP_TIMEOUT_MS: String(LOCAL_SANDBOX_STARTUP_TIMEOUT_MS),
+    SANDBOX_STARTUP_TIMEOUT_MS: String(
+      connection.startup_timeout_ms ?? LOCAL_SANDBOX_STARTUP_TIMEOUT_MS
+    ),
+    ...(connection.inactivity_timeout_ms
+      ? { SANDBOX_INACTIVITY_TIMEOUT_MS: String(connection.inactivity_timeout_ms) }
+      : {}),
     OPENSANDBOX_API_URL: connection.api_url,
     OPENSANDBOX_IMAGE: connection.image,
+    ...(connection.python_path ? { OPENSANDBOX_PYTHON_PATH: connection.python_path } : {}),
+    ...(connection.max_spawn_depth
+      ? { SESSION_MAX_SPAWN_DEPTH: String(connection.max_spawn_depth) }
+      : {}),
     WORKER_URL: `http://${gateway}:${port}`,
     WEB_APP_URL: "http://localhost:3000",
     SCM_PROVIDER: "github",
@@ -133,7 +143,47 @@ if (command === "init" || command === "serve") {
   } finally {
     closeSync(migrationLog);
   }
-  console.log("Local D1 migrations applied; details in .cache/opensandbox/migrations.log");
+  console.log(`Local D1 migrations applied; details in ${state}/migrations.log`);
+  const sandboxSettingsFile = resolve(state, "sandbox-settings.json");
+  if (existsSync(sandboxSettingsFile)) {
+    const settingsModule = resolve(state, "sandbox-settings.mjs");
+    await build({
+      entryPoints: [resolve(root, "packages/control-plane/src/sandbox/settings.ts")],
+      bundle: true,
+      platform: "node",
+      format: "esm",
+      outfile: settingsModule,
+    });
+    const { normalizeSandboxSettings } = await import(settingsModule);
+    const defaults = normalizeSandboxSettings(
+      JSON.parse(readFileSync(sandboxSettingsFile, "utf8"))
+    );
+    const data = JSON.stringify({ defaults }).replaceAll("'", "''");
+    const now = Date.now();
+    const sqlFile = resolve(state, "sandbox-settings.sql");
+    writeFileSync(
+      sqlFile,
+      `INSERT INTO integration_settings(integration_id,settings,created_at,updated_at) VALUES('sandbox','${data}',${now},${now}) ON CONFLICT(integration_id) DO UPDATE SET settings=excluded.settings,updated_at=excluded.updated_at;`,
+      { mode: 0o600 }
+    );
+    execFileSync(
+      process.execPath,
+      [
+        wrangler,
+        "d1",
+        "execute",
+        "DB",
+        "--local",
+        "--config",
+        configPath,
+        "--persist-to",
+        persist,
+        "--file",
+        sqlFile,
+      ],
+      { cwd: root, env: processEnv, stdio: "pipe" }
+    );
+  }
   const sandboxEnvFile = resolve(state, "sandbox-env.json");
   if (existsSync(sandboxEnvFile)) {
     // Use the application's validation/encryption contract when seeding local D1.

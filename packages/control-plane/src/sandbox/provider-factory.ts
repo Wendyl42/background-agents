@@ -179,6 +179,7 @@ export function createSandboxProviderFromEnv(
         apiUrl: env.OPENSANDBOX_API_URL,
         apiKey: env.OPENSANDBOX_API_KEY,
         image: env.OPENSANDBOX_IMAGE,
+        pythonPath: env.OPENSANDBOX_PYTHON_PATH,
         scmProvider: resolveScmProviderFromEnv(env.SCM_PROVIDER),
       });
     }
