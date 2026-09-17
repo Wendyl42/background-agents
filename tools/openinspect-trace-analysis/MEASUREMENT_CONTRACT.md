@@ -1,6 +1,7 @@
-# Measurement Contract — Block E0 Batch Workflow Foundation
+# Measurement Contract — Per-Bundle and Batch Analysis
 
-Status: **Block E0 deterministic pilot batch workflow complete; inferential analysis not started.**
+Scope: versioned per-bundle profiles and batch aggregation. Current implementation status is in
+[STATUS.md](STATUS.md); historical checkpoint results are separate from these definitions.
 
 Analysis profiles:
 
@@ -432,4 +433,5 @@ The Block C shell rules do not execute commands and are not complete POSIX parse
 - pooled-operation aggregation or cross-run statistical inference;
 - CPU, memory, network, cache, or billing inference not present in the bundle.
 
-These are future blocks and must not be smuggled into Block A + B report prose.
+These capabilities are outside the per-bundle/batch profiles defined here; their reports must not
+imply those measurements.

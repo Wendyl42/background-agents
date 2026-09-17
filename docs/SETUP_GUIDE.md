@@ -23,15 +23,15 @@ sign-in are supported, while GitHub App repository credentials remain required f
 
 Required:
 
-- Node.js `22+` (minimum supported: `20+`)
+- Node.js `22+` (matches the root `package.json` engine requirement)
 - npm
 - Git
 
-Optional (needed for `modal-infra` development):
+Optional (needed for Python sandbox package development):
 
 - Python `3.12+`
 - `uv` (recommended) or `pip`
-- Modal CLI (`modal`)
+- Modal CLI (`modal`), for `modal-infra` only
 
 Optional (needed for full deployment):
 

@@ -2,8 +2,10 @@
 
 ## Status
 
-Proposed design for V1. This document intentionally distinguishes product-visible version control,
-which is deferred, from immutable internal revisions, which are required for reproducible sessions.
+Original V1 design record. Managed skills are implemented; use
+[the current guide](../MANAGED_SKILLS.md) for supported behavior and setup. The proposals and
+rollout phases below preserve design context, not a current work queue. Product-visible version
+control was deferred in this design, separately from immutable internal revisions.
 
 ## Summary
 

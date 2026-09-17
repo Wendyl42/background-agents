@@ -129,6 +129,9 @@ built for internal use where all employees are trusted and have access to compan
 
 ## Getting Started
 
+Use the **[documentation map](docs/README.md)** to find current guides, trace tooling, and
+historical design records.
+
 For a practical setup guide (local + contributor + deployment paths), start with
 **[docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md)**.
 

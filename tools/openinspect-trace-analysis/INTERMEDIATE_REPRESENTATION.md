@@ -1,4 +1,4 @@
-# Intermediate Representation — Block E0 Batch Workflow Foundation
+# Intermediate Representation — Per-Bundle and Batch Analysis
 
 Raw IR schema version: `openinspect-trace-ir-block-ab-v0`
 
