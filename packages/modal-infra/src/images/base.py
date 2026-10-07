@@ -16,6 +16,7 @@ from pathlib import Path
 import modal
 
 import sandbox_runtime
+from sandbox_runtime.toolchain import TOOLCHAIN
 
 # Get the path to the sandbox runtime code (provider-agnostic)
 SANDBOX_RUNTIME_DIR = Path(sandbox_runtime.__file__).parent
@@ -31,28 +32,29 @@ SANDBOX_RUNTIME_DIR = Path(sandbox_runtime.__file__).parent
 # releases order the turn loop by comparing those IDs as strings, which makes
 # any session carrying pre-wraparound history exit the loop without calling the
 # model. 1.18.15 orders by message creation time instead.
-OPENCODE_VERSION = "1.18.18"
+OPENCODE_VERSION = TOOLCHAIN["opencode"]
 
 # code-server version to install (pinned for reproducible images)
-CODE_SERVER_VERSION = "4.109.5"
+CODE_SERVER_VERSION = TOOLCHAIN["code_server"]
 
 # agent-browser version to install (pinned for reproducible images)
-AGENT_BROWSER_VERSION = "0.21.2"
+AGENT_BROWSER_VERSION = TOOLCHAIN["agent_browser"]
 
 # ttyd version to install (pinned for reproducible images)
-TTYD_VERSION = "1.7.7"
-TTYD_SHA256 = "8a217c968aba172e0dbf3f34447218dc015bc4d5e59bf51db2f2cd12b7be4f55"
+TTYD_VERSION = TOOLCHAIN["ttyd"]
+TTYD_SHA256 = TOOLCHAIN["ttyd_sha256"]
 
 # Cache buster - change this to force Modal image rebuild.
 # The numeric generation is one sequence shared by every image-build provider,
 # and MIN_REBUILD_RUNTIME_VERSION gates which prebuilt images get rebuilt onto
 # it, so bump every provider's label together.
 # v59: OpenCode past the message-ID wraparound (see OPENCODE_VERSION)
-CACHE_BUSTER = "v59-opencode-1-18-18"
+# Preserve the compatibility generation; force the new build-time inventory layer.
+CACHE_BUSTER = "v59-opencode-1-18-18-provenance"
 
 # Base image with all development tools
 base_image = (
-    modal.Image.debian_slim(python_version="3.12")
+    modal.Image.debian_slim(python_version=TOOLCHAIN["python_series"])
     # System packages
     .apt_install(
         "git",
@@ -98,7 +100,7 @@ base_image = (
     # Install Node.js 22 LTS
     .run_commands(
         # Add NodeSource repository for Node.js 22
-        "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -",
+        f"curl -fsSL https://deb.nodesource.com/setup_{TOOLCHAIN['node_major']}.x | bash -",
         "apt-get install -y nodejs",
         # Verify installation
         "node --version",
@@ -224,5 +226,8 @@ base_image = (
     .add_local_dir(
         str(SANDBOX_RUNTIME_DIR),
         remote_path="/app/sandbox_runtime",
+        copy=True,
     )
+    # Inventory/checks run once during image build, not on every child boot.
+    .run_commands("python -m sandbox_runtime.toolchain --check --capture /app/oi-toolchain.json")
 )

@@ -142,6 +142,9 @@ class SessionConfig(BaseModel):
     """
 
     session_id: str
+    sandbox_backend: str | None = None
+    startup_attempt_id: str | None = None
+    execution_trace: dict[str, str] | None = None
     repo_owner: str | None = None
     repo_name: str | None = None
     branch: str | None = None

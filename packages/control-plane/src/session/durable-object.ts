@@ -889,6 +889,10 @@ export class SessionDO extends DurableObject<Env> {
    */
   private createLifecycleManager(): SandboxLifecycleManager {
     const sandboxBackend = resolveSandboxBackendName(this.env.SANDBOX_PROVIDER);
+    const legacyBackend = this.env.SANDBOX_LEGACY_PROVIDER?.trim();
+    if (legacyBackend) {
+      this.sandboxRepository.adoptLegacySandboxBackend(resolveSandboxBackendName(legacyBackend));
+    }
 
     const provider = createSandboxProviderFromEnv(this.env, sandboxBackend);
 
@@ -909,8 +913,8 @@ export class SessionDO extends DurableObject<Env> {
       updateSandboxForSpawn: (data) => this.sandboxRepository.updateSandboxForSpawn(data),
       updateSandboxForResume: (data) => this.sandboxRepository.updateSandboxForResume(data),
       updateSandboxModalObjectId: (id) => this.sandboxRepository.updateSandboxModalObjectId(id),
-      updateSandboxSnapshotImageId: (sandboxId, imageId) =>
-        this.sandboxRepository.updateSandboxSnapshotImageId(sandboxId, imageId),
+      updateSandboxSnapshotImageId: (sandboxId, imageId, backend) =>
+        this.sandboxRepository.updateSandboxSnapshotImageId(sandboxId, imageId, backend),
       updateSandboxLastActivity: (timestamp) =>
         this.sandboxRepository.updateSandboxLastActivity(timestamp),
       incrementCircuitBreakerFailure: (timestamp) =>
@@ -1152,6 +1156,26 @@ export class SessionDO extends DurableObject<Env> {
         return new Response("Unauthorized: Invalid auth token", { status: 401 });
       }
 
+      const executionTrace = parsePersistedSandboxSettings(
+        this.getSession()?.sandbox_settings ?? null
+      ).executionTrace;
+      if (executionTrace) {
+        let measured;
+        try {
+          measured = JSON.parse(request.headers.get("X-Execution-Trace-Ready") ?? "null");
+        } catch {
+          measured = null;
+        }
+        if (
+          !measured ||
+          measured.mode !== executionTrace.mode ||
+          measured.runId !== executionTrace.runId ||
+          measured.attemptId !== executionTrace.attemptId
+        ) {
+          log.error("execution_trace.not_ready", { session_id: this.getSession()?.id });
+          return new Response("Execution tracing is required but not ready", { status: 412 });
+        }
+      }
       // Auth passed — continue to WebSocket accept below
       // The success ws.connect event is emitted after the WebSocket is accepted
     }

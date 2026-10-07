@@ -43,7 +43,7 @@ from .constants import (
 from .diff_capture import ControlPlaneDiffClient, SessionDiffRefreshWorker
 from .event_forwarder import BufferedEventForwarder
 from .git_signing import GitSigningError, GitSigningRuntime
-from .log_config import configure_logging, get_logger
+from .log_config import configure_logging, get_logger, runtime_log_context
 from .opencode_client import OpenCodeClient
 from .prompt_stream import OpenCodePromptStream
 from .repo_config import find_repo_entry, load_repo_manifest
@@ -287,8 +287,18 @@ class AgentBridge:
 
     def _build_ready_event(self) -> dict[str, Any]:
         repositories = load_repo_manifest(self.repo_manifest_path)
+        context = runtime_log_context()
         return {
             "type": "ready",
+            **{
+                wire_key: context[context_key]
+                for context_key, wire_key in (
+                    ("runtime_boot_id", "runtimeBootId"),
+                    ("startup_attempt_id", "runtimeStartupAttemptId"),
+                    ("sandbox_backend", "sandboxBackend"),
+                )
+                if context_key in context
+            },
             "sandboxId": self.sandbox_id,
             "opencodeSessionId": self.opencode_session_id,
             "repositories": [
@@ -459,6 +469,8 @@ class AgentBridge:
             "Authorization": f"Bearer {self.auth_token}",
             "X-Sandbox-ID": self.sandbox_id,
         }
+        if os.environ.get("OI_EXECUTION_TRACE_READY"):
+            additional_headers["X-Execution-Trace-Ready"] = os.environ["OI_EXECUTION_TRACE_READY"]
 
         try:
             async with websockets.connect(

@@ -103,6 +103,8 @@ export class ModalSandboxProvider implements SandboxProvider, ModalImageBuildPro
       const result = await this.client.createSandbox(
         {
           sessionId: config.sessionId,
+          sandboxBackend: config.sandboxBackend,
+          startupAttemptId: config.startupAttemptId,
           sandboxId: config.sandboxId,
           repoOwner: config.repoOwner,
           repoName: config.repoName,
@@ -150,6 +152,8 @@ export class ModalSandboxProvider implements SandboxProvider, ModalImageBuildPro
       const result = await this.client.restoreSandbox(
         {
           snapshotImageId: config.snapshotImageId,
+          sandboxBackend: config.sandboxBackend,
+          startupAttemptId: config.startupAttemptId,
           sessionId: config.sessionId,
           sandboxId: config.sandboxId,
           sandboxAuthToken: config.sandboxAuthToken,
@@ -384,6 +388,20 @@ export class ModalSandboxProvider implements SandboxProvider, ModalImageBuildPro
    * Classify an error as transient or permanent for circuit breaker handling.
    */
   private classifyError(message: string, error: unknown): SandboxProviderError {
+    if (error instanceof SandboxProviderError) return error;
+    if (error instanceof ModalApiError && error.reason === "image_unavailable") {
+      return new SandboxProviderError(
+        `${message}: ${error.message}`,
+        "permanent",
+        error,
+        "image_unavailable"
+      );
+    }
+    // A structured HTTP failure takes precedence over message heuristics.
+    // Legacy success:false bodies use HTTP 200 and still need the latter.
+    if (error instanceof ModalApiError && error.status >= 400) {
+      return this.classifyErrorWithStatus(`${message}: ${error.message}`, error.status, error);
+    }
     // Check for fetch/network errors
     if (error instanceof Error) {
       const errorMessage = error.message.toLowerCase();

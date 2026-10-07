@@ -1,20 +1,22 @@
 # AGENTS.md
 
-Open-Inspect is a background coding agent system that spawns sandboxed dev environments to work on
-GitHub repositories. Single-tenant design. Stack: Cloudflare Workers (TypeScript), Modal (Python),
-Next.js (React), Terraform.
+Open-Inspect is a single-tenant background coding agent system that spawns sandboxed development
+environments. Stack: Cloudflare Workers (TypeScript), shared sandbox runtime (Python), Next.js
+(React), Terraform. Start with [docs/README.md](docs/README.md) for task-specific documentation.
 
 ## Architecture
 
-Three tiers connected by WebSockets:
+Three tiers, with real-time events streamed over WebSockets:
 
 1. **Web Client** (Next.js on Vercel or Cloudflare Workers via OpenNext) — UI with GitHub OAuth,
    session dashboard, real-time streaming
 2. **Control Plane** (Cloudflare Workers + Durable Objects) — session lifecycle, WebSocket hub,
    GitHub/auth integration. Each session is a Durable Object with SQLite storage. Uses D1 for the
    session index, repo metadata, environments, and encrypted secrets.
-3. **Data Plane** (Modal, Python) — sandboxed environments running coding agents. Manages sandbox
-   creation, snapshots, and repository/environment image builds.
+3. **Data Plane** — provider adapters manage sandbox lifecycle; `packages/sandbox-runtime` owns the
+   shared Python supervisor, OpenCode bridge, tools, and runtime observations. Supported backends
+   are selected in `packages/control-plane/src/sandbox/provider-factory.ts`; see
+   [HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md#data-plane-sandbox-backends) for their capabilities.
 
 **Bot integrations** — all Cloudflare Workers using Hono:
 
@@ -22,8 +24,8 @@ Three tiers connected by WebSockets:
 - `github-bot` — PR review assignments and @mention commands
 - `linear-bot` — Linear agent webhooks → coding sessions
 
-**Data flow**: User prompt → web client → control plane DO (WebSocket) → Modal sandbox → streaming
-events back through the same WebSocket chain.
+**Data flow**: Client prompt → control plane DO → sandbox runtime → OpenCode; events stream back
+through the bridge and DO to connected clients. The runtime-to-DO connection is a WebSocket.
 
 ### Package Dependency Graph
 
@@ -36,15 +38,17 @@ it at build time.
 
 ## Package Overview
 
-| Package         | Lang / Framework                   | Purpose                                                     |
-| --------------- | ---------------------------------- | ----------------------------------------------------------- |
-| `shared`        | TypeScript                         | Shared types, auth utilities, model definitions             |
-| `control-plane` | TypeScript / CF Workers + DO       | Session management, WebSocket streaming, GitHub integration |
-| `web`           | TypeScript / Next.js 16 + React 19 | User-facing dashboard, OAuth, real-time UI                  |
-| `slack-bot`     | TypeScript / CF Workers + Hono     | Slack event handler, session creation                       |
-| `github-bot`    | TypeScript / CF Workers + Hono     | PR review and @mention webhook handler                      |
-| `linear-bot`    | TypeScript / CF Workers + Hono     | Linear agent webhook handler                                |
-| `modal-infra`   | Python 3.12 / Modal + FastAPI      | Sandbox lifecycle, WebSocket bridge to control plane        |
+| Package                                            | Lang / Framework                   | Purpose                                                     |
+| -------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| `shared`                                           | TypeScript                         | Shared types, auth utilities, model definitions             |
+| `control-plane`                                    | TypeScript / CF Workers + DO       | Session management, WebSocket streaming, GitHub integration |
+| `web`                                              | TypeScript / Next.js 16 + React 19 | User-facing dashboard, OAuth, real-time UI                  |
+| `slack-bot`                                        | TypeScript / CF Workers + Hono     | Slack event handler, session creation                       |
+| `github-bot`                                       | TypeScript / CF Workers + Hono     | PR review and @mention webhook handler                      |
+| `linear-bot`                                       | TypeScript / CF Workers + Hono     | Linear agent webhook handler                                |
+| `sandbox-runtime`                                  | Python 3.12                        | Shared in-sandbox supervisor, bridge, tools, observations   |
+| `modal-infra`                                      | Python 3.12 / Modal + FastAPI      | Modal lifecycle API and images                              |
+| `daytona-infra`, `e2b-infra`, `opencomputer-infra` | Provider build tooling             | Provider-specific snapshots/templates                       |
 
 ## Common Commands
 
@@ -67,16 +71,18 @@ npm test -w @open-inspect/github-bot
 npm test -w @open-inspect/slack-bot
 npm test -w @open-inspect/linear-bot
 
-# Tests — Python (pytest)
-cd packages/modal-infra && pytest tests/ -v
+# Tests — Python (pytest; from repository root)
+(cd packages/modal-infra && pytest tests/ -v)
+(cd packages/sandbox-runtime && pytest tests/ -v)
 
 # Python linting
-cd packages/modal-infra && ruff check --fix && ruff format
+(cd packages/modal-infra && ruff check --fix && ruff format)
 ```
 
 ## Testing
 
-All TypeScript packages use **Vitest**; Python uses **pytest** + pytest-asyncio.
+TypeScript packages use **Vitest**; Python uses **pytest** + pytest-asyncio. Offline experiment
+tooling lives in the sibling `benchmark-lab` repository; follow its `AGENTS.md`.
 
 ### Test file locations
 
@@ -86,6 +92,7 @@ All TypeScript packages use **Vitest**; Python uses **pytest** + pytest-asyncio.
 - **web, slack-bot, linear-bot**: co-located `src/**/*.test.ts`
 - **github-bot**: separate `test/*.test.ts`
 - **modal-infra**: `tests/test_*.py`
+- **sandbox-runtime**: `tests/test_*.py`
 
 ### Control-plane integration tests
 
@@ -161,10 +168,23 @@ CI runs lint, typecheck, and tests for all TypeScript and Python packages on eve
 
 ## Further Reading
 
+- [docs/README.md](docs/README.md) — documentation map and current guides versus historical plans
 - [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) — deploy your own instance
 - [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md) — detailed architecture and session lifecycle
+- [docs/TRACE_PIPELINE.md](docs/TRACE_PIPELINE.md) — event collection, persistence, export, and
+  timing boundaries
+- [tools/openinspect-trace-analysis/README.md](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/README.md)
+  — offline analysis commands and contracts
 - [CONTRIBUTING.md](CONTRIBUTING.md) — contribution guidelines
 - [packages/control-plane/README.md](packages/control-plane/README.md) — API reference, WebSocket
   protocol, D1 schema, security model
-- [packages/modal-infra/README.md](packages/modal-infra/README.md) — sandbox internals, Modal
+- [packages/modal-infra/README.md](packages/modal-infra/README.md) — Modal lifecycle API, images,
   deployment, endpoint URLs
+
+## Experiment boundary
+
+`background-agents` owns implementation; `../benchmark-lab` owns benchmark adapters, campaign
+controllers, exporters and analysis. `../openinspect-versions` holds selected source snapshots;
+`../experiment-data` holds outputs. Do not reintroduce benchmark policy into product code. Runtime
+tracing producers stay here; versioned consumers live in the lab. Historical `.cache` and `analysis`
+symlinks are compatibility paths, not destinations for new experiments.

@@ -27,6 +27,8 @@ export interface SpawnSandboxData {
   createdAt: number;
   authTokenHash: string;
   modalSandboxId: string;
+  sandboxBackend: string;
+  startupAttemptId: string;
   preserveProviderObjectId?: boolean;
 }
 
@@ -34,6 +36,7 @@ export interface SpawnSandboxData {
 export interface ResumeSandboxData {
   status: SandboxStatus;
   createdAt: number;
+  startupAttemptId: string;
 }
 
 /** Persistence for the sandbox scoped to one session. */
@@ -84,6 +87,8 @@ export class SandboxRepository {
          auth_token_hash = ?,
          auth_token = NULL,
          modal_sandbox_id = ?,
+         sandbox_backend = ?,
+         startup_attempt_id = ?,
          modal_object_id = ${data.preserveProviderObjectId ? "modal_object_id" : "NULL"},
          code_server_url = NULL,
          code_server_password = NULL,
@@ -96,7 +101,9 @@ export class SandboxRepository {
       data.status,
       data.createdAt,
       data.authTokenHash,
-      data.modalSandboxId
+      data.modalSandboxId,
+      data.sandboxBackend,
+      data.startupAttemptId
     );
   }
 
@@ -105,10 +112,12 @@ export class SandboxRepository {
       `UPDATE sandbox SET
          status = ?,
          created_at = ?,
+         startup_attempt_id = ?,
          last_heartbeat = NULL
        WHERE id = (SELECT id FROM sandbox LIMIT 1)`,
       data.status,
-      data.createdAt
+      data.createdAt,
+      data.startupAttemptId
     );
   }
 
@@ -119,8 +128,28 @@ export class SandboxRepository {
     );
   }
 
-  updateSandboxSnapshotImageId(sandboxId: string, imageId: string): void {
-    this.sql.exec(`UPDATE sandbox SET snapshot_image_id = ? WHERE id = ?`, imageId, sandboxId);
+  updateSandboxSnapshotImageId(sandboxId: string, imageId: string, backend: string): void {
+    this.sql.exec(
+      `UPDATE sandbox SET snapshot_image_id = ?, snapshot_backend = ? WHERE id = ?`,
+      imageId,
+      backend,
+      sandboxId
+    );
+  }
+
+  /** Adopt only unknown legacy handles using an operator-verified historical backend. */
+  adoptLegacySandboxBackend(backend: string): void {
+    this.sql.exec(
+      `UPDATE sandbox SET
+         sandbox_backend = CASE
+           WHEN sandbox_backend IS NULL AND (modal_sandbox_id IS NOT NULL OR modal_object_id IS NOT NULL)
+           THEN ? ELSE sandbox_backend END,
+         snapshot_backend = CASE
+           WHEN snapshot_backend IS NULL AND snapshot_image_id IS NOT NULL
+           THEN ? ELSE snapshot_backend END`,
+      backend,
+      backend
+    );
   }
 
   updateSandboxHeartbeat(timestamp: number): void {

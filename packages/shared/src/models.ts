@@ -232,6 +232,7 @@ export const MODEL_CATALOG = [
     category: "DeepSeek",
     enabledByDefault: true,
     models: [
+      { id: "deepseek/deepseek-flash", name: "DeepSeek V4.1 Flash", description: "Fast model" },
       { id: "deepseek/deepseek-v4-flash", name: "DeepSeek V4 Flash", description: "Fast model" },
       {
         id: "deepseek/deepseek-v4-pro",

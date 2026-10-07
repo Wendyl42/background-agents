@@ -91,6 +91,7 @@ module "control_plane_worker" {
       { name = "DEPLOYMENT_NAME", value = var.deployment_name },
       { name = "APP_NAME", value = var.app_name },
       { name = "SANDBOX_PROVIDER", value = var.sandbox_provider },
+      { name = "SANDBOX_LEGACY_PROVIDER", value = var.sandbox_legacy_provider },
       { name = "SANDBOX_INACTIVITY_TIMEOUT_MS", value = tostring(var.sandbox_inactivity_timeout_ms) },
     ],
     local.github_oauth_enabled ? [

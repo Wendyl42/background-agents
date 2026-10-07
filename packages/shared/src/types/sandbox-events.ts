@@ -51,9 +51,16 @@ export const sandboxEventSchema = z.discriminatedUnion("type", [
     status: z.string(),
   }),
   sandboxEventBaseSchema.extend({
-    // Emitted once when the sandbox bridge connects and OpenCode is ready.
+    // Emitted when the sandbox bridge connects and OpenCode is ready (also on reconnect).
     // Present in essentially every session's replay history.
     type: z.literal("ready"),
+    /** Runtime process identity survives live resumes but not supervisor restarts. */
+    runtimeBootId: z.string().optional(),
+    /** Original attempt that launched the runtime (may predate a live resume). */
+    runtimeStartupAttemptId: z.string().optional(),
+    /** Current attempt stamped by the control plane when receiving ready. */
+    startupAttemptId: z.string().optional(),
+    sandboxBackend: z.string().optional(),
     opencodeSessionId: z.string().nullable().optional(),
     repositories: z.array(sessionDiffBaselineRepositorySchema).optional(),
   }),

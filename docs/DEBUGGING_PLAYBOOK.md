@@ -1,5 +1,8 @@
 # Debugging Playbook
 
+This page covers service logs and correlation fields. For persisted session events, trace export,
+and offline timing semantics, see [TRACE_PIPELINE.md](./TRACE_PIPELINE.md).
+
 Reference for querying structured logs across all Open-Inspect services.
 
 All services emit flat JSON lines with a common envelope. Use the `msg` field (stable event

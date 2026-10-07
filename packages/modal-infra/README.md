@@ -4,7 +4,9 @@ Modal-based sandbox infrastructure for the Open-Inspect coding agent system.
 
 ## Overview
 
-This package provides the data plane for Open-Inspect:
+This package provides the Modal backend for Open-Inspect. The provider-independent supervisor,
+bridge, and agent tools live in [sandbox-runtime](../sandbox-runtime/); see the
+[trace pipeline](../../docs/TRACE_PIPELINE.md) for their code locations and event boundaries.
 
 - **Sandboxes**: Isolated development environments running OpenCode
 - **Images**: Pre-built container images with all development tools
@@ -34,6 +36,7 @@ This package provides the data plane for Open-Inspect:
 ### Images (`src/images/`)
 
 Base image definition with:
+
 - Debian slim + git, curl, build-essential
 - Node.js 22, pnpm, Bun
 - Python 3.12 with uv
@@ -43,9 +46,14 @@ Base image definition with:
 ### Sandbox (`src/sandbox/`)
 
 - **manager.py**: Sandbox lifecycle (create, warm, snapshot)
-- **entrypoint.py**: Supervisor process (runs as PID 1)
-- **bridge.py**: WebSocket bridge to control plane
-- **types.py**: Event and configuration types
+- **build_session.py**: Provider operations for short-lived image-build sandboxes
+
+### Shared runtime (`../sandbox-runtime/src/sandbox_runtime/`)
+
+- **entrypoint.py** / **supervisor.py**: Runtime entrypoint and service supervision
+- **bridge.py**: WebSocket bridge to the control plane
+- **prompt_stream.py**: OpenCode prompt streaming and tool-event conversion
+- **types.py**: Runtime configuration types
 
 ### Auth (`sandbox_runtime.auth`)
 
@@ -58,14 +66,13 @@ Provided by `packages/sandbox-runtime/src/sandbox_runtime/auth/`:
 
 - **web_api.py**: HTTP endpoints called by the control plane
 
-Image rebuild evaluation and residual cleanup run in the provider-neutral
-control-plane scheduler. Modal only owns its short-lived create, start,
-snapshot, terminate, and delete provider operations.
+Image rebuild evaluation and residual cleanup run in the provider-neutral control-plane scheduler.
+Modal only owns its short-lived create, start, snapshot, terminate, and delete provider operations.
 
 ## Usage
 
-> **Full deployment guide**: See [docs/GETTING_STARTED.md](../../docs/GETTING_STARTED.md) for complete setup
-> instructions including all required secrets and configuration.
+> **Full deployment guide**: See [docs/GETTING_STARTED.md](../../docs/GETTING_STARTED.md) for
+> complete setup instructions including all required secrets and configuration.
 
 ### Prerequisites
 
@@ -97,8 +104,8 @@ See `.env.example` for a full list of environment variables.
 
 ### Install local packages
 
-`sandbox-runtime` is a sibling package in this monorepo (not published to PyPI).
-If you use `uv`, it is resolved automatically. Otherwise install it first:
+`sandbox-runtime` is a sibling package in this monorepo (not published to PyPI). If you use `uv`, it
+is resolved automatically. Otherwise install it first:
 
 ```bash
 pip install -e ../sandbox-runtime
@@ -119,30 +126,30 @@ uv run modal deploy -m src
 modal run src/
 ```
 
-> **Note**: Never deploy `src/app.py` directly - it only defines the app and shared resources.
-> Build the Sandbox image first, then use `deploy.py` or `-m src` to ensure all function modules
-> are registered.
+> **Note**: Never deploy `src/app.py` directly - it only defines the app and shared resources. Build
+> the Sandbox image first, then use `deploy.py` or `-m src` to ensure all function modules are
+> registered.
 
 ## HTTP API
 
-The control plane communicates with Modal via HTTP endpoints. All endpoints (except health)
-require HMAC authentication via the `Authorization` header.
+The control plane communicates with Modal via HTTP endpoints. All endpoints (except health) require
+HMAC authentication via the `Authorization` header.
 
 Endpoint URLs follow the pattern: `https://{workspace}--open-inspect-{endpoint}.modal.run`
 
 ### Endpoints
 
-| Endpoint | Method | Auth | Description |
-|----------|--------|------|-------------|
-| `api-health` | GET | No | Health check |
-| `api-create-sandbox` | POST | Yes | Create a new sandbox |
-| `api-snapshot-sandbox` | POST | Yes | Take filesystem snapshot |
-| `api-restore-sandbox` | POST | Yes | Restore sandbox from snapshot |
-| `api-create-build-sandbox` | POST | Yes | Create a dormant, tagged sandbox for a prebuilt-image build |
-| `api-start-build-sandbox` | POST | Yes | Start the bound build runtime; results POST back to the control plane's `/image-builds/*` callbacks |
-| `api-snapshot-build-sandbox` | POST | Yes | Snapshot the exact tagged build sandbox |
-| `api-terminate-build-sandbox` | POST | Yes | Terminate the exact tagged build sandbox (idempotent when already absent) |
-| `api-delete-provider-image` | POST | Yes | Best-effort delete of a replaced provider image |
+| Endpoint                      | Method | Auth | Description                                                                                         |
+| ----------------------------- | ------ | ---- | --------------------------------------------------------------------------------------------------- |
+| `api-health`                  | GET    | No   | Health check                                                                                        |
+| `api-create-sandbox`          | POST   | Yes  | Create a new sandbox                                                                                |
+| `api-snapshot-sandbox`        | POST   | Yes  | Take filesystem snapshot                                                                            |
+| `api-restore-sandbox`         | POST   | Yes  | Restore sandbox from snapshot                                                                       |
+| `api-create-build-sandbox`    | POST   | Yes  | Create a dormant, tagged sandbox for a prebuilt-image build                                         |
+| `api-start-build-sandbox`     | POST   | Yes  | Start the bound build runtime; results POST back to the control plane's `/image-builds/*` callbacks |
+| `api-snapshot-build-sandbox`  | POST   | Yes  | Snapshot the exact tagged build sandbox                                                             |
+| `api-terminate-build-sandbox` | POST   | Yes  | Terminate the exact tagged build sandbox (idempotent when already absent)                           |
+| `api-delete-provider-image`   | POST   | Yes  | Best-effort delete of a replaced provider image                                                     |
 
 ### Example: Create Sandbox
 
@@ -170,25 +177,25 @@ curl "https://${WORKSPACE}--open-inspect-api-health.modal.run"
 
 Set via Modal secrets:
 
-| Variable | Secret | Description |
-|----------|--------|-------------|
-| `ANTHROPIC_API_KEY` | `llm-api-keys` | Optional Anthropic API key for Claude |
-| `DEEPSEEK_API_KEY` | Open-Inspect global/repository secret | DeepSeek API key injected per session |
-| `GITHUB_APP_ID` | `github-app` | GitHub App ID for repo access |
-| `GITHUB_APP_PRIVATE_KEY` | `github-app` | GitHub App private key (PKCS#8) |
-| `GITHUB_APP_INSTALLATION_ID` | `github-app` | GitHub App installation ID |
-| `MODAL_API_SECRET` | `internal-api` | Shared secret for control plane auth |
-| `ALLOWED_CONTROL_PLANE_HOSTS` | `internal-api` | Comma-separated allowed hostnames for URL validation |
+| Variable                      | Secret                                | Description                                          |
+| ----------------------------- | ------------------------------------- | ---------------------------------------------------- |
+| `ANTHROPIC_API_KEY`           | `llm-api-keys`                        | Optional Anthropic API key for Claude                |
+| `DEEPSEEK_API_KEY`            | Open-Inspect global/repository secret | DeepSeek API key injected per session                |
+| `GITHUB_APP_ID`               | `github-app`                          | GitHub App ID for repo access                        |
+| `GITHUB_APP_PRIVATE_KEY`      | `github-app`                          | GitHub App private key (PKCS#8)                      |
+| `GITHUB_APP_INSTALLATION_ID`  | `github-app`                          | GitHub App installation ID                           |
+| `MODAL_API_SECRET`            | `internal-api`                        | Shared secret for control plane auth                 |
+| `ALLOWED_CONTROL_PLANE_HOSTS` | `internal-api`                        | Comma-separated allowed hostnames for URL validation |
 
 ## Verification Criteria
 
-| Criterion | Test Method |
-|-----------|-------------|
-| App deploys successfully | `modal deploy deploy.py` completes without errors |
+| Criterion                | Test Method                                                   |
+| ------------------------ | ------------------------------------------------------------- |
+| App deploys successfully | `modal deploy deploy.py` completes without errors             |
 | Health endpoint responds | `curl https://{workspace}--open-inspect-api-health.modal.run` |
-| Sandbox creation works | POST to `api-create-sandbox` returns success |
-| Git sync completes | Verify HEAD matches origin after sandbox start |
-| Snapshot/restore works | Take snapshot, restore, verify workspace state |
+| Sandbox creation works   | POST to `api-create-sandbox` returns success                  |
+| Git sync completes       | Verify HEAD matches origin after sandbox start                |
+| Snapshot/restore works   | Take snapshot, restore, verify workspace state                |
 
 ## Development
 

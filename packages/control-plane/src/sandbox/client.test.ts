@@ -73,6 +73,29 @@ describe("ModalClient", () => {
     vi.restoreAllMocks();
   });
 
+  it("retains explicit image failure evidence across the Modal API boundary", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          success: false,
+          error: "image unavailable",
+          error_reason: "image_unavailable",
+        }),
+        { status: 200 }
+      )
+    );
+    const client = createModalClient("test-secret", "test");
+    await expect(
+      client.createSandbox({
+        sessionId: "s",
+        repoOwner: "acme",
+        repoName: "repo",
+        controlPlaneUrl: "https://control.example",
+        sandboxAuthToken: "test-token",
+      })
+    ).rejects.toMatchObject({ reason: "image_unavailable", status: 200 });
+  });
+
   it("routes the restore session_config through buildSessionConfig (carries mcp_servers)", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ success: true, data: { sandbox_id: "sb-1" } }), {

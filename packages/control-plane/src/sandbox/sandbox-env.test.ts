@@ -30,6 +30,27 @@ const baseInput = {
 };
 
 describe("buildSessionConfig", () => {
+  it("threads a snapshotted trace run through create and restore payloads", () => {
+    const executionTrace = {
+      mode: "process" as const,
+      runId: crypto.randomUUID(),
+      attemptId: crypto.randomUUID(),
+      endpoint: "http://127.0.0.1:8000/capture",
+    };
+    expect(
+      buildSessionConfig({ ...baseInput, sandboxSettings: { executionTrace } }).execution_trace
+    ).toEqual(executionTrace);
+    expect(buildSessionConfig(baseInput)).not.toHaveProperty("execution_trace");
+  });
+  it("keeps sandbox provenance distinct from the model provider", () => {
+    expect(
+      buildSessionConfig({ ...baseInput, sandboxBackend: "local", startupAttemptId: "attempt-1" })
+    ).toMatchObject({
+      provider: "anthropic",
+      sandbox_backend: "local",
+      startup_attempt_id: "attempt-1",
+    });
+  });
   it("maps provider inputs to the snake_case runtime contract", () => {
     const mcpServers = [{ id: "mcp-1", name: "Tool", type: "local" as const, enabled: true }];
 

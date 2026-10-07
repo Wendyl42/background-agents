@@ -41,6 +41,28 @@ def _capture_log(logger: StructuredLogger, level: str = "info", **kwargs) -> dic
 
 
 class TestJSONFormatter:
+    def test_runtime_correlation_is_allowlisted(self, monkeypatch):
+        monkeypatch.setenv(
+            "SESSION_CONFIG",
+            json.dumps(
+                {
+                    "session_id": "s",
+                    "sandbox_backend": "local",
+                    "startup_attempt_id": "a",
+                    "sandbox_auth_token": "never-log-this",
+                    "provider": "llm",
+                }
+            ),
+        )
+        monkeypatch.setenv("OI_RUNTIME_BOOT_ID", "boot")
+        record = _capture_log(get_logger("correlation"))
+        assert record["startup_attempt_id"] == "a"
+        assert record["runtime_boot_id"] == "boot"
+        assert record["sandbox_backend"] == "local"
+        assert record["clock_source"] == "sandbox_runtime"
+        assert "never-log-this" not in json.dumps(record)
+        assert "provider" not in record
+
     def test_basic_fields(self):
         log = get_logger("test-component")
         record = _capture_log(log)

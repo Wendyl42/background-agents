@@ -5,7 +5,8 @@ watch the AI work in real-time, Open-Inspect runs sessions in the cloud independ
 connection. You send a prompt, optionally close your laptop, and check the results later.
 
 This guide covers the core architecture, how sessions work, and what happens when you send a prompt.
-For deployment instructions, see [GETTING_STARTED.md](./GETTING_STARTED.md).
+For deployment instructions, see [GETTING_STARTED.md](./GETTING_STARTED.md). For code locations and
+event persistence/export boundaries, see [TRACE_PIPELINE.md](./TRACE_PIPELINE.md).
 
 ---
 
@@ -195,6 +196,11 @@ heartbeat persist `stopped` or `stale` before closing the connection, which prev
 
 The data plane is where code actually runs. Each session gets an isolated sandbox with a full
 development environment.
+
+The shared supervisor, OpenCode bridge, and agent tools live in `packages/sandbox-runtime`. Provider
+adapters in `packages/control-plane/src/sandbox/` own lifecycle operations; the `*-infra` packages
+contain provider-specific API or image/template build tooling. Runtime changes therefore do not
+belong in a Modal-only bridge implementation.
 
 **What's in a sandbox:**
 

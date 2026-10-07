@@ -8,12 +8,62 @@ from fastapi import HTTPException
 from sandbox_runtime.types import SandboxStatus
 from src import web_api
 from src.sandbox import manager as manager_module
+from src.sandbox.errors import SandboxImageUnavailableError
 from src.sandbox.manager import DEFAULT_SANDBOX_TIMEOUT_SECONDS
 
 
 def _patch_auth(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(web_api, "require_auth", lambda _authorization: None)
     monkeypatch.setattr(web_api, "require_valid_control_plane_url", lambda _url: None)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "failure,reason",
+    [
+        (SandboxImageUnavailableError("missing image"), "image_unavailable"),
+        (RuntimeError("image expired"), "unknown"),
+        (RuntimeError("quota exceeded"), "unknown"),
+    ],
+)
+async def test_create_error_reason_requires_typed_image_evidence(monkeypatch, failure, reason):
+    _patch_auth(monkeypatch)
+
+    class FakeManager:
+        async def create_sandbox(self, config):
+            raise failure
+
+    monkeypatch.setattr(manager_module, "SandboxManager", FakeManager)
+    result = await _call_create_sandbox(
+        {
+            "session_id": "s",
+            "repo_owner": "acme",
+            "repo_name": "repo",
+            "control_plane_url": "https://control.example",
+        }
+    )
+    assert result["success"] is False
+    assert result["error_reason"] == reason
+
+
+@pytest.mark.asyncio
+async def test_create_preserves_startup_provenance(monkeypatch):
+    _patch_auth(monkeypatch)
+    captured = {}
+    _patch_manager(monkeypatch, captured)
+    result = await _call_create_sandbox(
+        {
+            "session_id": "s",
+            "repo_owner": "acme",
+            "repo_name": "repo",
+            "control_plane_url": "https://control.example",
+            "sandbox_backend": "modal",
+            "startup_attempt_id": "attempt-1",
+        }
+    )
+    assert result["success"]
+    assert captured["config"].session_config.startup_attempt_id == "attempt-1"
+    assert captured["config"].session_config.sandbox_backend == "modal"
 
 
 def _patch_manager(

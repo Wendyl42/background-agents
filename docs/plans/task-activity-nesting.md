@@ -1,5 +1,10 @@
 # Task Activity Nesting
 
+Design record for the implemented Task activity correlation and persistence behavior. The problem
+statement below describes the earlier behavior. For current event boundaries and the distinction
+between OpenCode children and OpenInspect child sessions, see
+[TRACE_PIPELINE.md](../TRACE_PIPELINE.md).
+
 ## Problem
 
 OpenCode Task tool calls and the tools executed by their child sessions currently appear as

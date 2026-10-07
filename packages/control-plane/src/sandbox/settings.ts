@@ -1,5 +1,6 @@
 import {
   findSandboxPortConflict,
+  executionTraceSettingsSchema,
   isValidSandboxTimeoutMs,
   MAX_TUNNEL_PORTS,
   type ConfiguredSandboxPort,
@@ -55,6 +56,10 @@ export function normalizeSandboxSettings(
 
   const settings = input as Record<string, unknown>;
   const result: SandboxSettings = {};
+  if (settings.executionTrace !== undefined) {
+    // Explicit measurement intent must never silently turn into an unmeasured run.
+    result.executionTrace = executionTraceSettingsSchema.parse(settings.executionTrace);
+  }
 
   if (settings.terminalEnabled !== undefined) {
     if (typeof settings.terminalEnabled !== "boolean") {

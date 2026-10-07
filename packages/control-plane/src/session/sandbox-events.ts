@@ -94,6 +94,28 @@ export class SessionSandboxEventProcessor {
     }
 
     if (event.type === "ready") {
+      const sandbox = this.sandboxRepository.getSandbox();
+      // The runtime's origin attempt survives a live resume; join it with the
+      // current control-plane attempt without rewriting the process identity.
+      event = {
+        ...event,
+        startupAttemptId: sandbox?.startup_attempt_id ?? undefined,
+        sandboxBackend: sandbox?.sandbox_backend ?? undefined,
+      };
+      this.log.info("Sandbox ready received", {
+        event: "sandbox.startup_phase",
+        phase: "ready_received",
+        clock_source: "control_plane",
+        sandbox_id: event.sandboxId,
+        sandbox_backend: event.sandboxBackend,
+        startup_attempt_id: event.startupAttemptId,
+        runtime_boot_id: event.runtimeBootId,
+        provider_object_id: sandbox?.modal_object_id,
+        duration_ms: sandbox?.startup_attempt_id
+          ? Math.max(0, now - sandbox.created_at)
+          : undefined,
+        duration_scope: "startup_attempt_to_ready_received",
+      });
       this.diffService.pinBaselines(event);
     }
 

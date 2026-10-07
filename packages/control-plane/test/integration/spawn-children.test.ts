@@ -139,6 +139,35 @@ describe("POST /sessions/:parentId/children — spawn child", () => {
     expect(state.status).toBe("active");
   });
 
+  it("inherits the exact trace run into a dynamically created child DO", async () => {
+    const { parentName, stub, sandboxToken } = await setupParent();
+    const executionTrace = {
+      mode: "process",
+      runId: crypto.randomUUID(),
+      attemptId: crypto.randomUUID(),
+      endpoint: "http://127.0.0.1:8000/capture",
+    };
+    await runInDurableObject(stub, (instance: SessionDO) => {
+      instance.ctx.storage.sql.exec(
+        "UPDATE session SET sandbox_settings = ?",
+        JSON.stringify({ executionTrace })
+      );
+    });
+    const response = await SELF.fetch(`https://test.local/sessions/${parentName}/children`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${sandboxToken}` },
+      body: JSON.stringify({ title: "Measured child", prompt: "Do the child work" }),
+    });
+    expect(response.status).toBe(201);
+    const { sessionId } = await response.json<{ sessionId: string }>();
+    const child = env.SESSION.get(env.SESSION.idFromName(sessionId));
+    const rows = await queryDO<{ sandbox_settings: string }>(
+      child,
+      "SELECT sandbox_settings FROM session"
+    );
+    expect(JSON.parse(rows[0].sandbox_settings).executionTrace).toEqual(executionTrace);
+  });
+
   it("attributes a child to the active prompt author instead of the parent owner", async () => {
     const { parentName, stub, sandboxToken, store } = await setupParent({
       repoId: 12345,
@@ -321,7 +350,12 @@ describe("POST /sessions/:parentId/children — spawn child", () => {
   });
 
   it("persists inherited reasoning effort for children and grandchildren", async () => {
-    const { parentName, sandboxToken, store } = await setupParent({ reasoningEffort: "high" });
+    // Pin a model supporting this effort; the deployment default may not expose reasoning levels.
+    await new ModelPreferencesStore(env.DB).setEnabledModels(["anthropic/claude-sonnet-4-6"]);
+    const { parentName, sandboxToken, store } = await setupParent({
+      model: "anthropic/claude-sonnet-4-6",
+      reasoningEffort: "high",
+    });
 
     const childRes = await SELF.fetch(`https://test.local/sessions/${parentName}/children`, {
       method: "POST",

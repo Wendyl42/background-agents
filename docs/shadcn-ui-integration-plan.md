@@ -1,5 +1,9 @@
 # shadcn/ui Integration Plan
 
+Design proposal retained for reference. The inventory and phases below describe the design-time
+state, not a verified current component inventory or an instruction to execute the plan. Inspect
+`packages/web/src/components/ui/` for the current implementation.
+
 ## Motivation
 
 The web package (`packages/web`) currently has a small set of hand-rolled primitives (`Button`,

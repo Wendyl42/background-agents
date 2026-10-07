@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import modal
+from grpclib import GRPCError, Status
 
 from sandbox_runtime.constants import (
     CODE_SERVER_PORT,
@@ -38,11 +39,13 @@ from sandbox_runtime.types import SandboxStatus, SessionConfig
 
 from ..app import app, llm_secrets
 from ..images.base import base_image
+from .errors import SandboxImageUnavailableError
 from .vcs_env import inject_vcs_env_vars
 
 log = get_logger("manager")
 
 SNAPSHOT_FILESYSTEM_TIMEOUT_SECONDS = 300
+IMAGE_VALIDATION_TIMEOUT_SECONDS = 10
 MAX_TUNNEL_PORTS = 10
 DEFAULT_VNC_ENABLED = False
 _RESERVED_LAUNCH_ENV_VARS = {
@@ -56,6 +59,27 @@ _RESERVED_LAUNCH_ENV_VARS = {
     VNC_PASSWORD_ENV_VAR,
     NOVNC_PORT_ENV_VAR,
 }
+
+
+def _is_not_found(error: Exception) -> bool:
+    return isinstance(error, modal.exception.NotFoundError) or (
+        isinstance(error, GRPCError) and error.status == Status.NOT_FOUND
+    )
+
+
+async def _confirm_missing_image(image: modal.Image) -> bool:
+    """from_id is lazy: verify the image alone after an ambiguous NOT_FOUND.
+
+    Do not treat a missing secret/app as a missing image. For a from_id image,
+    build only resolves that existing image; it does not create a new sandbox.
+    No extra lookup is added to successful creates or transport/quota failures.
+    """
+    try:
+        async with asyncio.timeout(IMAGE_VALIDATION_TIMEOUT_SECONDS):
+            await image.build.aio(app)
+    except Exception as error:
+        return _is_not_found(error)
+    return False
 
 
 def _has_repository(repo_owner: str | None, repo_name: str | None) -> bool:
@@ -466,12 +490,23 @@ class SandboxManager:
         if exposed_ports:
             create_kwargs["encrypted_ports"] = exposed_ports
 
-        sandbox = await modal.Sandbox.create.aio(
-            "python",
-            "-m",
-            "sandbox_runtime.entrypoint",
-            **create_kwargs,
-        )
+        try:
+            sandbox = await modal.Sandbox.create.aio(
+                "python",
+                "-m",
+                "sandbox_runtime.entrypoint",
+                **create_kwargs,
+            )
+        except Exception as error:
+            if (
+                isinstance(spec.source, _RepositoryImageSource)
+                and _is_not_found(error)
+                and await _confirm_missing_image(image)
+            ):
+                raise SandboxImageUnavailableError(
+                    "Requested repository image is unavailable"
+                ) from error
+            raise
         modal_object_id = sandbox.object_id
         (
             code_server_url,

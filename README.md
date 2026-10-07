@@ -17,6 +17,16 @@ Open-Inspect provides a hosted background coding agent that can:
 - Use your choice of AI model — Anthropic Claude, OpenAI Codex (via ChatGPT subscription), xAI Grok
   (via SuperGrok subscription), or OpenCode Zen
 
+## Experiment workspace
+
+This repository owns the OpenInspect implementation. Benchmark orchestration, task selection, trace
+export, analysis and experiment documentation live in the sibling
+[benchmark-lab](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/README.md). Selected
+implementations are kept in `../openinspect-versions`; experiment outputs are kept in
+`../experiment-data`. See the
+[layout and version guide](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/LAYOUT.md)
+before running version comparisons.
+
 ## Security Model (Single-Tenant Only)
 
 > **Important**: This system is designed for **single-tenant deployment only**, where all users are
@@ -128,6 +138,9 @@ built for internal use where all employees are trusted and have access to compan
 | [shared](packages/shared)                         | Shared types and utilities                  |
 
 ## Getting Started
+
+Use the **[documentation map](docs/README.md)** to find current guides, trace tooling, and
+historical design records.
 
 For a practical setup guide (local + contributor + deployment paths), start with
 **[docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md)**.

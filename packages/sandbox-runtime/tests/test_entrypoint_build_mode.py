@@ -9,6 +9,7 @@ from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 
+from sandbox_runtime import repository_sync
 from sandbox_runtime.repository_sync import RepositorySyncResult
 from sandbox_runtime.runtime_config import BootMode
 from sandbox_runtime.supervisor import ImageBuildExecutionCancelled
@@ -1485,7 +1486,7 @@ class TestEnsureCredentialHelperConfigured:
 
         assert all("--replace-all" in c for c in git_config_calls)
         pairs = {(c[4], c[5]) for c in git_config_calls}
-        assert ("credential.helper", "/usr/local/bin/oi-git-credentials") in pairs
+        assert ("credential.helper", str(repository_sync.CREDENTIAL_HELPER_INSTALL_PATH)) in pairs
         assert ("credential.useHttpPath", "true") in pairs
 
     @pytest.mark.asyncio
@@ -1520,5 +1521,5 @@ class TestEnsureCredentialHelperConfigured:
             error="read-only",
         )
         pairs = {(c[4], c[5]) for c in git_config_calls}
-        assert ("credential.helper", "/usr/local/bin/oi-git-credentials") not in pairs
+        assert not any(key == "credential.helper" for key, _value in pairs)
         assert ("credential.useHttpPath", "true") in pairs

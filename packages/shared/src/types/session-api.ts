@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { executionTraceSettingsSchema } from "./integrations";
 import { sessionSkillSelectionSchema } from "./skills";
 import type { AgentResponse } from "./artifacts";
 import { sessionRepositoriesInputSchema } from "./repositories";
@@ -209,6 +210,7 @@ function hasExclusiveSessionTarget(
 }
 
 const createSessionRequestBaseSchema = z.object({
+  executionTrace: executionTraceSettingsSchema.optional(),
   repoOwner: z.string().trim().min(1).nullish(),
   repoName: z.string().trim().min(1).nullish(),
   title: z.string().optional(),

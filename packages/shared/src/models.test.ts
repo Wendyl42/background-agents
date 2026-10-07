@@ -53,7 +53,11 @@ const ZEN_MODELS = [
   "opencode/glm-5.1",
 ] as const;
 
-const DEEPSEEK_MODELS = ["deepseek/deepseek-v4-flash", "deepseek/deepseek-v4-pro"] as const;
+const DEEPSEEK_MODELS = [
+  "deepseek/deepseek-flash",
+  "deepseek/deepseek-v4-flash",
+  "deepseek/deepseek-v4-pro",
+] as const;
 const ZAI_CODING_PLAN_MODELS = ["zai-coding-plan/glm-5.2", "zai-coding-plan/glm-5.3"] as const;
 
 describe("model utilities", () => {

@@ -148,8 +148,11 @@ export interface SandboxRow {
   id: string;
   modal_sandbox_id: string | null; // Our generated sandbox ID
   modal_object_id: string | null; // Legacy column: provider object ID (Modal object ID or Daytona handle)
+  sandbox_backend: string | null; // Null means unverified legacy ownership, not the current backend
+  startup_attempt_id: string | null; // New identity for each create, restore, or resume attempt
   snapshot_id: string | null;
   snapshot_image_id: string | null; // Modal Image ID for filesystem snapshot restoration
+  snapshot_backend: string | null; // Snapshot ownership is independent of the current instance
   auth_token: string | null;
   auth_token_hash: string | null; // SHA-256 hash of sandbox auth token
   status: SandboxStatus;

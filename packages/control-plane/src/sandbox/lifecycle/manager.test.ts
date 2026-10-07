@@ -78,6 +78,9 @@ function createMockSandbox(
     id: "sandbox-123",
     modal_sandbox_id: "sandbox-testowner-testrepo-123",
     modal_object_id: "modal-obj-123",
+    sandbox_backend: "mock",
+    snapshot_backend: "mock",
+    startup_attempt_id: null,
     snapshot_id: null,
     snapshot_image_id: null,
     auth_token: "auth-token-123",
@@ -146,6 +149,8 @@ function createMockStorage(
         sandbox.auth_token_hash = data.authTokenHash;
         sandbox.auth_token = null;
         sandbox.modal_sandbox_id = data.modalSandboxId;
+        sandbox.sandbox_backend = data.sandboxBackend;
+        sandbox.startup_attempt_id = data.startupAttemptId;
         if (!data.preserveProviderObjectId) sandbox.modal_object_id = null;
       }
     }),
@@ -154,15 +159,19 @@ function createMockStorage(
       if (sandbox) {
         sandbox.status = data.status;
         sandbox.created_at = data.createdAt;
+        sandbox.startup_attempt_id = data.startupAttemptId;
       }
     }),
     updateSandboxModalObjectId: vi.fn((id: string | null) => {
       calls.push(`updateSandboxModalObjectId:${id}`);
       if (sandbox) sandbox.modal_object_id = id;
     }),
-    updateSandboxSnapshotImageId: vi.fn((sandboxId: string, imageId: string) => {
+    updateSandboxSnapshotImageId: vi.fn((sandboxId: string, imageId: string, backend: string) => {
       calls.push(`updateSandboxSnapshotImageId:${imageId}`);
-      if (sandbox) sandbox.snapshot_image_id = imageId;
+      if (sandbox) {
+        sandbox.snapshot_image_id = imageId;
+        sandbox.snapshot_backend = backend;
+      }
     }),
     updateSandboxLastActivity: vi.fn((timestamp: number) => {
       calls.push("updateSandboxLastActivity");
@@ -474,6 +483,93 @@ async function expectEarlyBridgeStartup(kind: ProviderStartupKind): Promise<void
 // ==================== Tests ====================
 
 describe("SandboxLifecycleManager", () => {
+  describe("backend ownership guards", () => {
+    it.each([
+      { sandbox_backend: null },
+      { sandbox_backend: "old-backend" },
+      { snapshot_image_id: "old-image", snapshot_backend: "old-backend" },
+    ])("rejects foreign or unknown state before any spawn mutation: %o", async (overrides) => {
+      const sandbox = createMockSandbox({ status: "stopped", ...overrides });
+      const storage = createMockStorage(createMockSession(), sandbox);
+      const provider = createMockProvider({
+        stopSandbox: vi.fn(),
+        capabilities: { supportsExplicitStop: true },
+      });
+      const broadcaster = createMockBroadcaster();
+      const manager = new SandboxLifecycleManager(
+        provider,
+        storage,
+        broadcaster,
+        createMockWebSocketManager(false),
+        createMockAlarmScheduler(),
+        createMockIdGenerator(),
+        createTestConfig()
+      );
+      await manager.spawnSandbox();
+      expect(provider.createSandbox).not.toHaveBeenCalled();
+      expect(provider.restoreFromSnapshot).not.toHaveBeenCalled();
+      expect(provider.stopSandbox).not.toHaveBeenCalled();
+      expect(storage.updateSandboxForSpawn).not.toHaveBeenCalled();
+      expect(storage.updateSandboxForResume).not.toHaveBeenCalled();
+      expect(sandbox.modal_object_id).toBe("modal-obj-123");
+      expect(sandbox.status).toBe("stopped");
+      expect(broadcaster.messages).toContainEqual(
+        expect.objectContaining({ type: "sandbox_error" })
+      );
+    });
+
+    it("never sends snapshot or stop API calls to the wrong provider", async () => {
+      const sandbox = createMockSandbox({ sandbox_backend: "old-backend" });
+      const storage = createMockStorage(createMockSession(), sandbox);
+      const provider = createMockProvider({
+        stopSandbox: vi.fn(),
+        capabilities: { supportsExplicitStop: true },
+      });
+      const manager = new SandboxLifecycleManager(
+        provider,
+        storage,
+        createMockBroadcaster(),
+        createMockWebSocketManager(false),
+        createMockAlarmScheduler(),
+        createMockIdGenerator(),
+        createTestConfig()
+      );
+      await manager.triggerSnapshot("test");
+      await manager.terminateUnresponsiveSandbox("prompt_dispatch_send_failed");
+      expect(provider.takeSnapshot).not.toHaveBeenCalled();
+      expect(provider.stopSandbox).not.toHaveBeenCalled();
+      expect(sandbox.modal_object_id).toBe("modal-obj-123");
+    });
+
+    it("rotates resume attempt identity without changing the live sandbox identity", async () => {
+      const sandbox = createMockSandbox({ status: "stopped", startup_attempt_id: "old-attempt" });
+      const storage = createMockStorage(createMockSession(), sandbox);
+      const resumeSandbox = vi.fn(async () => ({ success: true }));
+      const provider = createMockProvider({
+        resumeSandbox,
+        capabilities: { supportsPersistentResume: true },
+      });
+      const manager = new SandboxLifecycleManager(
+        provider,
+        storage,
+        createMockBroadcaster(),
+        createMockWebSocketManager(false),
+        createMockAlarmScheduler(),
+        createMockIdGenerator(),
+        createTestConfig()
+      );
+      await manager.spawnSandbox();
+      expect(sandbox.startup_attempt_id).not.toBe("old-attempt");
+      expect(sandbox.modal_sandbox_id).toBe("sandbox-testowner-testrepo-123");
+      expect(resumeSandbox).toHaveBeenCalledWith(
+        expect.objectContaining({
+          startupAttemptId: sandbox.startup_attempt_id,
+          sandboxBackend: "mock",
+        })
+      );
+    });
+  });
+
   describe("spawnSandbox", () => {
     it("spawns when all conditions pass", async () => {
       const sandbox = createMockSandbox({ status: "pending", created_at: Date.now() - 60000 });
@@ -2506,7 +2602,9 @@ describe("SandboxLifecycleManager", () => {
       };
       const createSandbox = vi
         .fn<(config: CreateSandboxConfig) => Promise<CreateSandboxResult>>()
-        .mockRejectedValueOnce(new Error("image expired"))
+        .mockRejectedValueOnce(
+          new SandboxProviderError("image expired", "permanent", undefined, "image_unavailable")
+        )
         .mockImplementation(async (config) => ({
           sandboxId: config.sandboxId,
           providerObjectId: "provider-obj-123",
@@ -2531,6 +2629,8 @@ describe("SandboxLifecycleManager", () => {
       // The retry rotates the spawn identity, same as the environment path.
       const [firstAttempt, retryAttempt] = createSandbox.mock.calls.map(([config]) => config);
       expect(retryAttempt.sandboxAuthToken).not.toBe(firstAttempt.sandboxAuthToken);
+      expect(retryAttempt.startupAttemptId).not.toBe(firstAttempt.startupAttemptId);
+      expect(retryAttempt.correlation?.request_id).toBe(retryAttempt.startupAttemptId);
       expect(retryAttempt.sandboxId).not.toBe(firstAttempt.sandboxId);
       expect(storage.calls).toContain("updateSandboxStatus:connecting");
       expect(storage.calls).not.toContain("updateSandboxStatus:failed");
@@ -2691,7 +2791,9 @@ describe("SandboxLifecycleManager", () => {
       };
       const createSandbox = vi
         .fn<(config: CreateSandboxConfig) => Promise<CreateSandboxResult>>()
-        .mockRejectedValueOnce(new Error("image expired"))
+        .mockRejectedValueOnce(
+          new SandboxProviderError("image expired", "permanent", undefined, "image_unavailable")
+        )
         .mockImplementation(async (config) => ({
           sandboxId: config.sandboxId,
           providerObjectId: "provider-obj-123",
@@ -2737,14 +2839,20 @@ describe("SandboxLifecycleManager", () => {
       expect(storage.calls).not.toContain("updateSandboxStatus:failed");
     });
 
-    it("fails the spawn when the base-image retry also fails", async () => {
+    it.each([
+      new Error("quota exceeded"),
+      new SandboxProviderError("network timeout", "transient"),
+      new SandboxProviderError("HTTP 503", "transient"),
+      new SandboxProviderError("authentication failed", "permanent"),
+      new Error("image expired"), // Text alone is not proof of an artifact failure.
+    ])("does not invalidate an image or retry ambiguous create error: %s", async (error) => {
       const environmentImageLookup: ImageBuildLookup = {
         getLatestReady: vi.fn(async () => envImageRow()),
         markRestoreFailed: vi.fn(async () => true),
       };
       const createSandbox = vi
         .fn<(config: CreateSandboxConfig) => Promise<CreateSandboxResult>>()
-        .mockRejectedValue(new Error("quota exceeded"));
+        .mockRejectedValue(error);
       const { manager, storage } = createEnvironmentSessionManager({
         environmentImageLookup,
         provider: createMockProvider({ createSandbox }),
@@ -2752,8 +2860,8 @@ describe("SandboxLifecycleManager", () => {
 
       await manager.spawnSandbox();
 
-      expect(createSandbox).toHaveBeenCalledTimes(2);
-      expect(environmentImageLookup.markRestoreFailed).toHaveBeenCalledTimes(1);
+      expect(createSandbox).toHaveBeenCalledTimes(1);
+      expect(environmentImageLookup.markRestoreFailed).not.toHaveBeenCalled();
       expect(storage.calls).toContain("updateSandboxStatus:failed");
     });
 
@@ -2766,7 +2874,9 @@ describe("SandboxLifecycleManager", () => {
       };
       const createSandbox = vi
         .fn<(config: CreateSandboxConfig) => Promise<CreateSandboxResult>>()
-        .mockRejectedValueOnce(new Error("image expired"))
+        .mockRejectedValueOnce(
+          new SandboxProviderError("image expired", "permanent", undefined, "image_unavailable")
+        )
         .mockImplementation(async (config) => ({
           sandboxId: config.sandboxId,
           providerObjectId: "provider-obj-123",
