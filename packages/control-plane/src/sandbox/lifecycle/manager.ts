@@ -558,7 +558,7 @@ export class SandboxLifecycleManager implements SandboxLifecycle {
       this.recordStartupPhase("provider_create_started", startupAttemptId, {
         materialization: prebuiltImageId ? "prebuilt_image" : "base_image",
         image_id: prebuiltImageId,
-        requested_resources: sandboxSettings,
+        requested_resources: { ...sandboxSettings, executionTrace: undefined },
       });
       try {
         result = await this.provider.createSandbox(createConfig);

@@ -185,6 +185,7 @@ async function handleCreateSession(
   );
 
   const sessionId = generateId();
+  if (body.executionTrace) sandboxSettings.executionTrace = body.executionTrace;
 
   let managedSkillsManifest;
   try {

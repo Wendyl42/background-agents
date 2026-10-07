@@ -115,6 +115,8 @@ async function handleSpawnChild(
   const { sandboxTimeoutMs: _currentTimeoutMs, ...resolvedChildSettingsWithoutTimeout } =
     resolvedChildSandboxSettings;
   const childSandboxSettings: SandboxSettings = resolvedChildSettingsWithoutTimeout;
+  if (spawnContext.executionTrace)
+    childSandboxSettings.executionTrace = spawnContext.executionTrace;
   if (spawnContext.sandboxTimeoutMs !== undefined) {
     childSandboxSettings.sandboxTimeoutMs = spawnContext.sandboxTimeoutMs;
   }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { env, runInDurableObject } from "cloudflare:test";
+import { env, SELF, runInDurableObject } from "cloudflare:test";
 import type { SessionDO } from "../../src/session/durable-object";
 import { encryptToken } from "../../src/auth/crypto";
 import {
@@ -16,6 +16,38 @@ const SANDBOX_TOKEN = "test-sandbox-auth-token-abc123";
 const SANDBOX_ID = "sb-integration-test";
 
 describe("Sandbox WebSocket (via SELF.fetch)", () => {
+  it("refuses an old or mismatched runtime before accepting a measured sandbox", async () => {
+    const name = `ws-trace-${crypto.randomUUID()}`;
+    const { stub } = await initNamedSession(name);
+    await seedSandboxAuth(stub, { authToken: SANDBOX_TOKEN, sandboxId: SANDBOX_ID });
+    const executionTrace = {
+      mode: "process",
+      runId: crypto.randomUUID(),
+      attemptId: crypto.randomUUID(),
+      endpoint: "http://127.0.0.1:8000/capture",
+    };
+    await runInDurableObject(stub, (instance: SessionDO) => {
+      instance.ctx.storage.sql.exec(
+        "UPDATE session SET sandbox_settings = ?",
+        JSON.stringify({ executionTrace })
+      );
+    });
+    const connect = (ready?: object) =>
+      SELF.fetch(`https://test.local/sessions/${name}/ws?type=sandbox`, {
+        headers: {
+          Upgrade: "websocket",
+          Authorization: `Bearer ${SANDBOX_TOKEN}`,
+          "X-Sandbox-ID": SANDBOX_ID,
+          ...(ready ? { "X-Execution-Trace-Ready": JSON.stringify(ready) } : {}),
+        },
+      });
+    expect((await connect()).status).toBe(412);
+    expect((await connect({ ...executionTrace, attemptId: crypto.randomUUID() })).status).toBe(412);
+    const response = await connect(executionTrace);
+    expect(response.status).toBe(101);
+    response.webSocket!.accept();
+    response.webSocket!.close();
+  });
   it("upgrade with valid auth returns 101", async () => {
     const name = `ws-sandbox-ok-${Date.now()}`;
     const { stub } = await initNamedSession(name);

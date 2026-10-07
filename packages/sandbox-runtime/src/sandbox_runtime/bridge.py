@@ -469,6 +469,8 @@ class AgentBridge:
             "Authorization": f"Bearer {self.auth_token}",
             "X-Sandbox-ID": self.sandbox_id,
         }
+        if os.environ.get("OI_EXECUTION_TRACE_READY"):
+            additional_headers["X-Execution-Trace-Ready"] = os.environ["OI_EXECUTION_TRACE_READY"]
 
         try:
             async with websockets.connect(

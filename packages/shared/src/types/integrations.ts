@@ -165,6 +165,28 @@ export const DEFAULT_BUILD_TIMEOUT_SECONDS = 1800;
  */
 export const MAX_BUILD_TIMEOUT_SECONDS = 3600;
 
+/** Opt-in tool/process capture settings for a measured session tree. */
+export const executionTraceSettingsSchema = z.strictObject({
+  mode: z.enum(["tools", "process"]),
+  runId: z.string().uuid(),
+  attemptId: z.string().uuid(),
+  // Short-lived local capture endpoint. Never used by the control plane itself.
+  endpoint: z
+    .string()
+    .url()
+    .refine((value) => {
+      const url = new URL(value);
+      return (
+        ["http:", "https:"].includes(url.protocol) &&
+        !url.username &&
+        !url.password &&
+        !url.search &&
+        !url.hash
+      );
+    }),
+});
+export type ExecutionTraceSettings = z.infer<typeof executionTraceSettingsSchema>;
+
 /**
  * Sandbox environment settings. Provider-agnostic: describes what the user
  * wants, not how it's done. Resource fields (`cpuCores`, `memoryMib`) are
@@ -175,6 +197,8 @@ export const MAX_BUILD_TIMEOUT_SECONDS = 3600;
  * uses the provider default instead of inheriting a global resource default.
  */
 export interface SandboxSettings {
+  /** Opt-in experiment configuration, snapshotted and inherited by child sessions. */
+  executionTrace?: ExecutionTraceSettings;
   /** Extra ports to expose via tunnels (e.g., dev server ports 3000, 5173). */
   tunnelPorts?: number[];
   /** Enable a browser-based terminal (ttyd) in sandbox sessions. */

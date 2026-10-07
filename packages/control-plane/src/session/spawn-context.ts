@@ -1,4 +1,7 @@
-import { isValidSandboxTimeoutMs } from "@open-inspect/shared/types/integrations";
+import {
+  isValidSandboxTimeoutMs,
+  executionTraceSettingsSchema,
+} from "@open-inspect/shared/types/integrations";
 import { z } from "zod";
 
 const sandboxTimeoutMsSchema = z.number().refine(isValidSandboxTimeoutMs);
@@ -32,6 +35,7 @@ export const spawnContextSchema = z.object({
   reasoningEffort: z.string().nullable(),
   baseBranch: z.string().nullable(),
   sandboxTimeoutMs: sandboxTimeoutMsSchema.optional(),
+  executionTrace: executionTraceSettingsSchema.optional(),
   promptAuthor: promptAuthorSchema,
 });
 
