@@ -18,6 +18,8 @@ venv/
 
 # Reference code (vendored)
 opencode-reference/
+# Preserve upstream catalog bytes and their recorded checksum.
+packages/sandbox-runtime/src/sandbox_runtime/model_catalog_data/models-*.json
 
 # Lock files
 package-lock.json

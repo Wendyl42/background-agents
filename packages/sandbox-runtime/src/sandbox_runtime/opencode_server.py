@@ -19,6 +19,7 @@ from .constants import (
     OPENCODE_PORT,
 )
 from .git_excludes import install_runtime_git_excludes
+from .model_catalog import model_catalog_environment
 from .process_output import iter_process_lines
 from .tracing.config import DISPOSE_TIMEOUT_SECONDS, configure_execution_trace, ensure_trace_ready
 from .tracing.managed import ManagedCapture
@@ -544,6 +545,7 @@ class OpenCodeServer:
         env = {
             **os.environ,
             **trace_environment,
+            **model_catalog_environment(),
             "OPENCODE_CONFIG_CONTENT": json.dumps(opencode_config),
             # Disable OpenCode's question tool in headless mode. The tool blocks
             # on a Promise waiting for user input via the HTTP API, but the bridge

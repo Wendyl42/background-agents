@@ -1,0 +1,11 @@
+{
+  "schema": "openinspect-model-catalog-snapshot-v1",
+  "file": "models-78694eae6b32a340cf8166075fe8b861c3bb219dc8ea256a45436ffb4d4a5a2e.json",
+  "sourceUrl": "https://models.dev/api.json",
+  "resolvedUrl": "https://models.dev/api.json",
+  "sha256": "78694eae6b32a340cf8166075fe8b861c3bb219dc8ea256a45436ffb4d4a5a2e",
+  "bytes": 5329942,
+  "retrievedAtUtc": "2026-10-07T06:07:28.747507+00:00",
+  "etag": "\"78694eae6b32a340cf8166075fe8b861\"",
+  "lastModified": null
+}
