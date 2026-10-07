@@ -19,17 +19,20 @@ The data plane has two distinct owners: provider adapters manage sandbox lifecyc
 
 ## Logs, traces, and offline analysis
 
-| Question                                                                        | Primary document                                                       |
-| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Where do events originate, what is persisted, and what can the timestamps mean? | [TRACE_PIPELINE.md](TRACE_PIPELINE.md)                                 |
-| How do I correlate service logs and debug a running deployment?                 | [DEBUGGING_PLAYBOOK.md](DEBUGGING_PLAYBOOK.md)                         |
-| How are backend identity, clocks, runtime logs, and host attachments recorded?  | [SANDBOX_BACKEND_PREPARATION.md](SANDBOX_BACKEND_PREPARATION.md)       |
-| How do I run the existing offline analyzers?                                    | [Trace analysis README](../tools/openinspect-trace-analysis/README.md) |
-| What is implemented and where are the results?                                  | [Trace analysis status](../tools/openinspect-trace-analysis/STATUS.md) |
+| Question                                                                        | Primary document                                                                                                              |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Where do events originate, what is persisted, and what can the timestamps mean? | [TRACE_PIPELINE.md](TRACE_PIPELINE.md)                                                                                        |
+| How do I correlate service logs and debug a running deployment?                 | [DEBUGGING_PLAYBOOK.md](DEBUGGING_PLAYBOOK.md)                                                                                |
+| How are backend identity, clocks, runtime logs, and host attachments recorded?  | [SANDBOX_BACKEND_PREPARATION.md](SANDBOX_BACKEND_PREPARATION.md)                                                              |
+| How do I run the existing offline analyzers?                                    | [Trace analysis README](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/README.md) |
+| What is implemented and where are the results?                                  | [Trace analysis status](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/analysis/STATUS.md)                    |
 
-The trace analysis README routes to the measurement contracts, data schemas, experiment protocol,
-and dated results. Experiment results describe their own datasets; they are not general statements
-about every deployment or bundle.
+Benchmark selection, experiment protocols, historical reviews and results are maintained in
+[benchmark-lab](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/README.md). Start there
+for experiments; this repository owns the system implementation and runtime observation interfaces.
+See the
+[four-directory layout](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/LAYOUT.md)
+for version and data ownership.
 
 ## Deployment and feature references
 
@@ -59,7 +62,7 @@ Design records retain rationale and design-time inventories. They do not prescri
 - [shadcn/ui proposal](shadcn-ui-integration-plan.md).
 - [Ramp Inspect reference](ramp-inspect-agent.md), describing the external system that inspired this
   project.
-- [Trace analysis checkpoints](../tools/openinspect-trace-analysis/history/CHECKPOINTS.md),
+- [Trace analysis checkpoints](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/analysis/history/CHECKPOINTS.md),
   preserving earlier validation and pilot results.
 
 ## Keeping documentation consistent

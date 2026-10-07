@@ -49,7 +49,6 @@ it at build time.
 | `sandbox-runtime`                                  | Python 3.12                        | Shared in-sandbox supervisor, bridge, tools, observations   |
 | `modal-infra`                                      | Python 3.12 / Modal + FastAPI      | Modal lifecycle API and images                              |
 | `daytona-infra`, `e2b-infra`, `opencomputer-infra` | Provider build tooling             | Provider-specific snapshots/templates                       |
-| `tools/openinspect-trace-analysis`                 | Node.js ESM                        | Offline trace validation, normalization, and metrics        |
 
 ## Common Commands
 
@@ -76,18 +75,14 @@ npm test -w @open-inspect/linear-bot
 (cd packages/modal-infra && pytest tests/ -v)
 (cd packages/sandbox-runtime && pytest tests/ -v)
 
-# Tests — offline trace tooling (from repository root; Node.js test runner)
-npm run test:trace-export
-npm run test:trace-analysis
-
 # Python linting
 (cd packages/modal-infra && ruff check --fix && ruff format)
 ```
 
 ## Testing
 
-TypeScript packages use **Vitest**; Python uses **pytest** + pytest-asyncio. Offline `.mjs` trace
-tooling uses **node:test**, outside the workspace `npm test` command.
+TypeScript packages use **Vitest**; Python uses **pytest** + pytest-asyncio. Offline experiment
+tooling lives in the sibling `benchmark-lab` repository; follow its `AGENTS.md`.
 
 ### Test file locations
 
@@ -98,8 +93,6 @@ tooling uses **node:test**, outside the workspace `npm test` command.
 - **github-bot**: separate `test/*.test.ts`
 - **modal-infra**: `tests/test_*.py`
 - **sandbox-runtime**: `tests/test_*.py`
-- **trace tooling**: `scripts/sandbox-trace.test.mjs`,
-  `tools/openinspect-trace-analysis/test/*.test.mjs`
 
 ### Control-plane integration tests
 
@@ -180,10 +173,18 @@ CI runs lint, typecheck, and tests for all TypeScript and Python packages on eve
 - [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md) — detailed architecture and session lifecycle
 - [docs/TRACE_PIPELINE.md](docs/TRACE_PIPELINE.md) — event collection, persistence, export, and
   timing boundaries
-- [tools/openinspect-trace-analysis/README.md](tools/openinspect-trace-analysis/README.md) — offline
-  analysis commands and contracts
+- [tools/openinspect-trace-analysis/README.md](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/README.md)
+  — offline analysis commands and contracts
 - [CONTRIBUTING.md](CONTRIBUTING.md) — contribution guidelines
 - [packages/control-plane/README.md](packages/control-plane/README.md) — API reference, WebSocket
   protocol, D1 schema, security model
 - [packages/modal-infra/README.md](packages/modal-infra/README.md) — Modal lifecycle API, images,
   deployment, endpoint URLs
+
+## Experiment boundary
+
+`background-agents` owns implementation; `../benchmark-lab` owns benchmark adapters, campaign
+controllers, exporters and analysis. `../openinspect-versions` holds selected source snapshots;
+`../experiment-data` holds outputs. Do not reintroduce benchmark policy into product code. Runtime
+tracing producers stay here; versioned consumers live in the lab. Historical `.cache` and `analysis`
+symlinks are compatibility paths, not destinations for new experiments.

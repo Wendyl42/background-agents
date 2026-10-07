@@ -30,3 +30,8 @@ yarn.lock
 *.d.ts
 *.min.js
 *.min.css
+
+# Local runtime dependencies and experiment compatibility paths
+.cache/
+analysis/
+tmp/

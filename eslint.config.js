@@ -10,6 +10,9 @@ export default tseslint.config(
   {
     ignores: [
       "**/node_modules/**",
+      "**/.cache/**",
+      "tmp/**",
+      "analysis/**",
       "**/dist/**",
       "**/.next/**",
       "**/build/**",
@@ -29,20 +32,6 @@ export default tseslint.config(
   // Base JS/TS config for all TypeScript files
   js.configs.recommended,
   ...tseslint.configs.recommended,
-
-  // Offline Node.js tooling. Keep research analyzers outside product packages
-  // while still linting them with the repository-wide configuration.
-  {
-    files: ["tools/**/*.mjs"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "module",
-      globals: {
-        ...globals.node,
-        ...globals.es2022,
-      },
-    },
-  },
 
   // TypeScript files configuration
   {

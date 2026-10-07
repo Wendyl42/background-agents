@@ -2,8 +2,8 @@
 
 This page maps the existing runtime-to-analysis path. It describes current evidence and its limits;
 metric definitions belong to the
-[analyzer contracts](../tools/openinspect-trace-analysis/README.md#documentation). For the broader
-system, see [HOW_IT_WORKS.md](HOW_IT_WORKS.md).
+[analyzer contracts](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/README.md#documentation).
+For the broader system, see [HOW_IT_WORKS.md](HOW_IT_WORKS.md).
 
 ## Ownership and data flow
 
@@ -17,16 +17,16 @@ OpenCode event stream
 Service/runtime logs and optional host observations -> separate exported evidence
 ```
 
-| Layer                 | Code entrypoints                                                                                                                                                                                                                       | Responsibility                                                                                                      |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Sandbox lifecycle     | [provider-factory.ts](../packages/control-plane/src/sandbox/provider-factory.ts), [lifecycle/](../packages/control-plane/src/sandbox/lifecycle/)                                                                                       | Select the configured backend and manage create, resume, snapshot, and stop operations                              |
-| Shared runtime        | [entrypoint.py](../packages/sandbox-runtime/src/sandbox_runtime/entrypoint.py), [supervisor.py](../packages/sandbox-runtime/src/sandbox_runtime/supervisor.py), [bridge.py](../packages/sandbox-runtime/src/sandbox_runtime/bridge.py) | Start services, execute prompts through OpenCode, and connect to the control plane                                  |
-| Tool-event conversion | [prompt_stream.py](../packages/sandbox-runtime/src/sandbox_runtime/prompt_stream.py), [child_activity.py](../packages/sandbox-runtime/src/sandbox_runtime/child_activity.py)                                                           | Convert OpenCode parts to events and associate direct OpenCode Task activity                                        |
-| Transport             | [event_forwarder.py](../packages/sandbox-runtime/src/sandbox_runtime/event_forwarder.py)                                                                                                                                               | Add sandbox identity/timestamps, buffer events, and acknowledge selected critical event types                       |
-| Shared protocol       | [sandbox-events.ts](../packages/shared/src/types/sandbox-events.ts)                                                                                                                                                                    | Event schemas and tool-call identity; see [ADR 0002](adr/0002-shared-session-contracts-and-correlation-boundary.md) |
-| Persistence           | [sandbox-events.ts](../packages/control-plane/src/session/sandbox-events.ts), [event-repository.ts](../packages/control-plane/src/session/event-repository.ts)                                                                         | Broadcast live events and persist selected session evidence                                                         |
-| Export                | [export-openinspect-trace.mjs](../scripts/export-openinspect-trace.mjs), [sandbox-trace.mjs](../scripts/lib/sandbox-trace.mjs)                                                                                                         | Walk a stored session tree, save evidence, and attach supplied runtime/host JSONL                                   |
-| Offline analysis      | [lib/](../tools/openinspect-trace-analysis/lib/)                                                                                                                                                                                       | Validate bundles and derive topology, concurrency, operations, and strict duplication                               |
+| Layer                 | Code entrypoints                                                                                                                                                                                                                             | Responsibility                                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Sandbox lifecycle     | [provider-factory.ts](../packages/control-plane/src/sandbox/provider-factory.ts), [lifecycle/](../packages/control-plane/src/sandbox/lifecycle)                                                                                              | Select the configured backend and manage create, resume, snapshot, and stop operations                              |
+| Shared runtime        | [entrypoint.py](../packages/sandbox-runtime/src/sandbox_runtime/entrypoint.py), [supervisor.py](../packages/sandbox-runtime/src/sandbox_runtime/supervisor.py), [bridge.py](../packages/sandbox-runtime/src/sandbox_runtime/bridge.py)       | Start services, execute prompts through OpenCode, and connect to the control plane                                  |
+| Tool-event conversion | [prompt_stream.py](../packages/sandbox-runtime/src/sandbox_runtime/prompt_stream.py), [child_activity.py](../packages/sandbox-runtime/src/sandbox_runtime/child_activity.py)                                                                 | Convert OpenCode parts to events and associate direct OpenCode Task activity                                        |
+| Transport             | [event_forwarder.py](../packages/sandbox-runtime/src/sandbox_runtime/event_forwarder.py)                                                                                                                                                     | Add sandbox identity/timestamps, buffer events, and acknowledge selected critical event types                       |
+| Shared protocol       | [sandbox-events.ts](../packages/shared/src/types/sandbox-events.ts)                                                                                                                                                                          | Event schemas and tool-call identity; see [ADR 0002](adr/0002-shared-session-contracts-and-correlation-boundary.md) |
+| Persistence           | [sandbox-events.ts](../packages/control-plane/src/session/sandbox-events.ts), [event-repository.ts](../packages/control-plane/src/session/event-repository.ts)                                                                               | Broadcast live events and persist selected session evidence                                                         |
+| Export                | [export-openinspect-trace.mjs](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/scripts/export-openinspect-trace.mjs), [sandbox-trace.mjs](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/scripts/lib/sandbox-trace.mjs) | Walk a stored session tree, save evidence, and attach supplied runtime/host JSONL                                   |
+| Offline analysis      | [lib/](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/lib), [lib/time/](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/lib/time)                     | Validate bundles, derive operations/counts, and produce invocation-time summaries                                   |
 
 ## Session identities
 
@@ -56,19 +56,24 @@ is not globally unique; retain its session and event identity when joining evide
   the exported records, not events that were never persisted. Missing large-output side files cannot
   be reconstructed from the export.
 
-For exporter options, run `node scripts/export-openinspect-trace.mjs --help`. Backend selection,
-runtime/host attachments, and clock provenance are specified in
+For exporter options, run `node ../benchmark-lab/scripts/export-openinspect-trace.mjs --help`.
+Backend selection, runtime/host attachments, and clock provenance are specified in
 [SANDBOX_BACKEND_PREPARATION.md](SANDBOX_BACKEND_PREPARATION.md#trace-export-and-host-attachment-contract).
 Service log correlation is covered separately by [DEBUGGING_PLAYBOOK.md](DEBUGGING_PLAYBOOK.md).
 
 ## Timing and derived operations
 
 The
-[raw IR](../tools/openinspect-trace-analysis/INTERMEDIATE_REPRESENTATION.md#toolinvocationir--primary-raw-unit)
+[raw IR](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/analysis/INTERMEDIATE_REPRESENTATION.md#toolinvocationir--primary-raw-unit)
 uses the control-plane row's `createdAt` as the invocation start and the final stored sandbox
 `timestamp` as its inferred finish. These clocks are not calibrated. Historical profiles repair
 missing/nonpositive intervals to a synthetic 1 ms for deterministic interval sweeps; this is not an
 observed duration.
+
+The separate `trace:time` workflow uses the unmodified finish value, requires a positive interval
+and a terminal tool state, and reports other durations as unknown. It classifies a whole call once;
+its cumulative invocation time can exceed task wall time when calls overlap. Definitions are in
+[the time measurement contract](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/analysis/TIME_DISTRIBUTION_PLAN.md).
 
 Shell segments and normalized operations are derived from tool arguments after execution. Their
 presence describes requested command structure, not proof that each segment executed or a measured
@@ -78,8 +83,19 @@ samples are separate evidence with their own clocks and scope.
 
 ## Analysis entrypoints
 
-Use the [trace analysis README](../tools/openinspect-trace-analysis/README.md) to choose between
-per-bundle profiles and duplication batches. The CLI inputs and denominators differ.
-[STATUS.md](../tools/openinspect-trace-analysis/STATUS.md) links current capabilities and dated
-results; historical profiles and experiment plans are not a required reading sequence for every
-task.
+Use the
+[trace analysis README](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-analysis/README.md)
+to choose between per-bundle profiles, duplication batches, and campaign time summaries. The CLI
+inputs and denominators differ.
+[STATUS.md](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/analysis/STATUS.md) links
+current capabilities and dated results; historical profiles and experiment plans are not a required
+reading sequence for every task.
+
+New experiments can use
+[fine-grained execution capture](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/tools/openinspect-trace-capture/README.md)
+to preserve tool hooks and actual process/exec events independently of UI upserts. The separately
+versioned
+[process-v1 profile](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/analysis/PROCESS_PROFILE.md)
+consumes those hashed attachments; it does not change the historical operation/time profiles above.
+Implementation and independent P0–P4 acceptance are recorded in
+[ACCEPTANCE.md](https://github.com/Wendyl42/agent-benchmark-lab/blob/main/docs/tracing/ACCEPTANCE.md).

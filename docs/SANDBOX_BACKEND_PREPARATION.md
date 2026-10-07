@@ -110,7 +110,7 @@ The existing exporter retains its v0 bundle format, Modal alias, security scan a
 chooses a backend using persisted ready events first, or an explicit historical override:
 
 ```bash
-node scripts/export-openinspect-trace.mjs --session SESSION_ID \
+node ../benchmark-lab/scripts/export-openinspect-trace.mjs --session SESSION_ID \
   --sandbox-backend local \
   --runtime-log /path/to/runtime.jsonl \
   --host-observations /path/to/host.jsonl
