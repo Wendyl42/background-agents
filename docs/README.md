@@ -71,3 +71,5 @@ Put commands in the relevant README or setup guide, definitions in the relevant 
 dataset-specific numbers in dated results. Link to these owners from summaries instead of copying
 their full contents. Keep current status short; historical validation records belong with history or
 results. Verify code paths and CLI flags against the implementation when updating a guide.
+
+Local OpenSandbox Docker deployments can enable [exclusive sandbox vCPU allocation](../packages/opensandbox-infra/README.md). The extension requires a new server image and a drained deployment; it does not modify historical P5 targets.

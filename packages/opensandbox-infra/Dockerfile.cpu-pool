@@ -1,0 +1,10 @@
+# Extend an already prepared local server; do not download or mutate upstream.
+ARG SERVER_BASE_IMAGE=openinspect-opensandbox-server:local
+FROM ${SERVER_BASE_IMAGE}
+COPY cpu_pool.py /app/oi_cpu_pool.py
+COPY patch_cpu_pool.py /tmp/patch_cpu_pool.py
+RUN python /tmp/patch_cpu_pool.py /app && rm /tmp/patch_cpu_pool.py
+# CPU pool is deliberately mandatory at runtime. State lives on the existing
+# persistent OpenSandbox volume; never run replicas with separate lease stores.
+ENV OI_CPU_LEASE_DIR=/var/lib/opensandbox/cpu-leases
+ENV OI_SANDBOX_CPU_WIDTH=2
