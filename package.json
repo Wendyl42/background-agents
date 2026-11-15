@@ -40,7 +40,10 @@
     "knip": "knip",
     "build": "npm run build -w @open-inspect/shared && npm run build --workspaces --if-present",
     "build:opencomputer-template": "npm run build-template -w @open-inspect/opencomputer-infra --",
-    "prepare": "node -e \"if (process.env.CI) process.exit(0)\" && husky"
+    "prepare": "node -e \"if (process.env.CI) process.exit(0)\" && husky",
+    "trace:time": "node tools/openinspect-trace-analysis/time-cli.mjs",
+    "trace:capture": "node tools/openinspect-trace-capture/cli.mjs",
+    "trace:process": "node tools/openinspect-trace-analysis/process-cli.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

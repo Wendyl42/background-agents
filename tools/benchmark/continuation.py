@@ -2,6 +2,7 @@
 
 import fcntl
 import shutil
+import stat
 import tempfile
 from pathlib import Path
 
@@ -11,9 +12,14 @@ from reporting import batch_report
 
 
 def implementation_hashes():
-    return {
-        str(p.relative_to(ROOT)): digest(p) for p in sorted((ROOT / "tools/benchmark").glob("*.py"))
-    }
+    roots = ["tools/benchmark", "tools/openinspect-trace-capture", "tools/openinspect-trace-analysis",
+             "packages/shared/src", "packages/control-plane/src", "packages/sandbox-runtime/src",
+             "packages/opensandbox-infra", "scripts/lib", "terraform/d1/migrations"]
+    suffixes = {".py", ".js", ".mjs", ".ts", ".json", ".sh", ".sql", ".go", ".c"}
+    paths = {path for directory in roots for path in (ROOT / directory).rglob("*")
+             if path.is_file() and path.suffix in suffixes and "__pycache__" not in path.parts}
+    paths.update(ROOT / name for name in ["package.json", "package-lock.json", "scripts/export-openinspect-trace.mjs"])
+    return {str(path.relative_to(ROOT)): digest(path) for path in sorted(paths)}
 
 
 def record_implementation(directory, batch):
@@ -22,14 +28,29 @@ def record_implementation(directory, batch):
         openinspectCommit=run_command(["git", "rev-parse", "HEAD"]).decode().strip(),
         workingTreeStatus=run_command(["git", "status", "--short"]).decode(),
         adapterHashes=implementation_hashes(),
+        sourceLayout="relative_paths_v1",
     )
     patch = directory / "working-tree.patch"
     patch.write_bytes(run_command(["git", "diff", "--binary", "HEAD"]))
     batch["workingTreePatchSha256"] = digest(patch)
     source = directory / "adapter-source"
     source.mkdir()
+    batch["sourceFileModes"] = {}
+    batch["sourceDirectoryModes"] = {}
     for name in batch["adapterHashes"]:
-        shutil.copy2(ROOT / name, source / Path(name).name)
+        target = source / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / name, target)
+        batch["sourceFileModes"][name] = stat.S_IMODE((ROOT / name).stat().st_mode)
+        parent = (ROOT / name).parent
+        while parent != ROOT:
+            relative = str(parent.relative_to(ROOT))
+            batch["sourceDirectoryModes"][relative] = stat.S_IMODE(parent.stat().st_mode)
+            parent = parent.parent
+    # The archive root remains private. Inside it, retain executable-directory
+    # modes so restoring a snapshot cannot make runtime plugins root-only.
+    for name, mode in batch["sourceDirectoryModes"].items():
+        (source / name).chmod(mode)
 
 
 def validate_implementation(directory, batch):
@@ -43,8 +64,15 @@ def validate_implementation(directory, batch):
                 "Runner source changed; create a versioned continuation before resuming"
             )
         for name, expected in batch["adapterHashes"].items():
-            if digest(directory / "adapter-source" / Path(name).name) != expected:
+            saved = directory / "adapter-source" / (name if batch.get("sourceLayout") == "relative_paths_v1" else Path(name).name)
+            if digest(saved) != expected:
                 raise ValueError("Saved runner snapshot changed")
+        for modes in [batch.get("sourceFileModes", {}), batch.get("sourceDirectoryModes", {})]:
+            for name, expected in modes.items():
+                if stat.S_IMODE((ROOT / name).stat().st_mode) != expected:
+                    raise ValueError("Runner source permissions changed")
+                if stat.S_IMODE((directory / "adapter-source" / name).stat().st_mode) != expected:
+                    raise ValueError("Saved source permissions changed")
     for item in batch.get("inheritedAttempts", {}).values():
         if digest(item["path"]) != item["sha256"]:
             raise ValueError("Inherited attempt changed")

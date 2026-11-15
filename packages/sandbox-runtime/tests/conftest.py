@@ -1,5 +1,6 @@
 """Shared test fixtures and utilities for sandbox-runtime tests."""
 
+import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -61,6 +62,10 @@ def isolate_runtime_file_paths(tmp_path, monkeypatch):
     monkeypatch.setattr("sandbox_runtime.browser_desktop.Path", isolated_path)
     monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "gitconfig"))
     monkeypatch.delenv("OI_RUNTIME_BOOT_ID", raising=False)
+    # Test-created servers must never write to a running agent's trace spool.
+    for key in tuple(os.environ):
+        if key.startswith("OI_EXECUTION_TRACE_"):
+            monkeypatch.delenv(key, raising=False)
 
 
 def wire_opencode_transport(bridge: "AgentBridge", http_client: Any) -> Any:

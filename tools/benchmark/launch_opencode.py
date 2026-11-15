@@ -26,7 +26,14 @@ def launch():
         AGENT_HOME.mkdir(parents=True, exist_ok=True)
         # The supervisor stages custom tools as root immediately before startup.
         # Transfer ownership of task code and its private home, preserving file modes.
-        for base in [Path(task["workspacePath"]), Path("/workspace/.opencode"), AGENT_HOME]:
+        bases = [Path(task["workspacePath"]), Path("/workspace/.opencode"), AGENT_HOME]
+        trace_directory = os.environ.get("OI_EXECUTION_TRACE_DIR")
+        if trace_directory:
+            trace_path = Path(trace_directory)
+            if not trace_path.is_absolute() or not trace_path.is_relative_to("/tmp/openinspect-execution"):
+                raise RuntimeError("Unexpected managed trace directory")
+            bases.append(trace_path)
+        for base in bases:
             if not base.exists():
                 continue
             if base.is_symlink():

@@ -115,4 +115,12 @@ async def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    from .tracing.managed import settings as trace_settings
+
+    if (trace_settings() or {}).get("mode") == "process" and not os.environ.get(
+        "OI_EXECUTION_TRACE_REAPER"
+    ):
+        from .tracing.reaper import run as run_reaper
+
+        raise SystemExit(run_reaper())
     raise SystemExit(asyncio.run(main()))

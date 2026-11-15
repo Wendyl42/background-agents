@@ -121,6 +121,10 @@ def paused_batch(tmp_path, monkeypatch):
     script = root / "tools/benchmark/runner.py"
     script.parent.mkdir(parents=True)
     script.write_text("# original implementation\n")
+    for name in ["package.json", "package-lock.json", "scripts/export-openinspect-trace.mjs"]:
+        path = root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}\n")
     monkeypatch.setattr(cli, "require_freeze", lambda *_: read_json(source / "suite-lock.json"))
     monkeypatch.setattr(continuation, "tasks", lambda _: selected)
     monkeypatch.setattr(continuation, "run_command", lambda *_: b"fixture")
@@ -317,3 +321,33 @@ def test_stop_still_requires_an_explicit_batch(monkeypatch):
     with pytest.raises(SystemExit) as error:
         service.main()
     assert error.value.code == 2
+
+
+def test_source_snapshot_preserves_modes_under_private_umask(paused_batch, tmp_path):
+    import os
+    import stat
+
+    root = continuation.ROOT
+    source_directory = root / "tools/benchmark"
+    source_file = source_directory / "runner.py"
+    source_directory.chmod(0o755)
+    source_file.chmod(0o640)
+    target = tmp_path / "mode-snapshot"
+    target.mkdir()
+    previous = os.umask(0o077)
+    try:
+        batch = {}
+        continuation.record_implementation(target, batch)
+    finally:
+        os.umask(previous)
+    saved = target / "adapter-source/tools/benchmark"
+    assert stat.S_IMODE(saved.stat().st_mode) == 0o755
+    assert stat.S_IMODE((saved / "runner.py").stat().st_mode) == 0o640
+    continuation.validate_implementation(target, batch)
+    saved.chmod(0o700)
+    with pytest.raises(ValueError, match="Saved source permissions changed"):
+        continuation.validate_implementation(target, batch)
+    saved.chmod(0o755)
+    source_directory.chmod(0o700)
+    with pytest.raises(ValueError, match="Runner source permissions changed"):
+        continuation.validate_implementation(target, batch)

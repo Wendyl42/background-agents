@@ -3,6 +3,16 @@
 This matrix is the authorization boundary for claims made from the initial large-scale campaign. The
 frozen baseline is `block-d0-v1`; the statistical unit is one parent-rooted run.
 
+For the later local 30-task campaign, a separate descriptive timing extension is implemented in
+`time-cli.mjs` and documented in [TIME_DISTRIBUTION_PLAN.md](TIME_DISTRIBUTION_PLAN.md). Its pooled
+invocation-time view is a labeled workload summary, not a replacement for F0 macro duplication
+metrics. Host/container samples in that campaign allow resource association to be investigated; they
+do not establish operation-level attribution or relax the blocked savings claims.
+
+The [T3 minimal wait timeline](WAIT_TIMELINE_RESULTS.md) adds descriptive completion-overlap
+intervals only. Its candidates do not establish critical-path savings or eliminate these evidence
+requirements.
+
 Status meanings:
 
 - **GO**: bounded descriptive claim supported for quality-gated sampled runs;

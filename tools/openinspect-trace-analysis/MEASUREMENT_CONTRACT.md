@@ -1,6 +1,16 @@
-# Measurement Contract — Block E0 Batch Workflow Foundation
+# Measurement Contract — Per-Bundle and Batch Analysis
 
-Status: **Block E0 deterministic pilot batch workflow complete; inferential analysis not started.**
+Scope: versioned per-bundle profiles and batch aggregation. Current implementation status is in
+[STATUS.md](STATUS.md); historical checkpoint results are separate from these definitions.
+
+The T1/T2 timing analysis of the later local 30-task benchmark campaign is specified separately in
+[TIME_DISTRIBUTION_PLAN.md](TIME_DISTRIBUTION_PLAN.md) and implemented by `time-cli.mjs`, not by
+these profiles. Its descriptive invocation elapsed-time proxies exclude synthetic/clamped intervals
+and must not be interpreted as operation-level execution time, resource cost, or critical-path
+savings. See [the first results](TIME_DISTRIBUTION_RESULTS.md) for actual coverage and limitations.
+The optional T3 minimal `--wait-timeline` extension measures overlaps with direct-child message
+completion, under the definitions in [WAIT_TIMELINE_RESULTS.md](WAIT_TIMELINE_RESULTS.md). It does
+not establish parent awareness, dependency satisfaction, or removable waiting.
 
 Analysis profiles:
 
@@ -432,4 +442,5 @@ The Block C shell rules do not execute commands and are not complete POSIX parse
 - pooled-operation aggregation or cross-run statistical inference;
 - CPU, memory, network, cache, or billing inference not present in the bundle.
 
-These are future blocks and must not be smuggled into Block A + B report prose.
+These capabilities are outside the per-bundle/batch profiles defined here; their reports must not
+imply those measurements. The separate time workflow's scope is linked at the top of this contract.

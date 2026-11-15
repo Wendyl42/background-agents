@@ -1,227 +1,138 @@
 # OpenInspect Trace Analysis
 
-Offline, deterministic analysis for exported OpenInspect trace bundles.
+Offline, deterministic analysis for exported OpenInspect trace bundles. The analyzers read immutable
+evidence and write derived results outside the input bundle. They do not collect runtime events. For
+collection, storage, and code ownership, start with
+[the trace pipeline](../../docs/TRACE_PIPELINE.md).
 
-This tool deliberately separates evidence collection from analysis:
+## Choose a workflow
 
-```text
-immutable trace bundle -> loader/validator -> IR -> deterministic metrics -> report
-```
+| Input and purpose                                                                                                            | Command         | Main unit / denominator                                                           |
+| ---------------------------------------------------------------------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------- |
+| One exported session-tree bundle: validate, inspect topology/lifecycle, optionally normalize operations and compare siblings | `trace:analyze` | One parent-rooted run; metrics depend on the selected profile                     |
+| A directory of bundles: batch duplication analysis                                                                           | `trace:batch`   | Equal-weight macro summaries of per-run ratios                                    |
+| A benchmark campaign `run.json`: time distribution and optional wait alignment                                               | `trace:time`    | Tool invocation; task-level shares plus a separately labeled pooled workload view |
 
-Profiles:
-
-- `block-ab-v0` (**default**): the original validation/IR/topology/lifecycle/concurrency behavior,
-  with zero normalized operations and byte-compatible output.
-- `block-c-v0`: enables the versioned `openinspect-operation-rules-block-c-v0` ruleset and parser
-  coverage artifacts without changing Block A + B metrics.
-- `block-c-v1`: enables Operation Identity Hardening plus read/write/edit and child-coordination
-  rules under ruleset `openinspect-operation-rules-block-c-v1`.
-- `block-c-v2`: adds compositional shell segments and deterministic pnpm/npm command-request rules
-  under `openinspect-operation-rules-block-c-v2` and `openinspect-package-command-rules-block-c-v2`.
-- `block-d0-v0`: consumes the same Block C.2 operations and emits strict sibling exact-duplication
-  clusters under `openinspect-observed-duplication-block-d0-v0`.
-- `block-d0-v1`: keeps the same strict signatures while separating cross-sibling signature presence
-  from repeated instances inside one sibling.
-
-Block A + B provide:
-
-- bundle hash and structural validation;
-- exact required-evidence hash coverage plus symlink/realpath/regular-file hardening;
-- completeness session-set equality and single-root cross-checking;
-- a versioned intermediate representation whose raw unit is a tool invocation;
-- topology, lifecycle, and concurrency metrics;
-- deterministic `summary.json`, `report.md`, and `checkpoint.json` output;
-- a reserved normalized-operation interface with no semantic rules enabled.
-
-Block C adds:
-
-- a versioned deterministic rule registry;
-- target-aware filesystem rules for `read`, `glob`, `grep`, and `write`;
-- conservative quote-aware syntactic segmentation for `bash`;
-- per-invocation normalization results and specific/syntactic/fallback coverage;
-- deterministic operation, coverage, and fallback evidence artifacts.
-
-Block C.2 adds:
-
-- an explicit `invocation -> shell segment -> semantic command operation` composition;
-- deterministic, evidence-linked `ShellSegmentIR` records;
-- mixed invocation/segment coverage instead of forcing one all-or-nothing shell label;
-- pnpm/npm install, audit, outdated, script, and exec requests;
-- pnpm `licenses list` and npm `view` requests;
-- first-safe-pipeline-stage parsing while preserving later stages as syntactic evidence.
-
-Block D0 adds:
-
-- sibling-only exact clusters partitioned by parent;
-- separate specific and syntactic signatures/metrics;
-- same-target/different-input overlap kept separate from exact duplication;
-- deterministic sibling-pair JSON/CSV matrices;
-- evidence-linked cluster members without large raw payload copies.
-
-Block D0.1 adds:
-
-- cluster-level `all = cross-sibling + within-sibling` decomposition;
-- a primary presence denominator deduplicated by `(parent, sibling, signature)`;
-- the D0 v0 `total - 1` ratio retained as all-instance sensitivity only;
-- within-sibling repetition ratios;
-- specific metrics by operation kind/parser and a separate syntactic layer.
-
-Block E0 adds a batch workflow over any explicit per-run profile. It defaults to `block-d0-v1`,
-recursively discovers bundles, isolates failures, reuses versioned per-run cache entries, and emits
-unweighted run-level macro summaries.
-
-Explicitly out of scope for this checkpoint:
-
-- semantic action/episode segmentation;
-- semantic-similarity candidates or eliminability judgments;
-- batch aggregation;
-- LLM parsing, classification, or numerical computation.
-- git, npx, or yarn semantic parsing.
+These are separate entrypoints. The time CLI resolves attempts from the campaign manifest;
+recursively scanning the same campaign with the batch CLI is not equivalent.
 
 ## Usage
 
+Requires Node.js 22 or newer. Run commands from the repository root.
+
+### Per-bundle and duplication analysis
+
 ```bash
-npm run trace:analyze -- /absolute/path/to/trace-bundle --out /absolute/path/to/output
+# Default: validation, topology, lifecycle, and concurrency; zero normalized operations
+npm run trace:analyze -- /path/to/trace-bundle --out /path/to/analysis
 
-# Explicit Block C profile
-npm run trace:analyze -- /absolute/path/to/trace-bundle --profile block-c-v0
+# Strict sibling duplication, including command normalization
+npm run trace:analyze -- /path/to/trace-bundle --profile block-d0-v1
 
-# Explicit Block C.1 profile
-npm run trace:analyze -- /absolute/path/to/trace-bundle --profile block-c-v1
-
-# Explicit Block C.2 profile
-npm run trace:analyze -- /absolute/path/to/trace-bundle --profile block-c-v2
-
-# Explicit Block D0 profile
-npm run trace:analyze -- /absolute/path/to/trace-bundle --profile block-d0-v0
-
-# Explicit Block D0.1 profile
-npm run trace:analyze -- /absolute/path/to/trace-bundle --profile block-d0-v1
-
-# Recursive batch workflow (defaults to block-d0-v1)
-npm run trace:batch -- traces/openinspect --profile block-d0-v1
+# Recursive batch workflow; defaults to block-d0-v1
+npm run trace:batch -- /path/to/bundles --profile block-d0-v1
 ```
 
-When `--out` is omitted, output is written outside the bundle under:
+Without `--out`, per-bundle output goes to
+`analysis/openinspect/<root-session-id>/<profile>-<input-fingerprint-prefix>/`; batch output goes to
+`analysis/openinspect/batches/<profile>-<batch-fingerprint-prefix>/`. Cache identity includes the
+input fingerprint, profile, schemas, and rulesets. Reports retain per-run numerators and
+denominators; operations are not pooled into one batch duplication ratio.
 
-```text
-analysis/openinspect/<root-session-id>/block-ab-v0-<input-fingerprint-prefix>/
-analysis/openinspect/<root-session-id>/block-c-v0-<input-fingerprint-prefix>/
-analysis/openinspect/<root-session-id>/block-c-v1-<input-fingerprint-prefix>/
-analysis/openinspect/<root-session-id>/block-c-v2-<input-fingerprint-prefix>/
-analysis/openinspect/<root-session-id>/block-d0-v0-<input-fingerprint-prefix>/
-analysis/openinspect/<root-session-id>/block-d0-v1-<input-fingerprint-prefix>/
+### Campaign time distribution
+
+```bash
+npm run trace:time -- /path/to/campaign/run.json \
+  --out analysis/openinspect/time-distribution/my-analysis
+
+# Add root-parent wait alignment and an interactive, standalone HTML timeline
+npm run trace:time -- /path/to/campaign/run.json \
+  --out analysis/openinspect/time-distribution/my-wait-analysis \
+  --wait-timeline
 ```
 
-The analyzer refuses to write inside its input trace bundle.
+Without npm, use `node tools/openinspect-trace-analysis/time-cli.mjs` with the same arguments.
+`--out` must be new or empty and outside the source runs tree. Existing results are not overwritten.
+`--top N` controls the evidence shortlist (default 30). `--trace trace-001` explicitly selects an
+export; otherwise the recorded trace or a unique export is used. To relocate a dataset, supply both
+`--old-runs-root OLD` and `--runs-root NEW`; identity and hash validation still apply. Partial
+reports retain failed-attempt dispositions and return exit code 1.
 
-Block C additionally writes:
+Read `report.md` and `coverage.json`, then CSV tables and `top-invocations.jsonl` /
+`top-ambiguous.jsonl`. Evidence records point to exact source paths and lines, without copying
+command arguments or outputs. `invocations.jsonl` is the complete compact ledger;
+`input-manifest.json` records input and analyzer hashes. With `--wait-timeline`, also read
+`wait-report.md` and open `wait-timeline.html`.
 
-```text
-operations.jsonl
-normalization-results.jsonl
-parser-coverage.json
-fallback-invocations.jsonl
-```
+Machine-readable durations use milliseconds; Markdown uses seconds. Percentages describe known
+cumulative invocation time, not task wall time or CPU time. Unknown timing is not zero; a mixed
+command is counted once. Wait-completion overlap does not establish removable waiting. The existing
+CLI does not perform CPU/memory/I/O attribution.
 
-Parser coverage describes normalization capability only. It is not a redundancy metric.
+## Per-bundle profiles
 
-Block C.1 adds bounded `parameters` to its operation schema. Read selectors are stored explicitly;
-write/edit content and child prompts are represented only by SHA-256 and UTF-8 byte length. An
-`inputFingerprint` identifies normalized target+parameters under one ruleset—it does not establish
-semantic equivalence, redundancy, or eliminability.
+Profiles preserve earlier output semantics; they are compatibility versions, not steps that every
+analysis must run in sequence. Exact rules and formulas are in
+[MEASUREMENT_CONTRACT.md](MEASUREMENT_CONTRACT.md).
 
-Block C.2 additionally writes:
+| Profile                            | Capability added                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------ |
+| `block-ab-v0` (per-bundle default) | Validation, IR, topology, lifecycle, concurrency; zero operations                    |
+| `block-c-v0`                       | Filesystem rules and conservative syntactic shell segmentation                       |
+| `block-c-v1`                       | Operation identity hardening, read/write/edit selectors, child-coordination requests |
+| `block-c-v2`                       | Invocation → shell segment → semantic command request; deterministic pnpm/npm rules  |
+| `block-d0-v0`                      | Strict sibling duplication and separate same-target/different-input overlaps         |
+| `block-d0-v1` (batch default)      | Cross-sibling signature presence separated from within-sibling repetition            |
 
-```text
-shell-segments.jsonl
-layer-coverage.json
-```
+Normalization describes requested operations. It does not prove execution, success, semantic
+equivalence, independent operation duration, or eliminability. Specific and syntactic duplication
+remain separate. Semantic action grouping, relaxed similarity, git/npx/yarn semantic parsing, and
+inferential statistics are not implemented.
 
-Its three coverage layers have different denominators:
+## Output families
 
-- invocation: every tool invocation;
-- segment: safely extracted top-level bash segments;
-- operation: emitted derived operations.
+| Workflow / profile      | Principal artifacts                                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| All per-bundle profiles | `summary.json`, `report.md`, `checkpoint.json`, output hashes                                                                              |
+| Block C profiles        | `operations.jsonl`, `normalization-results.jsonl`, `parser-coverage.json`, `fallback-invocations.jsonl`                                    |
+| C.2 and D profiles      | `shell-segments.jsonl`, `layer-coverage.json`                                                                                              |
+| D profiles              | `exact-duplication-clusters.jsonl`, `shared-target-overlaps.jsonl`, `sibling-duplication-matrix.json` / `.csv`, `duplication-metrics.json` |
+| Batch                   | `batch-manifest.json`, `runs.jsonl`, `failures.jsonl`, `aggregate-summary.json`, `report.md`, `output-hashes.json`                         |
+| Time / wait             | Reports, invocation/evidence JSONL, coverage and input manifest, CSV summaries; optional wait timeline HTML/JSON                           |
 
-Semantic command operations describe a requested command only. Tool output is not parsed to claim
-that the command executed or succeeded. Unknown/ambiguous extracted segments remain syntactic. A
-pipeline is eligible only through its first safely tokenized command stage; its remaining stages are
-preserved in the segment artifact and make the segment `mixed`.
+Parser coverage measures normalization capability, not redundancy. Invocation, shell-segment, and
+operation coverage have different denominators. See the contracts below before comparing them.
 
-Block D0 additionally writes:
+## Documentation
 
-```text
-exact-duplication-clusters.jsonl
-shared-target-overlaps.jsonl
-sibling-duplication-matrix.json
-sibling-duplication-matrix.csv
-duplication-metrics.json
-```
+| Document                                                         | Owns                                                                                                 |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [STATUS.md](STATUS.md)                                           | Current capabilities, evidence limits, and result navigation                                         |
+| [MEASUREMENT_CONTRACT.md](MEASUREMENT_CONTRACT.md)               | Per-bundle/batch definitions, formulas, and evidence boundaries                                      |
+| [INTERMEDIATE_REPRESENTATION.md](INTERMEDIATE_REPRESENTATION.md) | Versioned IR and derived record fields                                                               |
+| [TIME_DISTRIBUTION_PLAN.md](TIME_DISTRIBUTION_PLAN.md)           | Existing time workflow's dataset resolution, measurement, and classification contract                |
+| [TIME_DISTRIBUTION_RESULTS.md](TIME_DISTRIBUTION_RESULTS.md)     | Dated 30-task campaign results and local artifact locations                                          |
+| [WAIT_TIMELINE_RESULTS.md](WAIT_TIMELINE_RESULTS.md)             | Existing wait-alignment definitions and dated results                                                |
+| [EXPERIMENT_PROTOCOL.md](EXPERIMENT_PROTOCOL.md)                 | F0 sampling, quality gates, and unresolved campaign decisions                                        |
+| [CLAIM_EVIDENCE_MATRIX.md](CLAIM_EVIDENCE_MATRIX.md)             | F0 GO/LIMITED/BLOCKED claim boundaries                                                               |
+| [RUN_METADATA_SCHEMA.md](RUN_METADATA_SCHEMA.md)                 | Per-run metadata; [JSON schema](RUN_METADATA_SCHEMA.json) and [template](RUN_METADATA_TEMPLATE.json) |
+| [history/CHECKPOINTS.md](history/CHECKPOINTS.md)                 | Archived implementation stages and pilot validation                                                  |
 
-An exact cluster must span at least two different child sessions with the same parent. Specific and
-syntactic operations never share a cluster or numerator. `duplicateInstances = totalInstances - 1`
-is an observed count only; it is not removability, eliminability, savings, or outcome equivalence.
-
-In D0.1, the primary sibling metric first keeps one presence per exact signature per sibling:
-
-```text
-allExcessInstances = totalInstances - 1
-crossSiblingExcessPresences = distinctSiblingCount - 1
-withinSiblingExcessInstances = totalInstances - distinctSiblingCount
-allExcessInstances = crossSiblingExcessPresences + withinSiblingExcessInstances
-```
-
-Only strict signatures spanning at least two siblings enter these excess numerators. Shared-target
-overlap remains independent.
-
-## Batch workflow
-
-Batch outputs are written under:
-
-```text
-analysis/openinspect/batches/<profile>-<batch-fingerprint-prefix>/
-```
-
-and contain:
-
-```text
-batch-manifest.json
-runs.jsonl
-failures.jsonl
-aggregate-summary.json
-report.md
-output-hashes.json
-```
-
-The cache identity includes the input fingerprint, profile, analysis/operation schema, operation
-ruleset, semantic ruleset, and duplication schema. Cache hit/miss state is execution metadata only;
-it is intentionally excluded from deterministic artifacts.
-
-The run is the statistical unit. Aggregate ratios are unweighted macros over per-run values, while
-every run retains its numerator and denominator. Operations are never pooled into one denominator.
-An N=2 report is explicitly a descriptive pilot: no confidence interval, significance result, or
-paper-level inference is produced.
-
-## Large-scale experiment protocol
-
-- [EXPERIMENT_PROTOCOL.md](./EXPERIMENT_PROTOCOL.md): frozen workflow, sampling, quality gates, and
-  open campaign decisions;
-- [CLAIM_EVIDENCE_MATRIX.md](./CLAIM_EVIDENCE_MATRIX.md): GO/LIMITED/BLOCKED claim boundary;
-- [RUN_METADATA_SCHEMA.md](./RUN_METADATA_SCHEMA.md): human-readable per-run metadata contract;
-- [RUN_METADATA_SCHEMA.json](./RUN_METADATA_SCHEMA.json): machine-readable schema;
-- [RUN_METADATA_TEMPLATE.json](./RUN_METADATA_TEMPLATE.json): editable secret-free template.
+The time contract retains its original filename for existing links. Detailed experiment documents
+are needed when applying that protocol; they are not a prerequisite for using every CLI.
 
 ## Tests
+
+For newly captured execution evidence, use the independently accepted
+[process-v1 profile](PROCESS_PROFILE.md): `npm run trace:process -- BUNDLE --out NEW_DIRECTORY`.
+It measures process/exec boundaries and self CPU, and produces a standalone interactive timeline.
+The [capture tool](../openinspect-trace-capture/README.md) can run capture, export and this analysis
+as one local experiment workflow; old bundles explicitly lack this evidence.
 
 ```bash
 npm run test:trace-analysis
 ```
 
-The test suite includes synthetic unit fixtures and optional integration checks against the two
-local real trace bundles used for the Block A + B checkpoint.
-
-See [MEASUREMENT_CONTRACT.md](./MEASUREMENT_CONTRACT.md) for definitions and evidence boundaries.
-The versioned data model is documented in
-[INTERMEDIATE_REPRESENTATION.md](./INTERMEDIATE_REPRESENTATION.md), and the current stop point is in
-[STATUS.md](./STATUS.md).
+Uses `node:test`, with synthetic fixtures and optional checks against local pilot bundles. The root
+workspace `npm test` does not include this separate tool suite. To check exporter attachment
+behavior, run `npm run test:trace-export`.

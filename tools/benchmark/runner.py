@@ -37,6 +37,8 @@ from reporting import batch_report
 TERMINAL_MESSAGES = {"completed", "failed", "cancelled", "canceled"}
 CONTAINER_STOP_GRACE_SECONDS = 10
 CONTAINER_STOP_COMMAND_TIMEOUT_SECONDS = 30
+CAPTURE_STOP_GRACE_SECONDS = 60
+CAPTURE_STOP_COMMAND_TIMEOUT_SECONDS = 75
 SNAPSHOT_LAUNCH = [
     "/opt/oi-runtime/bin/python3.12",
     "-I",
@@ -48,21 +50,28 @@ SNAPSHOT_LAUNCH = [
 
 def process_birth(pid):
     try:
-        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+        fields = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+        return None if fields[0] == "Z" else fields[19]
     except OSError:
         return None
 
 
 def stop_owned_process(record):
     pid = record.get("pid")
-    if not pid or process_birth(pid) != record.get("birth"):
+    if not pid or not record.get("birth") or process_birth(pid) != record["birth"]:
         return
-    os.killpg(pid, signal.SIGTERM)
+    try:
+        os.killpg(pid, signal.SIGTERM)
+    except ProcessLookupError:
+        return
     deadline = time.monotonic() + 5
     while time.monotonic() < deadline and process_birth(pid) == record["birth"]:
         time.sleep(0.1)
     if process_birth(pid) == record["birth"]:
-        os.killpg(pid, signal.SIGKILL)
+        try:
+            os.killpg(pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
 
 
 def start_process(command, log, *, env=None):
@@ -425,7 +434,7 @@ def prepare_prompt(task, prepared, config, directory):
     return submitted.decode("utf-8")
 
 
-def ensure_submission(client, state, save, prompt, config):
+def ensure_submission(client, state, save, prompt, config, execution_capture=None):
     """Never repeat an uncertain mutation. Reconcile its persisted intent read-only."""
     if not state.get("rootSessionId"):
         if state["phase"] == "allocated":
@@ -433,7 +442,8 @@ def ensure_submission(client, state, save, prompt, config):
             state["createIntentAtMs"] = now_ms()
             save()
             response = client.request(
-                "/sessions", "POST", {"title": state["title"], "model": config["model"]}
+                "/sessions", "POST", {"title": state["title"], "model": config["model"],
+                    **({"executionTrace": state["executionTrace"]} if execution_capture else {})}
             )
             state["rootSessionId"] = response["sessionId"]
             state["phase"] = "created"
@@ -449,6 +459,8 @@ def ensure_submission(client, state, save, prompt, config):
             save()
     root_id = state["rootSessionId"]
     if state["phase"] == "created":
+        if execution_capture:
+            execution_capture.await_root_ready(client, root_id, config["setupTimeoutSeconds"])
         state["phase"] = "prompt_intent"
         state["promptIntentAtMs"] = now_ms()
         state["deadlineAtMs"] = now_ms() + config["deadlineSeconds"] * 1000
@@ -505,10 +517,10 @@ def cleanup(client, directory, state, save):
                         "docker",
                         "stop",
                         "--time",
-                        str(CONTAINER_STOP_GRACE_SECONDS),
+                        str(CAPTURE_STOP_GRACE_SECONDS if state.get("executionTrace") else CONTAINER_STOP_GRACE_SECONDS),
                         container["containerId"],
                     ],
-                    timeout_seconds=CONTAINER_STOP_COMMAND_TIMEOUT_SECONDS,
+                    timeout_seconds=CAPTURE_STOP_COMMAND_TIMEOUT_SECONDS if state.get("executionTrace") else CONTAINER_STOP_COMMAND_TIMEOUT_SECONDS,
                 )
             except (RuntimeError, subprocess.TimeoutExpired) as error:
                 errors.append(
@@ -603,6 +615,9 @@ def export_trace(directory, state, connection_file, *, profile):
         "--skip-cloudflare-logs",
         "--skip-modal-logs",
     ]
+    capture_directory = directory / "execution-capture"
+    if (capture_directory / "capture.json").exists():
+        command.extend(["--execution-capture", str(capture_directory)])
     owned_sessions = set(state.get("sessionTree", {state["rootSessionId"]: None}))
     owned_containers = (
         set(read_json(directory / "containers.json"))
@@ -638,6 +653,12 @@ def export_trace(directory, state, connection_file, *, profile):
                 command.extend([flag, str(filtered)])
     run_command(command, env=node_environment(), log=directory / "export.log")
     state["trace"] = {"status": "exported", "path": str(output)}
+    if state.get("executionTrace"):
+        manifest = read_json(output / "manifest.json")
+        state["executionCaptureQuality"] = manifest.get("executionTrace", {}).get("status", "unavailable")
+        process_analysis = directory / f"process-analysis-{generation:03d}"
+        run_command(["node", "tools/openinspect-trace-analysis/process-cli.mjs", str(output), "--out", str(process_analysis)], env=node_environment(), log=directory / "process-analysis.log")
+        state["executionAnalysis"] = {"status": "complete", "path": str(process_analysis)}
     analysis_path = directory / f"analysis-{generation:03d}"
     try:
         run_command(
@@ -733,6 +754,7 @@ def run_attempt(lab_root, run_directory, task, state, config):
         sig: signal.signal(sig, lambda *_: interrupted.set())
         for sig in [signal.SIGINT, signal.SIGTERM]
     }
+    execution_capture = None
     state["runtime"] = runtime
     state["modelRequested"] = config["model"]
     state.setdefault("modelExecution", "pending")
@@ -742,7 +764,14 @@ def run_attempt(lab_root, run_directory, task, state, config):
     state.setdefault("infrastructure", [])
     save()
     try:
-        root_id = ensure_submission(client, state, save, prompt, config)
+        if config.get("executionTraceMode"):
+            import importlib.util
+            module_path = ROOT / "tools/openinspect-trace-capture/benchmark_delivery.py"
+            spec = importlib.util.spec_from_file_location("benchmark_trace_delivery", module_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            execution_capture = module.BenchmarkCapture(directory, state, save, gateway, config["executionTraceMode"])
+        root_id = ensure_submission(client, state, save, prompt, config, execution_capture)
         capture_time = 0
         stable_terminal = 0
         while state["phase"] == "observing":
@@ -820,6 +849,7 @@ def run_attempt(lab_root, run_directory, task, state, config):
         if state["phase"] in ["create_intent", "prompt_intent"]:
             raise
         state["modelExecution"] = "infrastructure_failure"
+        save()
     finally:
         if state.get("rootSessionId") and state["phase"] not in ["create_intent", "prompt_intent"]:
             try:
@@ -828,6 +858,10 @@ def run_attempt(lab_root, run_directory, task, state, config):
                 state["cleanup"] = "incomplete"
                 state["infrastructure"].append(f"cleanup: {error}")
             stop_owned_process(collector)
+            if execution_capture:
+                execution_capture.stop()
+                execution_capture = None
+                state["executionCapture"]["status"] = "persisted"
             try:
                 export_trace(
                     directory,
@@ -843,6 +877,8 @@ def run_attempt(lab_root, run_directory, task, state, config):
             save()
         else:
             stop_owned_process(collector)
+        if execution_capture:
+            execution_capture.stop()
         server.shutdown()
         server.server_close()
         for sig, handler in previous_handlers.items():

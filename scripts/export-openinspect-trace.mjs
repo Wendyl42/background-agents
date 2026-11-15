@@ -29,6 +29,7 @@ import {
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { attachSandboxObservations, resolveTraceSandboxBackend } from "./lib/sandbox-trace.mjs";
+import { attachExecutionCapture } from "./lib/execution-trace.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(SCRIPT_DIR, "..");
@@ -43,8 +44,9 @@ function usage(message) {
 
 Options:
   --control-plane-url <url>  Override the Terraform control-plane URL
+  --connection-file <json>   Local {controlPlaneUrl, exportServiceSecret}; skips cloud logs
+  --execution-capture <dir>  Attach a durable fine-grained capture, including partial streams
   --terraform-dir <path>     Terraform production directory
-  --connection-file <path>   Private JSON with controlPlaneUrl and exportServiceSecret (instead of Terraform)
   --out <path>               Export directory (must not already exist)
   --transport <mode>         auto (default), curl, or python
   --skip-cloudflare-logs     Do not query Cloudflare historical logs
@@ -61,8 +63,9 @@ function parseArgs(argv) {
   const args = {
     session: null,
     controlPlaneUrl: null,
-    terraformDir: DEFAULT_TERRAFORM_DIR,
     connectionFile: null,
+    executionCapture: null,
+    terraformDir: DEFAULT_TERRAFORM_DIR,
     out: null,
     transport: "auto",
     cloudflareLogs: true,
@@ -82,9 +85,10 @@ function parseArgs(argv) {
     };
 
     if (arg === "--session") args.session = next();
+    else if (arg === "--connection-file") args.connectionFile = resolve(next());
+    else if (arg === "--execution-capture") args.executionCapture = resolve(next());
     else if (arg === "--control-plane-url") args.controlPlaneUrl = next();
     else if (arg === "--terraform-dir") args.terraformDir = resolve(next());
-    else if (arg === "--connection-file") args.connectionFile = resolve(next());
     else if (arg === "--out") args.out = resolve(next());
     else if (arg === "--transport") args.transport = next();
     else if (arg === "--skip-cloudflare-logs") args.cloudflareLogs = false;
@@ -770,13 +774,11 @@ async function main() {
   const deployment = args.connectionFile
     ? JSON.parse(readFileSync(args.connectionFile, "utf8"))
     : readTerraformDeployment(args.terraformDir);
-  if (
-    typeof deployment.exportServiceSecret !== "string" ||
-    !deployment.exportServiceSecret ||
-    typeof deployment.controlPlaneUrl !== "string" ||
-    !/^https?:\/\//.test(deployment.controlPlaneUrl)
-  ) {
-    throw new Error("Connection requires controlPlaneUrl and exportServiceSecret");
+  if (typeof deployment.exportServiceSecret !== "string" || !deployment.exportServiceSecret)
+    throw new Error("Missing export service credential");
+  if (args.connectionFile) {
+    args.cloudflareLogs = false;
+    args.modalLogs = false;
   }
   const controlPlaneUrl = (args.controlPlaneUrl ?? deployment.controlPlaneUrl).replace(/\/$/, "");
   // `service:web` signatures intentionally require a Better Auth browser
@@ -921,6 +923,12 @@ async function main() {
       runtimeLogs: args.runtimeLogs,
       hostObservations: args.hostObservations,
     });
+    const executionTrace = attachExecutionCapture({
+      outputDir: partialDir,
+      captureDir: args.executionCapture,
+      sessionIds,
+      events: allEvents,
+    });
     const cloudflare = args.cloudflareLogs
       ? captureCloudflareLogs({
           outputDir: partialDir,
@@ -977,6 +985,7 @@ async function main() {
     writeJson(join(partialDir, "completeness.json"), completeness);
 
     const missingness = {
+      executionTrace: executionTrace.status,
       durableObjectEvents: "captured for every discovered session",
       sessionTree: "captured from D1-backed children endpoints",
       stepStartAndStepFinish:
@@ -1011,6 +1020,7 @@ async function main() {
     writeJson(join(partialDir, "hashes.json"), { algorithm: "sha256", files: hashes });
     writeJson(join(partialDir, "manifest.json"), {
       schemaVersion: "openinspect-trace-v0",
+      executionTrace,
       exportedAt: new Date().toISOString(),
       source: {
         rootSessionId,

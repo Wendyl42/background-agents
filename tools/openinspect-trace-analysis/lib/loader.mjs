@@ -141,6 +141,32 @@ export function loadTraceBundle(inputPath) {
   }
 
   const verifiedFiles = verifyHashEntries(bundleDir, bundleRealRoot, hashes);
+  let executionIndex = null;
+  if (manifest.executionTrace?.indexFile) {
+    const indexPath = manifest.executionTrace.indexFile;
+    if (!verifiedFiles.some((file) => file.path === indexPath))
+      throw new TraceBundleError("Execution index is missing hash coverage");
+    executionIndex = readJson(assertRegularFileInsideBundle(bundleDir, bundleRealRoot, indexPath));
+    if (
+      executionIndex.schema !== "openinspect-execution-index-v1" ||
+      !Array.isArray(executionIndex.attachments)
+    )
+      throw new TraceBundleError("Invalid execution index");
+    const seen = new Set();
+    for (const attachment of executionIndex.attachments) {
+      const verified = verifiedFiles.find((file) => file.path === attachment.path);
+      if (
+        seen.has(attachment.path) ||
+        !verified ||
+        verified.sha256 !== attachment.sha256 ||
+        verified.bytes !== attachment.bytes
+      )
+        throw new TraceBundleError(
+          "Execution attachment is missing or has inconsistent hash coverage"
+        );
+      seen.add(attachment.path);
+    }
+  }
   const sessionIndex = readJson(join(bundleDir, "raw/session-index.json"));
 
   return {
@@ -149,6 +175,7 @@ export function loadTraceBundle(inputPath) {
     manifest,
     hashes,
     verifiedFiles,
+    executionIndex,
     completeness: readJson(join(bundleDir, "completeness.json")),
     missingness: readJson(join(bundleDir, "missingness.json")),
     sessionIndex,

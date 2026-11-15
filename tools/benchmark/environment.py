@@ -2,13 +2,14 @@
 
 import json
 import shutil
+import stat
 import zipfile
 
 from artifacts import atomic_json
 from common import ROOT, digest, read_json, run_command, safe_id
 
 PATCHELF_VERSION = "0.17.2.4"
-CORE_TAG = "openinspect-benchmark-runtime:local"
+CORE_TAG = "openinspect-benchmark-runtime:trace-p5-v2"
 
 
 def build_core(lab_root, runtime_image):
@@ -65,6 +66,13 @@ RUN /opt/oi-runtime/bin/python3.12 -I -c 'import sandbox_runtime,ssl,cryptograph
             str(path.relative_to(directory / "runtime-source")): digest(path)
             for path in sorted((directory / "runtime-source").rglob("*"))
             if path.is_file()
+        },
+        "runtimeSourceModes": {
+            str(path.relative_to(directory / "runtime-source")): stat.S_IMODE(path.stat().st_mode)
+            for path in sorted([
+                directory / "runtime-source", *(directory / "runtime-source").rglob("*")
+            ])
+            if path.is_file() or path.is_dir()
         },
     }
     atomic_json(directory / "core.json", result)
@@ -124,7 +132,7 @@ RUN /opt/oi-runtime/bin/python3.12 -I -c 'import sandbox_runtime,ssl,cryptograph
 WORKDIR /workspace
 ENTRYPOINT ["/opt/oi-tools/python-runtime", "-m", "sandbox_runtime.entrypoint"]
 """)
-    tag = "openinspect-benchmark-task:" + task_id.lower()
+    tag = "openinspect-trace-task-p5-v2:" + task_id.lower()
     run_command(
         ["docker", "build", "--network", "none", "-t", tag, str(directory)],
         log=directory / "build.log",

@@ -638,6 +638,8 @@ def execute_attempts(lab_root, directory, batch, config, selected_by_id):
                     raise RuntimeError(
                         "Trace integrity failed; resume evidence export before advancing"
                     )
+                if config.get("executionTraceMode") and state.get("executionCaptureQuality") != "complete":
+                    raise RuntimeError("Fine-grained trace is incomplete; inspect evidence before advancing")
                 state["phase"] = "done"
                 atomic_json(attempt_path, state)
             else:

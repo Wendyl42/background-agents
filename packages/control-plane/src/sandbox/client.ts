@@ -392,6 +392,7 @@ export class ModalClient {
           agent_slack_notify_enabled: request.agentSlackNotifyEnabled ?? false,
           mcp_servers: request.mcpServers || null,
           sandbox_settings: request.sandboxSettings ?? null,
+          execution_trace: request.sandboxSettings?.executionTrace ?? null,
           // Flat keys matching SessionConfig field names — Modal's create
           // handler builds its SessionConfig from the request by field name
           // (unlike restore, which carries a nested session_config).

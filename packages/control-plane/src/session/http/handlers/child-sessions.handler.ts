@@ -112,6 +112,7 @@ export function createChildSessionsHandler(deps: ChildSessionsHandlerDeps): Chil
         reasoningEffort: session.reasoning_effort ?? null,
         baseBranch: session.base_branch,
         sandboxTimeoutMs,
+        executionTrace: parsePersistedSandboxSettings(session.sandbox_settings).executionTrace,
         promptAuthor: {
           userId: promptAuthor.user_id,
           ...(promptAuthor.canonical_user_id

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "suite": "fine-trace-p5-v2-cooperbench",
+  "frozenAtMs": 1789813268512,
+  "configSha256": "f1fc88fdccc005e7a93138bafba8d0bf1d17fc933a230a395d3045eeb1fbf3b0",
+  "appendixSha256": "5ef0aa1391c7ae42292be2f6dfcd877bb8923915477397b15309ab53bc0031a2",
+  "manifestHashes": {
+    "experiments/fine-trace-p5-v2-tasks.json": "51ad38a8e5eda163ed5e47f864e9a8b3608074d46f7d7c755add3a834e808969"
+  },
+  "benchmarkLockHashes": {
+    "experiments/cooperbench-lock.json": "a96c16ce4b3616ee756514009434e9ac494b7acf888929f7ac98d905e93a392e"
+  },
+  "tasks": [
+    {
+      "taskId": "cooperbench-go-chi-26-1-2",
+      "runtimeImageId": "sha256:5f52d70c8a3242f95fd75fdab415a75a78827ce0b77776f4a3550c7f81f351a7",
+      "preparedSha256": "4e4fc69772e839885f1e9fedb1e68b68d59ac4109b64073192d177651246fd05",
+      "runtimeSha256": "8ecfcba44a3a91ef373d6406abc28bae3a952b489d284a742d4d3f6744f501d1",
+      "agentEnvironment": "runs/calibration/cooperbench/cooperbench-go-chi-26-1-2/overlays/agent-531129eb2ff44258b37e05339134cb33/agent-environment.json",
+      "agentEnvironmentSha256": "b92efc8d99b14572aac62117b6cd18fc71eb1026716268325d12fb2c02a5c93e",
+      "officialCalibration": "runs/calibration/cooperbench/cooperbench-go-chi-26-1-2/official/16a0eb407f94435b8796a630c0dec3e8/calibration.json",
+      "officialCalibrationSha256": "ac1803007acf5ba4912107ce9314f5e4a37c582fd50d6cc14f308ffe052a21ef",
+      "overlayCalibration": "runs/calibration/cooperbench/cooperbench-go-chi-26-1-2/overlays/15c93e1020a840b3a8be0092755ea991/calibration.json",
+      "overlayCalibrationSha256": "e0abbe6acd13331ec3022bef902c438c19d6889ee8342cc94f5d0cff5831916b"
+    },
+    {
+      "taskId": "cooperbench-react-hook-form-153-2-3",
+      "runtimeImageId": "sha256:fe166421ada22e640511073c871c4641bf4b31f2929e9ffbf5ac4c938fe61218",
+      "preparedSha256": "29a0a1181afd88ac11f53599a34d3e59fb7193dd9e5830b627ed58248a7ebc48",
+      "runtimeSha256": "f49cd66bc65f65181b0a16ee7948459e65daf11fce4e654d1404d90a1d48da12",
+      "agentEnvironment": "runs/calibration/cooperbench/cooperbench-react-hook-form-153-2-3/overlays/agent-0a3fc9917bac4c929445a1055c173c4a/agent-environment.json",
+      "agentEnvironmentSha256": "97944a6ff1fc1c70826afd9c51bf845b14cf3445aae045d0145e528d65b1b17f",
+      "officialCalibration": "runs/calibration/cooperbench/cooperbench-react-hook-form-153-2-3/official/e2865ffe7c06416f94b581e40538f036/calibration.json",
+      "officialCalibrationSha256": "ee47042e05e3bf7d9462f1ef0352e4ab9e62f4374ce9efb2feacc25e6369d792",
+      "overlayCalibration": "runs/calibration/cooperbench/cooperbench-react-hook-form-153-2-3/overlays/bdffe7167ad64ec09b01583cea4832a5/calibration.json",
+      "overlayCalibrationSha256": "aa7eec26d2e19cc1abb6e3e560faa9abb4c813e73529dc82a6153fa67b4ef3ca"
+    },
+    {
+      "taskId": "cooperbench-pallets-jinja-1559-6-9",
+      "runtimeImageId": "sha256:71d86afb88bea8d166bdfe7296684fd9d0d837b1deb321e4efe39fabd51bb13c",
+      "preparedSha256": "3958c8fca3da90d408471e16bbb6eef7bfc959f038c10f83664b506865168692",
+      "runtimeSha256": "2b86f7081e24b1a5114b402e4ad3d61cffed74a9fdf07bb9d07dd2f1fac3ac09",
+      "agentEnvironment": "runs/calibration/cooperbench/cooperbench-pallets-jinja-1559-6-9/overlays/agent-5abb070700f34d83bd995064ab0c25bb/agent-environment.json",
+      "agentEnvironmentSha256": "d7e61e4b7352451d08ddfcc9513d8a4b2c9cc5a24206cac280027317168f2124",
+      "officialCalibration": "runs/calibration/cooperbench/cooperbench-pallets-jinja-1559-6-9/official/82a21319c8544f189ae85e835f296d64/calibration.json",
+      "officialCalibrationSha256": "01de769fa9eea8851d180c6d993808a2e315c5007c2ae651f2c8e3e72b7c8f9c",
+      "overlayCalibration": "runs/calibration/cooperbench/cooperbench-pallets-jinja-1559-6-9/overlays/19195f9cb12a4daf8923797830fa8a57/calibration.json",
+      "overlayCalibrationSha256": "42d782db5f8aa13d8b9737f2d0913e2fdd623b5bc99c1e55e3db686a4fc8d4e1"
+    }
+  ]
+}

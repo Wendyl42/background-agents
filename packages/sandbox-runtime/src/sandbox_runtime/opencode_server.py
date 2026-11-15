@@ -20,6 +20,8 @@ from .constants import (
 )
 from .git_excludes import install_runtime_git_excludes
 from .process_output import iter_process_lines
+from .tracing.config import DISPOSE_TIMEOUT_SECONDS, configure_execution_trace, ensure_trace_ready
+from .tracing.managed import ManagedCapture
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping, Sequence
@@ -63,6 +65,8 @@ class OpenCodeServer:
         self.model = config.model
         self.mcp_servers = config.mcp_servers
         self._opencode_process: asyncio.subprocess.Process | None = None
+        self._execution_trace_enabled = False
+        self._managed_capture = None
 
     def _assemble_workspace_opencode(self, repositories: Sequence[RepoEntry]) -> None:
         """Merge member repos' .opencode/ into the workspace root (multi-repo only).
@@ -479,6 +483,16 @@ class OpenCodeServer:
 
     async def start(self, repositories: tuple[RepoEntry, ...], workdir: Path) -> None:
         """Start OpenCode server with configuration."""
+        os.environ.pop("OI_EXECUTION_TRACE_READY", None)
+        self._managed_capture = await ManagedCapture.start()
+        try:
+            await self._start_opencode(repositories, workdir)
+        except BaseException:
+            if self._managed_capture:
+                await self.stop()
+            raise
+
+    async def _start_opencode(self, repositories: tuple[RepoEntry, ...], workdir: Path) -> None:
         self._setup_managed_oauth()
         self.log.info("opencode.start")
 
@@ -500,6 +514,11 @@ class OpenCodeServer:
         # Working directory: the repo for single-repo sessions, /workspace
         # for multi-repo (every member visible) and repo-less sessions.
         installed_runtime_paths = self._prepare_opencode_filesystem(workdir, repositories)
+        trace_environment, trace_paths = configure_execution_trace(
+            workdir, os.environ, opencode_config
+        )
+        installed_runtime_paths.update(trace_paths)
+        self._execution_trace_enabled = bool(trace_environment)
         # Deploy auth proxy plugins for control-plane-managed subscriptions.
         opencode_dir = workdir / ".opencode"
         managed_plugins = (
@@ -524,6 +543,7 @@ class OpenCodeServer:
 
         env = {
             **os.environ,
+            **trace_environment,
             "OPENCODE_CONFIG_CONTENT": json.dumps(opencode_config),
             # Disable OpenCode's question tool in headless mode. The tool blocks
             # on a Promise waiting for user input via the HTTP API, but the bridge
@@ -554,6 +574,21 @@ class OpenCodeServer:
 
         # Wait for health check
         await self._wait_for_health()
+        if self._execution_trace_enabled:
+            try:
+                await ensure_trace_ready(
+                    Path(trace_environment["OI_EXECUTION_TRACE_DIR"]),
+                    trace_environment["OI_EXECUTION_TRACE_HANDSHAKE"],
+                    f"http://localhost:{OPENCODE_PORT}",
+                    workdir,
+                )
+            except Exception:
+                await self.stop()
+                raise
+        if self._managed_capture:
+            os.environ["OI_EXECUTION_TRACE_READY"] = json.dumps(
+                {key: self._managed_capture.config[key] for key in ("mode", "runId", "attemptId")}
+            )
         self.log.info("opencode.ready")
 
     async def _forward_opencode_logs(self) -> None:
@@ -595,6 +630,15 @@ class OpenCodeServer:
 
     async def stop(self) -> None:
         if self._opencode_process and self._opencode_process.returncode is None:
+            if self._execution_trace_enabled:
+                try:
+                    async with httpx.AsyncClient(timeout=DISPOSE_TIMEOUT_SECONDS) as client:
+                        response = await client.post(
+                            f"http://localhost:{OPENCODE_PORT}/global/dispose"
+                        )
+                        response.raise_for_status()
+                except Exception as error:
+                    self.log.warn("execution_trace.dispose_failed", exc=error)
             with contextlib.suppress(ProcessLookupError):
                 self._opencode_process.terminate()
             try:
@@ -606,6 +650,9 @@ class OpenCodeServer:
                     await asyncio.wait_for(self._opencode_process.wait(), timeout=10.0)
                 except TimeoutError:
                     self.log.warn("opencode.stop_timeout")
+        if self._managed_capture:
+            await self._managed_capture.stop()
+            self._managed_capture = None
 
     def exit_code(self) -> int | None:
         """Return OpenCode's exit code, or None while absent/running."""

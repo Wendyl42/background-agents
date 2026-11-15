@@ -553,7 +553,7 @@ def calibrate(
                 ) == "runtime_overlay" or candidate_report.get("official_reference_report"):
                     continue
                 generation = candidate_report.get("attempt_directory")
-                if generation and candidate.parent.resolve() == Path(generation).resolve():
+                if generation and candidate.resolve().parent == Path(generation).resolve():
                     references.append(candidate)
             if not references:
                 raise FileNotFoundError("No immutable official calibration report is available")

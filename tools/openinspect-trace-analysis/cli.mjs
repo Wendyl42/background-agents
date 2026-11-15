@@ -7,6 +7,7 @@ import { DEFAULT_ANALYSIS_PROFILE, getAnalysisProfile } from "./lib/constants.mj
 import { stableJson, stableJsonl } from "./lib/json.mjs";
 import { renderReport } from "./lib/report.mjs";
 import { writeAnalysisOutput } from "./lib/output.mjs";
+import { writeProcessAnalysis } from "./lib/process/output.mjs";
 
 const TOOL_DIR = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const PROJECT_ROOT = resolve(TOOL_DIR, "../..");
@@ -16,7 +17,7 @@ function usage(error) {
   console.error(`Usage:
   node tools/openinspect-trace-analysis/cli.mjs analyze <trace-bundle> [--profile <id>] [--out <directory>]
 
-Default profile: block-ab-v0. Available: block-ab-v0, block-c-v0, block-c-v1, block-c-v2, block-d0-v0, block-d0-v1.
+Default profile: block-ab-v0. Available: block-ab-v0, block-c-v0, block-c-v1, block-c-v2, block-d0-v0, block-d0-v1, process-v1.
 `);
   process.exit(error ? 1 : 0);
 }
@@ -39,7 +40,7 @@ function parseArgs(argv) {
     } else if (argv[index] === "--profile") {
       const value = argv[index + 1];
       if (!value || value.startsWith("--")) usage("--profile requires an ID");
-      getAnalysisProfile(value);
+      if (value !== "process-v1") getAnalysisProfile(value);
       parsed.profileId = value;
       index += 1;
     } else {
@@ -51,6 +52,12 @@ function parseArgs(argv) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.profileId === "process-v1") {
+    console.log(
+      writeProcessAnalysis([args.traceDir], args.outputDir ?? `${args.traceDir}-process-v1`)
+    );
+    return;
+  }
   const analyzed = analyzeTraceBundleDetailed(args.traceDir, { profile: args.profileId });
   const { summary, profile, artifacts } = analyzed;
   const rootId = summary.input.rootSessionId;
