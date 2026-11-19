@@ -498,9 +498,17 @@ class OpenCodeServer:
         self.log.info("opencode.start")
 
         # Build OpenCode config from session settings
+        permissions: dict[str, Any] = {"*": {"*": "allow"}}
+        if os.environ.get("OI_DISABLE_NATIVE_TASK") == "true":
+            permissions["task"] = "deny"
+        if (
+            os.environ.get("OI_DISABLE_SPAWN_CHILD") == "true"
+            or os.environ.get("BENCHMARK_CAMPAIGN_ARM") == "single"
+        ):
+            permissions["spawn-child"] = "deny"
         opencode_config: dict[str, Any] = {
             "model": f"{self.provider}/{self.model}",
-            "permission": {"*": {"*": "allow"}},
+            "permission": permissions,
         }
 
         # Inject MCP servers

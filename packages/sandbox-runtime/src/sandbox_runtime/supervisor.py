@@ -64,6 +64,12 @@ class SandboxSupervisor:
         self.shutdown_event = shutdown_event
         self.log = log
         self.boot_mode = BootMode.FRESH
+        configured_restarts = os.environ.get("SANDBOX_MAX_RESTARTS")
+        self.max_restarts = (
+            self.MAX_RESTARTS if configured_restarts is None else int(configured_restarts)
+        )
+        if not 0 <= self.max_restarts <= self.MAX_RESTARTS:
+            raise ValueError("SANDBOX_MAX_RESTARTS must be between zero and the default limit")
         self._desktop_restart_task: asyncio.Task[bool] | None = None
         self._repository_boot_result: RepositoryBootResult | None = None
 
@@ -92,7 +98,7 @@ class SandboxSupervisor:
                 attempt += 1
                 self.log.warn("vnc.start_failed", attempt=attempt, exc=error)
                 await self.browser_desktop.stop()
-                if attempt > self.MAX_RESTARTS:
+                if attempt > self.max_restarts:
                     self.log.warn("vnc.max_restarts", restart_count=attempt)
                     return False
                 if await self._wait_for_shutdown(min(self.BACKOFF_BASE**attempt, self.BACKOFF_MAX)):
@@ -119,7 +125,7 @@ class SandboxSupervisor:
             exit_code=exit_code,
             restart_count=restart_count,
         )
-        if restart_count > self.MAX_RESTARTS:
+        if restart_count > self.max_restarts:
             self.log.error("opencode.max_restarts", restart_count=restart_count)
             await self._report_fatal_error(f"OpenCode crashed {restart_count} times, giving up")
             self.shutdown_event.set()
@@ -156,7 +162,7 @@ class SandboxSupervisor:
             exit_code=exit_code,
             restart_count=restart_count,
         )
-        if restart_count > self.MAX_RESTARTS:
+        if restart_count > self.max_restarts:
             self.log.error("bridge.max_restarts", restart_count=restart_count)
             await self._report_fatal_error(f"Bridge crashed {restart_count} times, giving up")
             self.shutdown_event.set()
@@ -184,7 +190,7 @@ class SandboxSupervisor:
             exit_code=exit_code,
             restart_count=restart_count,
         )
-        if restart_count > self.MAX_RESTARTS:
+        if restart_count > self.max_restarts:
             self.log.warn("code_server.max_restarts", restart_count=restart_count)
             await self.code_server.stop()
             return restart_count
@@ -214,7 +220,7 @@ class SandboxSupervisor:
             restart_count=restart_count,
         )
         await self.web_terminal.stop()
-        if restart_count > self.MAX_RESTARTS:
+        if restart_count > self.max_restarts:
             self.log.warn("web_terminal.max_restarts", restart_count=restart_count)
             return restart_count
 
@@ -245,7 +251,7 @@ class SandboxSupervisor:
             restart_count=restart_count,
         )
         await self.browser_desktop.stop()
-        if restart_count <= self.MAX_RESTARTS:
+        if restart_count <= self.max_restarts:
             self._desktop_restart_task = asyncio.create_task(self._start_desktop_with_retries())
         else:
             self.log.warn("vnc.max_restarts", restart_count=restart_count)

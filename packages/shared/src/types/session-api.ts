@@ -4,7 +4,7 @@ import { sessionSkillSelectionSchema } from "./skills";
 import type { AgentResponse } from "./artifacts";
 import { sessionRepositoriesInputSchema } from "./repositories";
 import type { EventResponse } from "./sandbox-events";
-import { MAX_WEB_PROMPT_CHARS, promptContentSchema } from "./prompts";
+import { MAX_WEB_PROMPT_CHARS, apiPromptContentSchema } from "./prompts";
 import {
   messageSourceSchema,
   sessionStatusSchema,
@@ -133,7 +133,7 @@ export type CallbackContext = z.infer<typeof callbackContextSchema>;
 
 export const sendPromptRequestSchema = z
   .object({
-    content: promptContentSchema,
+    content: apiPromptContentSchema,
     source: messageSourceSchema.optional(),
     model: z.string().optional(),
     reasoningEffort: z.string().optional(),

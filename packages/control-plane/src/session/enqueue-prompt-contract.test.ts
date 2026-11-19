@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { enqueuePromptRequestSchema } from "./enqueue-prompt-contract";
+import { MAX_API_PROMPT_CHARS, MAX_WEB_PROMPT_CHARS } from "@open-inspect/shared/types/prompts";
 
 describe("enqueuePromptRequestSchema", () => {
+  it("preserves API prompts above the web limit through the internal queue boundary", () => {
+    const content = "x".repeat(MAX_WEB_PROMPT_CHARS + 1);
+    const body = { content, authorId: "benchmark", source: "github" };
+    expect(enqueuePromptRequestSchema.parse(body).content).toBe(content);
+    expect(
+      enqueuePromptRequestSchema.safeParse({
+        ...body,
+        content: "x".repeat(MAX_API_PROMPT_CHARS + 1),
+      }).success
+    ).toBe(false);
+  });
+
   it("parses valid enqueue prompt request bodies", () => {
     const body = {
       content: "hello",

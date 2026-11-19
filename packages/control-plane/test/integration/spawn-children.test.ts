@@ -5,6 +5,7 @@ import { ModelPreferencesStore } from "../../src/db/model-preferences";
 import { SessionIndexStore } from "../../src/db/session-index";
 import { cleanD1Tables } from "./cleanup";
 import { initNamedSessionDO, queryDO, seedMessage, seedSandboxAuth } from "./helpers";
+import { handleRequest } from "../../src/router";
 
 describe("POST /sessions/:parentId/children — spawn child", () => {
   beforeEach(cleanD1Tables);
@@ -524,6 +525,43 @@ describe("POST /sessions/:parentId/children — spawn child", () => {
     expect(res.status).toBe(403);
     const body = await res.json<{ error: string }>();
     expect(body.error).toContain("depth");
+  });
+
+  it("applies a stricter deployment depth limit with real D1 parent ancestry", async () => {
+    const { parentName, sandboxToken, store } = await setupParent({
+      spawnDepth: 1,
+      parentSessionId: "root-for-depth-limit",
+      spawnSource: "agent",
+    });
+    const response = await handleRequest(
+      new Request(`https://test.local/sessions/${parentName}/children`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${sandboxToken}` },
+        body: JSON.stringify({
+          title: "Forbidden grandchild",
+          prompt: "Try to create another sandbox",
+        }),
+      }),
+      { ...env, SESSION_MAX_SPAWN_DEPTH: "1" },
+      { submit: () => {} }
+    );
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ error: "Maximum spawn depth (1) exceeded" });
+    expect(await store.countTotalChildren(parentName)).toBe(0);
+  });
+
+  it("fails closed for an invalid deployment depth limit", async () => {
+    const { parentName, sandboxToken } = await setupParent();
+    const response = await handleRequest(
+      new Request(`https://test.local/sessions/${parentName}/children`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${sandboxToken}` },
+        body: JSON.stringify({ title: "Child", prompt: "Task" }),
+      }),
+      { ...env, SESSION_MAX_SPAWN_DEPTH: "3" },
+      { submit: () => {} }
+    );
+    expect(response.status).toBe(503);
   });
 
   it("rejects when concurrent children >= 5 (429)", async () => {

@@ -943,28 +943,32 @@ describe("SandboxLifecycleManager", () => {
       ).toBe(false);
     });
 
-    it("schedules the connecting timeout from the persisted startup timestamp", async () => {
-      const sandbox = createMockSandbox({ status: "pending", created_at: Date.now() - 60000 });
-      const storage = createMockStorage(createMockSession(), sandbox);
-      const alarmScheduler = createMockAlarmScheduler();
-      const config = createTestConfig();
+    it.each([DEFAULT_LIFECYCLE_CONFIG.connectingTimeout.timeoutMs, 600_000])(
+      "schedules the configured %i ms timeout from the persisted startup timestamp",
+      async (timeoutMs) => {
+        const sandbox = createMockSandbox({ status: "pending", created_at: Date.now() - 60000 });
+        const storage = createMockStorage(createMockSession(), sandbox);
+        const alarmScheduler = createMockAlarmScheduler();
+        const config = createTestConfig();
+        config.connectingTimeout = { timeoutMs };
 
-      const manager = new SandboxLifecycleManager(
-        createMockProvider(),
-        storage,
-        createMockBroadcaster(),
-        createMockWebSocketManager(false),
-        alarmScheduler,
-        createMockIdGenerator(),
-        config
-      );
+        const manager = new SandboxLifecycleManager(
+          createMockProvider(),
+          storage,
+          createMockBroadcaster(),
+          createMockWebSocketManager(false),
+          alarmScheduler,
+          createMockIdGenerator(),
+          config
+        );
 
-      await manager.spawnSandbox();
+        await manager.spawnSandbox();
 
-      expect(alarmScheduler.alarms).toEqual([
-        sandbox.created_at + config.connectingTimeout.timeoutMs,
-      ]);
-    });
+        expect(alarmScheduler.alarms).toEqual([
+          sandbox.created_at + config.connectingTimeout.timeoutMs,
+        ]);
+      }
+    );
 
     it("passes user env vars to provider", async () => {
       const sandbox = createMockSandbox({ status: "pending", created_at: Date.now() - 60000 });
@@ -2150,6 +2154,41 @@ describe("SandboxLifecycleManager", () => {
       // Should NOT trigger snapshot (nothing to snapshot)
       expect(provider.takeSnapshot).not.toHaveBeenCalled();
     });
+
+    it.each(["spawning", "connecting"] as const)(
+      "allows long setup in %s and stops the provider at the configured deadline",
+      async (status) => {
+        const sandbox = createMockSandbox({
+          status,
+          created_at: Date.now() - 180_000,
+          last_heartbeat: null,
+        });
+        const storage = createMockStorage(createMockSession(), sandbox);
+        const stopSandbox = vi.fn(async () => ({ success: true }));
+        const config = createTestConfig();
+        config.connectingTimeout = { timeoutMs: 600_000 };
+        const manager = new SandboxLifecycleManager(
+          createMockProvider({ capabilities: { supportsExplicitStop: true }, stopSandbox }),
+          storage,
+          createMockBroadcaster(),
+          createMockWebSocketManager(false),
+          createMockAlarmScheduler(),
+          createMockIdGenerator(),
+          config
+        );
+
+        await manager.handleAlarm();
+        expect(storage.calls).not.toContain("updateSandboxStatus:failed");
+        expect(stopSandbox).not.toHaveBeenCalled();
+
+        sandbox.created_at = Date.now() - config.connectingTimeout.timeoutMs - 1;
+        await manager.handleAlarm();
+        expect(storage.calls).toContain("updateSandboxStatus:failed");
+        expect(stopSandbox).toHaveBeenCalledExactlyOnceWith(
+          expect.objectContaining({ reason: "connecting_timeout" })
+        );
+      }
+    );
 
     it("does not timeout connecting sandbox within timeout window", async () => {
       const now = Date.now();

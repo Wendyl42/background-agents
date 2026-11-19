@@ -518,13 +518,13 @@ variable "nextauth_secret" {
 # =============================================================================
 
 variable "sandbox_provider" {
-  description = "Sandbox backend for session execution: 'modal', 'daytona', 'vercel', 'opencomputer', or 'e2b'"
+  description = "Sandbox backend for session execution: 'modal', 'daytona', 'vercel', 'opencomputer', 'e2b', or 'opensandbox'"
   type        = string
   default     = "modal"
 
   validation {
-    condition     = contains(["modal", "daytona", "vercel", "opencomputer", "e2b"], var.sandbox_provider)
-    error_message = "sandbox_provider must be 'modal', 'daytona', 'vercel', 'opencomputer', or 'e2b'."
+    condition     = contains(["modal", "daytona", "vercel", "opencomputer", "e2b", "opensandbox"], var.sandbox_provider)
+    error_message = "sandbox_provider must be 'modal', 'daytona', 'vercel', 'opencomputer', 'e2b', or 'opensandbox'."
   }
 }
 
@@ -540,7 +540,7 @@ variable "sandbox_legacy_provider" {
   default     = ""
 
   validation {
-    condition     = contains(["", "modal", "daytona", "vercel", "opencomputer", "e2b"], var.sandbox_legacy_provider)
+    condition     = contains(["", "modal", "daytona", "vercel", "opencomputer", "e2b", "opensandbox"], var.sandbox_legacy_provider)
     error_message = "sandbox_legacy_provider must be empty or a supported historical backend."
   }
 }

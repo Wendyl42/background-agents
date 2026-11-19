@@ -20,6 +20,11 @@ const VALID_MESSAGE_STATUSES = ["pending", "processing", "completed", "failed"] 
 
 export interface MessagesHandlerDeps {
   messageService: MessageService;
+  getCampaignUsage?: () => {
+    sessionId: string;
+    reportedCostUsd: number;
+    observedAtMs: number;
+  } | null;
 }
 
 export interface MessagesHandler {
@@ -93,7 +98,12 @@ export function createMessagesHandler(deps: MessagesHandlerDeps): MessagesHandle
         messageId,
       });
 
-      return Response.json(result);
+      return Response.json({
+        ...result,
+        ...(url.searchParams.get("include_usage") === "true"
+          ? { campaignUsage: deps.getCampaignUsage?.() ?? null }
+          : {}),
+      });
     },
 
     listArtifacts(url: URL): Response {

@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import os
+import sys
 from typing import TYPE_CHECKING, Any
 
 from .constants import OPENCODE_PORT
@@ -33,7 +34,8 @@ class AgentBridgeProcess:
             return
 
         self._process = await asyncio.create_subprocess_exec(
-            "python",
+            sys.executable,
+            "-I" if sys.flags.isolated else "-P",
             "-m",
             "sandbox_runtime.bridge",
             "--sandbox-id",

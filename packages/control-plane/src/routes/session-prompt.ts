@@ -3,6 +3,7 @@ import {
   sendPromptRequestSchema,
   type CallbackContext,
 } from "@open-inspect/shared/types/session-api";
+import { MAX_API_PROMPT_CHARS } from "@open-inspect/shared/types/prompts";
 import {
   MAX_SESSION_ATTACHMENTS_PER_MESSAGE,
   sessionAttachmentReferencesSchema,
@@ -68,6 +69,13 @@ async function handleSessionPrompt(
 
   const bodyResult = sendPromptRequestSchema.safeParse(rawBody);
   if (!bodyResult.success) {
+    if (
+      bodyResult.error.issues.some(
+        (issue) => issue.code === "too_big" && issue.path[0] === "content"
+      )
+    ) {
+      return error(`Prompt content exceeds ${MAX_API_PROMPT_CHARS} characters`, 400);
+    }
     return error("content is required");
   }
   const body = bodyResult.data;

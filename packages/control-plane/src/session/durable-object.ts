@@ -44,7 +44,10 @@ import { McpServerStore } from "../db/mcp-servers";
 import { IntegrationSettingsStore, resolveSlackSettings } from "../db/integration-settings";
 import { ScmSettingsStore } from "../db/scm-settings";
 import { SessionIndexStore } from "../db/session-index";
-import { isSandboxReconnectBlockedStatus } from "../sandbox/lifecycle/decisions";
+import {
+  isSandboxReconnectBlockedStatus,
+  resolveSandboxStartupTimeoutMs,
+} from "../sandbox/lifecycle/decisions";
 import { DEFAULT_SANDBOX_TIMEOUT_SECONDS } from "../sandbox/provider";
 import { parsePersistedSandboxSettings } from "../sandbox/settings";
 import {
@@ -581,6 +584,16 @@ export class SessionDO extends DurableObject<Env> {
     if (!this._messagesHandler) {
       this._messagesHandler = createMessagesHandler({
         messageService: this.messageService,
+        getCampaignUsage: () => {
+          const session = this.getSession();
+          return session
+            ? {
+                sessionId: this.getPublicSessionId(session),
+                reportedCostUsd: session.total_cost ?? 0,
+                observedAtMs: Date.now(),
+              }
+            : null;
+        },
       });
     }
 
@@ -1014,8 +1027,11 @@ export class SessionDO extends DurableObject<Env> {
         ? (providerObjectId: string) => this.getSandboxDashboardUrl(providerObjectId)
         : undefined;
 
+    const startupTimeoutMs = resolveSandboxStartupTimeoutMs(this.env.SANDBOX_STARTUP_TIMEOUT_MS);
     const config = {
       ...DEFAULT_LIFECYCLE_CONFIG,
+      spawn: { ...DEFAULT_LIFECYCLE_CONFIG.spawn, spawningTimeoutMs: startupTimeoutMs },
+      connectingTimeout: { timeoutMs: startupTimeoutMs },
       controlPlaneUrl,
       model: DEFAULT_MODEL,
       sessionId,

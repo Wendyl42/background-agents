@@ -160,7 +160,8 @@ export interface SpawnConfig {
   readyWaitMs: number;
   /**
    * Max time a sandbox may remain in "spawning"/"connecting" before it is
-   * treated as dead and a fresh spawn is allowed (default: 120s).
+   * treated as dead and a fresh spawn is allowed. Defaults to
+   * DEFAULT_SANDBOX_STARTUP_TIMEOUT_MS.
    *
    * Guards against spawns interrupted before the sandbox connects (provider
    * crash, redeploy, cancelled provider call). Such a spawn can leave the
@@ -174,10 +175,20 @@ export interface SpawnConfig {
 /**
  * Default spawn configuration.
  */
+export const DEFAULT_SANDBOX_STARTUP_TIMEOUT_MS = 120_000;
+
+export function resolveSandboxStartupTimeoutMs(value: string | undefined): number {
+  if (value === undefined) return DEFAULT_SANDBOX_STARTUP_TIMEOUT_MS;
+  const timeoutMs = Number(value);
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0)
+    throw new Error("SANDBOX_STARTUP_TIMEOUT_MS must be a positive integer in milliseconds");
+  return timeoutMs;
+}
+
 export const DEFAULT_SPAWN_CONFIG: SpawnConfig = {
   cooldownMs: 30000, // 30 seconds
   readyWaitMs: 60000, // 60 seconds
-  spawningTimeoutMs: 120000, // 2 minutes — matches the connecting-timeout watchdog
+  spawningTimeoutMs: DEFAULT_SANDBOX_STARTUP_TIMEOUT_MS,
 };
 
 /**
@@ -496,12 +507,10 @@ export interface ConnectingTimeoutConfig {
 }
 
 /**
- * Default connecting timeout: 2 minutes.
- * Boot sequence (git clone → setup.sh → start.sh → opencode → bridge connect) typically
- * takes 30–90 seconds. Two minutes provides margin without leaving users waiting too long.
+ * Initial-connect watchdog; deployments with longer repository setup may override it.
  */
 export const DEFAULT_CONNECTING_TIMEOUT_CONFIG: ConnectingTimeoutConfig = {
-  timeoutMs: 120_000,
+  timeoutMs: DEFAULT_SANDBOX_STARTUP_TIMEOUT_MS,
 };
 
 /**

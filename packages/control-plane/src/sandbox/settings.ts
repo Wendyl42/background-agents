@@ -82,12 +82,12 @@ export function normalizeSandboxSettings(
   const terminalPort = normalizePort(settings.terminalPort, "terminalPort", reject);
   if (terminalPort !== undefined) result.terminalPort = terminalPort;
 
-  let maxConcurrentChildSessions = normalizePositiveIntegerSetting(
+  let maxConcurrentChildSessions = normalizeNonnegativeIntegerSetting(
     settings.maxConcurrentChildSessions,
     "maxConcurrentChildSessions",
     reject
   );
-  const maxTotalChildSessions = normalizePositiveIntegerSetting(
+  const maxTotalChildSessions = normalizeNonnegativeIntegerSetting(
     settings.maxTotalChildSessions,
     "maxTotalChildSessions",
     reject
@@ -272,6 +272,19 @@ function normalizePositiveIntegerSetting(
   if (value === undefined) return undefined;
   if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
     reject(`${name} must be a positive integer`);
+    return undefined;
+  }
+  return value;
+}
+
+function normalizeNonnegativeIntegerSetting(
+  value: unknown,
+  name: string,
+  reject: (message: string) => false
+): number | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
+    reject(`${name} must be a nonnegative integer`);
     return undefined;
   }
   return value;

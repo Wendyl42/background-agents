@@ -123,13 +123,31 @@ def configure_execution_trace(
     if spec not in plugins:
         plugins.append(spec)
     opencode_config["plugin"] = plugins
+    handshake = str(uuid.uuid4())
+    defaults_file = DEFAULTS_PATH
+    raw_stream_bytes = environment.get("OI_EXECUTION_TRACE_MAX_STREAM_BYTES")
+    raw_capture_bytes = environment.get("OI_EXECUTION_TRACE_MAX_CAPTURE_BYTES")
+    if raw_stream_bytes is not None or raw_capture_bytes is not None:
+        custom_defaults = dict(DEFAULTS)
+        if raw_capture_bytes is not None:
+            capture_bytes = int(raw_capture_bytes)
+            if capture_bytes <= 0:
+                raise ValueError("OI_EXECUTION_TRACE_MAX_CAPTURE_BYTES must be positive")
+            custom_defaults["max_capture_bytes"] = capture_bytes
+        if raw_stream_bytes is not None:
+            stream_bytes = int(raw_stream_bytes)
+            if not 0 < stream_bytes <= custom_defaults["max_capture_bytes"]:
+                raise ValueError("OI_EXECUTION_TRACE_MAX_STREAM_BYTES must fit within max_capture_bytes")
+            custom_defaults["max_stream_bytes"] = stream_bytes
+        defaults_file = root / f"defaults-{handshake}.json"
+        defaults_file.write_text(json.dumps(custom_defaults, indent=2) + "\n")
     additions = {
         "OI_EXECUTION_TRACE_DIR": str(root),
         "OI_EXECUTION_TRACE_MODE": mode,
-        "OI_EXECUTION_TRACE_DEFAULTS": os.fspath(DEFAULTS_PATH),
+        "OI_EXECUTION_TRACE_DEFAULTS": os.fspath(defaults_file),
         "OI_EXECUTION_TRACE_CLOCK_HELPER": os.fspath(Path(__file__).with_name("clock.py")),
         "OI_EXECUTION_TRACE_PYTHON": sys.executable,
-        "OI_EXECUTION_TRACE_HANDSHAKE": str(uuid.uuid4()),
+        "OI_EXECUTION_TRACE_HANDSHAKE": handshake,
     }
     if mode == "process":
         shell = opencode_config.get("shell") or "bash"

@@ -43,13 +43,13 @@ describe("sandbox-provider", () => {
     expect(supportsRepoImages()).toBe(true);
   });
 
-  it("disables repo images for daytona", async () => {
+  it.each(["daytona", "e2b", "opensandbox"])("disables repo images for %s", async (provider) => {
     delete process.env.NEXT_PUBLIC_SANDBOX_PROVIDER;
-    process.env.SANDBOX_PROVIDER = "daytona";
+    process.env.SANDBOX_PROVIDER = provider;
 
     const { getPublicSandboxProvider, supportsRepoImages } = await loadProvider();
 
-    expect(getPublicSandboxProvider()).toBe("daytona");
+    expect(getPublicSandboxProvider()).toBe(provider);
     expect(supportsRepoImages()).toBe(false);
   });
 

@@ -1,0 +1,5 @@
+**
+!opensandbox_server
+!opensandbox_server/**
+**/__pycache__
+**/*.pyc

@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { UserStore } from "./db/user-store";
 import { resolveGitHubEnrichmentForRequest } from "./session/identity";
 import { handleRequest } from "./router";
+import { MAX_API_PROMPT_CHARS, MAX_WEB_PROMPT_CHARS } from "@open-inspect/shared/types/prompts";
+import { enqueuePromptRequestSchema } from "./session/enqueue-prompt-contract";
 import {
   signedServiceRequest,
   TEST_BACKGROUND_TASK_CONTEXT,
@@ -81,6 +83,49 @@ function createEnv(sessionFetch: ReturnType<typeof vi.fn>): Record<string, unkno
 describe("session prompt identity enrichment", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(UserStore).mockImplementation(function () {
+      return { getIdentity: async () => null } as never;
+    });
+  });
+
+  it("forwards a long service prompt intact through the queue contract", async () => {
+    const content = "x".repeat(MAX_WEB_PROMPT_CHARS + 1);
+    const sessionFetch = vi.fn(async (request: Request) => {
+      const body = enqueuePromptRequestSchema.parse(await request.json());
+      expect(body.content).toBe(content);
+      return Response.json({ messageId: "message-long", status: "queued" });
+    });
+    const response = await handleRequest(
+      await signedServiceRequest("https://test.local/sessions/session-1/prompt", {
+        method: "POST",
+        body: JSON.stringify({ content }),
+        service: "github-bot",
+        actor: "github:openinspect-benchmark",
+      }),
+      createEnv(sessionFetch) as never,
+      TEST_BACKGROUND_TASK_CONTEXT
+    );
+    expect(response.status).toBe(200);
+    expect(sessionFetch).toHaveBeenCalledOnce();
+  });
+
+  it("reports oversized content accurately before forwarding or queuing", async () => {
+    const sessionFetch = vi.fn();
+    const response = await handleRequest(
+      await signedServiceRequest("https://test.local/sessions/session-1/prompt", {
+        method: "POST",
+        body: JSON.stringify({ content: "x".repeat(MAX_API_PROMPT_CHARS + 1) }),
+        service: "github-bot",
+        actor: "github:openinspect-benchmark",
+      }),
+      createEnv(sessionFetch) as never,
+      TEST_BACKGROUND_TASK_CONTEXT
+    );
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: `Prompt content exceeds ${MAX_API_PROMPT_CHARS} characters`,
+    });
+    expect(sessionFetch).not.toHaveBeenCalled();
   });
 
   it("enriches a web prompt from the canonical linked GitHub identity", async () => {
